@@ -44,6 +44,38 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mainText.setOnClickListener { callApi() }
     }
 
+    override fun onResume() {
+        // todo とりあえず動かしたのでそろそろ記載箇所を分ける
+        super.onResume()
+
+        val gson: Gson = GsonBuilder().let {
+            it.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            it.create()
+        }
+
+        val retrofit = Retrofit.Builder().let {
+            it.baseUrl("https://qiitadon.com/")
+            it.addConverterFactory(GsonConverterFactory.create(gson))
+            it.build()
+        }
+        val response = retrofit.create(ApiClient::class.java)
+        val publicTimeline = response.getPublicTimelines()
+        publicTimeline.enqueue(object : Callback<Array<Status>> {
+            override fun onResponse(call: Call<Array<Status>>, response: Response<Array<Status>>) {
+                val list = response.body()
+                if (list != null) {
+                    val adapter = TimelineAdapter(baseContext, 1, list)
+                    adapter.notifyDataSetChanged()
+                    timelineView.adapter = adapter
+                }
+            }
+
+            override fun onFailure(call: Call<Array<Status>>, t: Throwable) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+        })
+    }
+
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)

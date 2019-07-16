@@ -4,7 +4,7 @@ data class Status(
     val id: String,
     val uri: String,
     val url: String?,
-//    val account: Account,
+    val account: Account,
     val inReplyToId: String?,
     val inReplyToAccountId: String?,
     val reblog: String?,

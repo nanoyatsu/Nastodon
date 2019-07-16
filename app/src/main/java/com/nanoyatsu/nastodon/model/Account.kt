@@ -1,6 +1,26 @@
 package com.nanoyatsu.nastodon.model
 
-//data class Account()
+data class Account(
+    val id: String,
+    val username: String,
+    val acct: String,
+    val displayName: String,
+    val locked: Boolean,
+    val createdAt: String,
+    val followersCount: Int,
+    val followingCount: Int,
+    val statusesCount: Int,
+    val note: String,
+    val url: String,
+    val avatar: String,
+    val avatarStatic: String,
+    val header: String,
+    val headerStatic: String,
+//    val emojis:Array<Emoji>,
+    val moved: Account?,
+//    val fields:Array<Hash>?,
+    val bot: Boolean?
+)
 
 //"account": {
 //    "id": "45717",
@@ -19,4 +39,4 @@ package com.nanoyatsu.nastodon.model
 //    "following_count": 25,
 //    "statuses_count": 8382,
 //    "qiita_username": "nanoyatsu"
-//},
+//}

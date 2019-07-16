@@ -7,4 +7,7 @@ import retrofit2.http.GET
 interface ApiClient{
     @GET("api/v1/statuses/100645800762440207")
     public fun getNanoFirstToot(): Call<Status>
+
+    @GET("/api/v1/timelines/public")
+    public fun getPublicTimelines(): Call<Array<Status>>
 }
