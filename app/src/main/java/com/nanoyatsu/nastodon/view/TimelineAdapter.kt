@@ -21,9 +21,8 @@ class TimelineAdapter(context: Context, resource: Int, val toots: Array<Status>)
         val inflater : LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val thisView = convertView ?: inflater.inflate(R.layout.toot_card, parent, false)
 
-        thisView.findViewById<ImageView>(R.id.accountAvatar)?.setImageURI(Uri.parse(toots[position].account.avatarStatic)) // fixme ビットマップじゃないから動いてない
-        thisView.findViewById<TextView>(R.id.tootUsername)?.text = toots[position].account.username
-        thisView.findViewById<TextView>(R.id.accountId)?.text = toots[position].id // fixme これトゥートのIDや
+        thisView.findViewById<TextView>(R.id.displayName)?.text = toots[position].account.displayName
+        thisView.findViewById<TextView>(R.id.username)?.text = toots[position].account.username
         thisView.findViewById<TextView>(R.id.statusContent)?.text = toots[position].content
 
         return thisView
