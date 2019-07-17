@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
-        mainText.setOnClickListener { callApi() }
+//        mainText.setOnClickListener { callApi() }
     }
 
     override fun onResume() {
