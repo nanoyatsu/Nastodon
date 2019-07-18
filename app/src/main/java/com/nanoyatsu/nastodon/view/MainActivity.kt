@@ -59,7 +59,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             it.build()
         }
         val response = retrofit.create(ApiClient::class.java)
-        val publicTimeline = response.getPublicTimelines()
+        val publicTimeline = response.getPublicTimeline(
+            local = true
+        )
         publicTimeline.enqueue(object : Callback<Array<Status>> {
             override fun onResponse(call: Call<Array<Status>>, response: Response<Array<Status>>) {
                 val list = response.body()
@@ -71,7 +73,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             override fun onFailure(call: Call<Array<Status>>, t: Throwable) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                TODO(call.toString()) //To change body of created functions use File | Settings | File Templates.
             }
         })
     }
