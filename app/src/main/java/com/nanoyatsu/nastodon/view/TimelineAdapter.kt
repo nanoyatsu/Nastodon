@@ -3,6 +3,7 @@ package com.nanoyatsu.nastodon.view
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +31,7 @@ class TimelineAdapter(context: Context, resource: Int, private val toots: Array<
         thisView.findViewById<ImageView>(R.id.accountAvatar).setImageResource(R.mipmap.ic_sync_problem)
         thisView.findViewById<TextView>(R.id.displayName)?.text = toots[position].account.displayName
         thisView.findViewById<TextView>(R.id.username)?.text = toots[position].account.username
-        thisView.findViewById<TextView>(R.id.statusContent)?.text = toots[position].content
+        thisView.findViewById<TextView>(R.id.statusContent)?.text = Html.fromHtml(toots[position].content, Html.FROM_HTML_MODE_COMPACT)
 
         val request = Request.Builder().let {
             it.url(toots[position].account.avatar)
