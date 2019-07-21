@@ -8,20 +8,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.FieldNamingPolicy
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.model.Status
-import com.nanoyatsu.nastodon.presenter.ApiClient
+import com.nanoyatsu.nastodon.presenter.MastodonApiManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,25 +36,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
-//        mainText.setOnClickListener { callApi() }
     }
 
     override fun onResume() {
-        // todo とりあえず動かしたのでそろそろ記載箇所を分ける
         super.onResume()
 
-        val gson: Gson = GsonBuilder().let {
-            it.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            it.create()
-        }
-
-        val retrofit = Retrofit.Builder().let {
-            it.baseUrl("https://qiitadon.com/")
-            it.addConverterFactory(GsonConverterFactory.create(gson))
-            it.build()
-        }
-        val response = retrofit.create(ApiClient::class.java)
-        val publicTimeline = response.getPublicTimeline(
+        val api = MastodonApiManager("https://qiitadon.com/").api
+        val publicTimeline = api.getPublicTimeline(
             local = true
         )
         publicTimeline.enqueue(object : Callback<Array<Status>> {
@@ -71,7 +54,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     timelineView.adapter = adapter
                 }
             }
-
             override fun onFailure(call: Call<Array<Status>>, t: Throwable) {
                 TODO(call.toString()) //To change body of created functions use File | Settings | File Templates.
             }
@@ -84,30 +66,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             super.onBackPressed()
         }
-    }
-
-    private fun callApi() {
-        val gson: Gson = GsonBuilder().let {
-            it.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            it.create()
-        }
-
-        val retrofit = Retrofit.Builder().let {
-            it.baseUrl("https://qiitadon.com/")
-            it.addConverterFactory(GsonConverterFactory.create(gson))
-            it.build()
-        }
-        val response = retrofit.create(ApiClient::class.java)
-        val firstTootCall: Call<Status> = response.getNanoFirstToot()
-        firstTootCall.enqueue(object : Callback<Status> {
-            override fun onResponse(call: Call<Status>, response: Response<Status>) {
-                mainText.text = response.body()?.content
-            }
-
-            override fun onFailure(call: Call<Status>, t: Throwable) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
