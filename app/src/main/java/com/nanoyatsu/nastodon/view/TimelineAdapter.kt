@@ -18,7 +18,7 @@ import com.nanoyatsu.nastodon.presenter.getImageAsync
 
 class TimelineAdapter(context: Context, resource: Int, private val toots: Array<Status>) :
     ArrayAdapter<Status>(context, resource, toots) {
-    private var jobMap: MutableMap<Int,Job> = mutableMapOf()
+    private var jobMap: MutableMap<View,Job> = mutableMapOf()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
         val inflater: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -32,8 +32,8 @@ class TimelineAdapter(context: Context, resource: Int, private val toots: Array<
         val avatar = thisView.findViewById<ImageView>(R.id.accountAvatar)
         avatar.setImageResource(R.mipmap.ic_sync_problem)
 
-        jobMap[position]?.cancel() // fixme 過去の処理が残る対策に入れたけど意味なさそう
-        jobMap[position] = GlobalScope.launch(Dispatchers.Main) {
+        jobMap[thisView]?.cancel() // やり方ゴリ押しっぽい
+        jobMap[thisView] = GlobalScope.launch(Dispatchers.Main) {
             // todo キャッシュ
             val image = getImageAsync(toots[position].account.avatarStatic).await()
             avatar.setImageBitmap(image)
