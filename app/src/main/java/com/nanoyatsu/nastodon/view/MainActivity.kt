@@ -8,8 +8,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
-import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.model.Status
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
 import kotlinx.android.synthetic.main.activity_main.*
@@ -18,6 +16,8 @@ import kotlinx.android.synthetic.main.content_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import com.nanoyatsu.nastodon.R
+
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +39,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
+        fromUri()
+
         nav_view.setNavigationItemSelectedListener(this)
+    }
+
+    fun fromUri(){
+        val intent = intent
+        val action = intent.action
+        if (Intent.ACTION_VIEW == action) {
+            val uri = intent.data
+
+            testString.text = uri?.toString()
+        }
     }
 
     override fun onResume() {

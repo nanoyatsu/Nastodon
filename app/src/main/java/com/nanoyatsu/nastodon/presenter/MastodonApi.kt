@@ -19,7 +19,8 @@ interface MastodonApi {
 
     data class AppsBody(
         val client_name: String = "Nastodon",
-        val redirect_uris: String = "urn:ietf:wg:oauth:2.0:oob",
+//        val redirect_uris: String = "urn:ietf:wg:oauth:2.0:oob",
+        val redirect_uris: String = "mastodon://nastodon",
         val scopes: String = "read write follow"
     )
 

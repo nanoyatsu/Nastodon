@@ -32,10 +32,9 @@ class AuthDialog(context: Context) : Dialog(context) {
             override fun onResponse(call: Call<Apps>, response: Response<Apps>) {
                 val authDir = baseUrl + "oauth/authorize" +
                         "?client_id=${response.body()?.client_id}" +
-                        "&scope=read write follow" +
+                        "&redirect_uri=${response.body()?.redirect_uri}" +
                         "&response_type=code" +
-                        "&redirect_uri=urn:ietf:wg:oauth:2.0:oob"
-
+                        "&scope=${"read write follow"}"
                 val uri = Uri.parse(authDir)
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 context.startActivity(intent)
