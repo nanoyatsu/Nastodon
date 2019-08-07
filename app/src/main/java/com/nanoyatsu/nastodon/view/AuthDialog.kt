@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.model.Apps
+import com.nanoyatsu.nastodon.model.AuthPreferenceManager
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
 import kotlinx.android.synthetic.main.auth_dialog.*
 import retrofit2.Call
@@ -23,22 +23,27 @@ class AuthDialog(context: Context) : Dialog(context) {
         sendButton.setOnClickListener { sendAuth() }
     }
 
-    fun sendAuth(){
+    fun sendAuth() {
         val baseUrl = "https://qiitadon.com/"
         val api = MastodonApiManager(baseUrl).api
         val apps = api.getClientId()
 
         apps.enqueue(object : Callback<Apps> {
             override fun onResponse(call: Call<Apps>, response: Response<Apps>) {
-                val authDir = baseUrl + "oauth/authorize" +
+                val pref = AuthPreferenceManager(context)
+                pref.clientId = response.body()?.client_id ?: ""
+                pref.clientSecret = response.body()?.client_secret ?: ""
+
+                val authPath = baseUrl + "oauth/authorize" +
                         "?client_id=${response.body()?.client_id}" +
                         "&redirect_uri=${response.body()?.redirect_uri}" +
                         "&response_type=code" +
                         "&scope=${"read write follow"}"
-                val uri = Uri.parse(authDir)
+                val uri = Uri.parse(authPath)
                 val intent = Intent(Intent.ACTION_VIEW, uri)
                 context.startActivity(intent)
             }
+
             override fun onFailure(call: Call<Apps>, t: Throwable) {
                 t.printStackTrace()
                 TODO(call.toString()) //To change body of created functions use File | Settings | File Templates.

@@ -28,7 +28,7 @@
 
         <data
                 android:scheme="mastodon"
-                android:host="nanoyatsu"/>
+                android:host="nastodon"/>
       </intent-filter>
     </activity>
   </application>

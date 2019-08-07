@@ -17,6 +17,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import com.nanoyatsu.nastodon.R
+import com.nanoyatsu.nastodon.model.AuthPreferenceManager
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener { view ->
-//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+            //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                .setAction("Action", null).show()
 //            val intent = Intent(this, AuthDialog::class.java).also{}
 //            startActivity(intent)
@@ -44,13 +45,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
     }
 
-    fun fromUri(){
+    fun fromUri() {
         val intent = intent
         val action = intent.action
         if (Intent.ACTION_VIEW == action) {
             val uri = intent.data
-
-            testString.text = uri?.toString()
+            val pref = AuthPreferenceManager(this)
+            pref.accessToken = uri?.getQueryParameter("code") ?: ""
+            testString.text = pref.accessToken
         }
     }
 
@@ -70,6 +72,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     timelineView.adapter = adapter
                 }
             }
+
             override fun onFailure(call: Call<Array<Status>>, t: Throwable) {
                 TODO(call.toString()) //To change body of created functions use File | Settings | File Templates.
             }
