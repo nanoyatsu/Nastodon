@@ -9,6 +9,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 
 public fun getImageAsync(url: String): Deferred<Bitmap> {
+// 画像はGlideに任せてしまったのでそのうち削除
     return GlobalScope.async {
         val request = Request.Builder().let {
             it.url(url)

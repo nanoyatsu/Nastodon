@@ -27,10 +27,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener { view ->
-            //            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                .setAction("Action", null).show()
-//            val intent = Intent(this, AuthDialog::class.java).also{}
-//            startActivity(intent)
+            // todo 画面ちゃんとする ていうかこのままだとWindow leak
             AuthDialog(this).show()
         }
 
@@ -52,7 +49,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val uri = intent.data
             val pref = AuthPreferenceManager(this)
             pref.accessToken = uri?.getQueryParameter("code") ?: ""
-            testString.text = pref.accessToken
+//            testString.text = pref.accessToken
         }
     }
 

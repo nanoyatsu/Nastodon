@@ -11,12 +11,6 @@
         android:orientation="vertical"
         android:id="@+id/tootCards">
 
-  <TextView
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:id="@+id/testString"
-          tools:text="testString"/>
-
   <ListView
           android:layout_width="match_parent"
           android:layout_height="match_parent"
