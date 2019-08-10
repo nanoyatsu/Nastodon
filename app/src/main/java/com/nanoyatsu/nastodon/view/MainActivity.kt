@@ -26,9 +26,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            // todo 画面ちゃんとする ていうかこのままだとWindow leak
-            AuthDialog(this).show()
+        fab.setOnClickListener {
+            intent = Intent(this@MainActivity, AuthDialog::class.java)
+            startActivity(intent)
         }
 
         val toggle = ActionBarDrawerToggle(
@@ -37,20 +37,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
-        fromUri()
-
         nav_view.setNavigationItemSelectedListener(this)
-    }
-
-    fun fromUri() {
-        val intent = intent
-        val action = intent.action
-        if (Intent.ACTION_VIEW == action) {
-            val uri = intent.data
-            val pref = AuthPreferenceManager(this)
-            pref.accessToken = uri?.getQueryParameter("code") ?: ""
-//            testString.text = pref.accessToken
-        }
     }
 
     override fun onResume() {
