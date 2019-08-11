@@ -39,9 +39,9 @@ class AuthDialog : AppCompatActivity() {
 
     private fun sendAuth() {
         val pref = AuthPreferenceManager(this@AuthDialog)
-        pref.instanceDomain = instanceUrl.text.toString()
-
         val baseUrl = "https://${instanceUrl.text}/"
+        pref.instanceUrl = baseUrl
+
         val api = MastodonApiManager(baseUrl).api
         val apps = api.getClientId()
 

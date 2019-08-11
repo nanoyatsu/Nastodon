@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 class AuthPreferenceManager(context: Context) {
     enum class Key {
         NastodonAuth,
-        InstanceDomain,
+        InstanceUrl,
         AccessToken,
         ClientId,
         ClientSecret
@@ -16,10 +16,10 @@ class AuthPreferenceManager(context: Context) {
         context.getSharedPreferences(Key.NastodonAuth.name, Context.MODE_PRIVATE)
     private val prefEditor: SharedPreferences.Editor = pref.edit()
 
-    var instanceDomain: String
-        get() = pref.getString(Key.InstanceDomain.name, "") ?: ""
+    var instanceUrl: String
+        get() = pref.getString(Key.InstanceUrl.name, "") ?: ""
         set(value) {
-            prefEditor.putString(Key.InstanceDomain.name, value)
+            prefEditor.putString(Key.InstanceUrl.name, value)
             prefEditor.apply()
         }
 

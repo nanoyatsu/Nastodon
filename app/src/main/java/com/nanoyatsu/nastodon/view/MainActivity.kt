@@ -18,6 +18,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.model.AuthPreferenceManager
+import kotlinx.android.synthetic.main.auth_dialog.*
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -42,8 +43,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onResume() {
         super.onResume()
+        val pref = AuthPreferenceManager(this)
+        if (pref.instanceUrl == "")
+            return
 
-        val api = MastodonApiManager("https://qiitadon.com/").api
+        val api = MastodonApiManager(pref.instanceUrl).api
         val publicTimeline = api.getPublicTimeline(
             local = true
         )
