@@ -34,6 +34,7 @@ class AuthDialog : AppCompatActivity() {
             val uri = intent.data
             val pref = AuthPreferenceManager(this)
             pref.accessToken = uri?.getQueryParameter("code") ?: ""
+            finish()
         }
     }
 

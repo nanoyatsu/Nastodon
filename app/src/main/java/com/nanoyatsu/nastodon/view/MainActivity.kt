@@ -28,8 +28,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
 
         fab.setOnClickListener {
-            intent = Intent(this@MainActivity, AuthDialog::class.java)
-            startActivity(intent)
         }
 
         val toggle = ActionBarDrawerToggle(
@@ -95,7 +93,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_home -> {
-                // Handle the camera action
+                val intent = Intent(this@MainActivity, AuthDialog::class.java)
+                startActivity(intent)
             }
             R.id.nav_gallery -> {
 
