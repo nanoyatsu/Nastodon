@@ -2,6 +2,9 @@ package com.nanoyatsu.nastodon.model
 
 import android.content.Context
 import android.content.SharedPreferences
+import retrofit2.http.Url
+import java.net.URL
+import java.net.URLEncoder
 
 class AuthPreferenceManager(context: Context) {
     enum class Key {
@@ -26,8 +29,11 @@ class AuthPreferenceManager(context: Context) {
     var accessToken: String
         get() = pref.getString(Key.AccessToken.name, "") ?: ""
         set(value) {
-            prefEditor.putString(Key.AccessToken.name, value)
-            prefEditor.apply()
+            if (value != "") {
+                prefEditor.putString(Key.AccessToken.name, "Bearer $value")
+//                prefEditor.putString(Key.AccessToken.name, "Bearer+$value")
+                prefEditor.apply()
+            }
         }
 
     var clientId: String

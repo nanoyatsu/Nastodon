@@ -34,6 +34,7 @@
                 android:host="nastodon"/>
       </intent-filter>
     </activity>
+    <activity android:name=".view.TootEditActivity"/>
   </application>
 
 </manifest>
