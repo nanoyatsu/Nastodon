@@ -10,9 +10,10 @@ class AuthPreferenceManager(context: Context) {
     enum class Key {
         NastodonAuth,
         InstanceUrl,
-        AccessToken,
         ClientId,
-        ClientSecret
+        ClientSecret,
+        AccessToken,
+        AccessTokenCreatedAt,
     }
 
     private val pref: SharedPreferences =
@@ -24,16 +25,6 @@ class AuthPreferenceManager(context: Context) {
         set(value) {
             prefEditor.putString(Key.InstanceUrl.name, value)
             prefEditor.apply()
-        }
-
-    var accessToken: String
-        get() = pref.getString(Key.AccessToken.name, "") ?: ""
-        set(value) {
-            if (value != "") {
-                prefEditor.putString(Key.AccessToken.name, "Bearer $value")
-//                prefEditor.putString(Key.AccessToken.name, "Bearer+$value")
-                prefEditor.apply()
-            }
         }
 
     var clientId: String
@@ -48,5 +39,24 @@ class AuthPreferenceManager(context: Context) {
         set(value) {
             prefEditor.putString(Key.ClientSecret.name, value)
             prefEditor.apply()
+        }
+
+    var accessToken: String
+        get() = pref.getString(Key.AccessToken.name, "") ?: ""
+        set(value) {
+            if (value != "") {
+                prefEditor.putString(Key.AccessToken.name, "Bearer $value")
+//                prefEditor.putString(Key.AccessToken.name, "Bearer+$value")
+                prefEditor.apply()
+            }
+        }
+
+    var accessTokenCreatedAt: Int
+        get() = pref.getInt(Key.AccessTokenCreatedAt.name, 0)
+        set(value) {
+            if (value != 0) {
+                prefEditor.putInt(Key.AccessTokenCreatedAt.name, value)
+                prefEditor.apply()
+            }
         }
 }

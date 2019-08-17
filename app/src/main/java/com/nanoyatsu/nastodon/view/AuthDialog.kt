@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.model.Apps
 import com.nanoyatsu.nastodon.model.AuthPreferenceManager
+import com.nanoyatsu.nastodon.model.Token
+import com.nanoyatsu.nastodon.presenter.MastodonApi
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
 import kotlinx.android.synthetic.main.auth_dialog.*
 import retrofit2.Call
@@ -25,17 +27,35 @@ class AuthDialog : AppCompatActivity() {
         setContentView(R.layout.auth_dialog)
 
         sendButton.setOnClickListener { sendAuth() }
-        fromUri()
+        if (intent.action == Intent.ACTION_VIEW)
+            fromUri()
     }
 
     private fun fromUri() {
-        val action = intent.action
-        if (Intent.ACTION_VIEW == action) {
-            val uri = intent.data
-            val pref = AuthPreferenceManager(this)
-            pref.accessToken = uri?.getQueryParameter("code") ?: ""
-            finish()
-        }
+        val uri = intent.data
+        val pref = AuthPreferenceManager(this)
+
+        val code = uri?.getQueryParameter("code") ?: ""
+        val api = MastodonApiManager(pref.instanceUrl).api
+        val token = api.getAccessToken(MastodonApi.TokenBody(
+            client_id= pref.clientId,
+            client_secret= pref.clientSecret,
+            code = code
+        ))
+
+        token.enqueue(object : Callback<Token> {
+            override fun onResponse(call: Call<Token>, response: Response<Token>) {
+                pref.accessToken = response.body()?.accessToken ?: ""
+                pref.accessTokenCreatedAt = response.body()?.createdAt ?: 0
+                finish()
+            }
+
+            override fun onFailure(call: Call<Token>, t: Throwable) {
+                t.printStackTrace()
+                finish()
+                // TODO(call.toString()) // 失敗しました的なこと
+            }
+        })
     }
 
     private fun sendAuth() {
