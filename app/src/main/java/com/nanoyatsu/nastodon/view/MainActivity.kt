@@ -15,9 +15,10 @@ import com.nanoyatsu.nastodon.presenter.MastodonApiManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -46,24 +47,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (pref.instanceUrl == "")
             return
 
-        val api = MastodonApiManager(pref.instanceUrl).api
-        val publicTimeline = api.getPublicTimeline(
-            local = true
-        )
-        publicTimeline.enqueue(object : Callback<Array<Status>> {
-            override fun onResponse(call: Call<Array<Status>>, response: Response<Array<Status>>) {
-                val list = response.body()
-                if (list != null) {
-                    val adapter = TimelineAdapter(baseContext, 1, list)
+        reloadPublicTimeline(pref.instanceUrl)
+    }
+
+    private fun reloadPublicTimeline(url: String) {
+        val api = MastodonApiManager(url).api
+        CoroutineScope(context = Dispatchers.Main).launch {
+            try {
+                val res = api.getPublicTimeline(local = true)
+                val toots = res.body()
+                if (toots is Array<Status>) {
+                    val adapter = TimelineAdapter(baseContext, 1, toots)
                     adapter.notifyDataSetChanged()
                     timelineView.adapter = adapter
+                } else {
+//                    res.errorBody() でなんかする
                 }
+            } catch (e: HttpException) {
+                e.printStackTrace()
             }
-
-            override fun onFailure(call: Call<Array<Status>>, t: Throwable) {
-                TODO(call.toString()) //To change body of created functions use File | Settings | File Templates.
-            }
-        })
+        }
     }
 
     override fun onBackPressed() {
