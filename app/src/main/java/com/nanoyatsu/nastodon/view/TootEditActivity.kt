@@ -11,8 +11,12 @@ import com.nanoyatsu.nastodon.model.Visibility
 import com.nanoyatsu.nastodon.presenter.MastodonApi
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
 import kotlinx.android.synthetic.main.activity_toot_edit.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.HttpException
 import retrofit2.Response
 
 class TootEditActivity : AppCompatActivity() {
@@ -27,32 +31,25 @@ class TootEditActivity : AppCompatActivity() {
         buttonSend.setOnClickListener { sendToot() }
     }
 
-    private fun generateRequestApi(pref: AuthPreferenceManager): Call<Status> {
-        return MastodonApiManager(pref.instanceUrl).api.postToot(
-            authorization = pref.accessToken,
-            status = statusContent.text.toString(),
-            visibility = Visibility.unlisted.name
-        )
-    }
-
     private fun sendToot() {
         val pref = AuthPreferenceManager(this@TootEditActivity)
-        val request = generateRequestApi(pref)
 
-        request.enqueue(object : Callback<Status> {
-            override fun onResponse(call: Call<Status>, response: Response<Status>) {
+        CoroutineScope(context = Dispatchers.Main).launch {
+            try {
+                val res = MastodonApiManager(pref.instanceUrl).api.postToot(
+                    authorization = pref.accessToken,
+                    status = statusContent.text.toString(),
+                    visibility = Visibility.unlisted.name
+                )
                 Log.d(
                     this@TootEditActivity.javaClass.simpleName,
-                    response.body()?.toString() ?: response.errorBody().toString()
+                    res.body()?.toString() ?: res.errorBody().toString()
                 )
                 // {"error": "アクセストークンは取り消されています"} 消してたらこうなる
                 finish()
+            } catch (e: HttpException) {
+                e.printStackTrace()
             }
-
-            override fun onFailure(call: Call<Status>, t: Throwable) {
-                t.printStackTrace()
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-        })
+        }
     }
 }

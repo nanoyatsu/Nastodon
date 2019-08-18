@@ -10,11 +10,11 @@ import retrofit2.http.*
 interface MastodonApi {
     // そのうち消す
     @HTTP(method = "GET", path = "api/v1/statuses/100645800762440207")
-    public fun getNanoFirstToot(): Call<Status>
+    suspend fun getNanoFirstToot(): Response<Status>
 
     // 認証
     @HTTP(method = "POST", path = "api/v1/apps", hasBody = true)
-    public fun getClientId(@Body appsBody: AppsBody = AppsBody()): Call<Apps>
+    suspend fun getClientId(@Body appsBody: AppsBody = AppsBody()): Response<Apps>
 
     data class AppsBody(
         val client_name: String = "Nastodon",
@@ -25,7 +25,7 @@ interface MastodonApi {
 
     // 認証
     @HTTP(method = "POST", path = "oauth/token", hasBody = true)
-    public fun getAccessToken(@Body tokenBody: TokenBody): Call<Token>
+    suspend fun getAccessToken(@Body tokenBody: TokenBody): Response<Token>
 
     data class TokenBody(
         val client_id: String,
@@ -36,10 +36,10 @@ interface MastodonApi {
     )
 
     @HTTP(method = "GET", path = "api/v1/statuses/{id}")
-    public fun getTootById(@Path("id") id: String): Call<Status>
+    suspend fun getTootById(@Path("id") id: String): Response<Status>
 
     @HTTP(method = "GET", path = "api/v1/timelines/public")
-    public suspend fun getPublicTimeline(
+    suspend fun getPublicTimeline(
         @Query("local") local: Boolean? = null, // default false
         @Query("only_media") onlyMedia: Boolean? = null, // default false
         @Query("max_id") maxId: String? = null,
@@ -49,7 +49,7 @@ interface MastodonApi {
     ): Response<Array<Status>>
 
     @HTTP(method = "POST", path = "api/v1/statuses", hasBody = true)
-    public fun postToot(
+    suspend fun postToot(
         @Header("Authorization") authorization: String,
         @Query("status") status: String,
         @Query("in_reply_to_id") inReplyToId: String? = null,
@@ -60,6 +60,6 @@ interface MastodonApi {
         @Query("visibility") visibility: String, // direct, private, unlisted, public
         @Query("scheduled_at") scheduledAt: String? = null,
         @Query("language") language: String? = null
-    ): Call<Status>
+    ): Response<Status>
 
 }
