@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_home -> {
-                val intent = Intent(this@MainActivity, AuthDialog::class.java)
+                val intent = Intent(this@MainActivity, AuthActivity::class.java)
                 startActivity(intent)
             }
             R.id.nav_gallery -> {

@@ -22,7 +22,7 @@
       </intent-filter>
     </activity>
     <activity
-            android:name=".view.AuthDialog">
+            android:name=".view.AuthActivity">
       <intent-filter>
         <action android:name="android.intent.action.VIEW"/>
 

@@ -5,29 +5,24 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.nanoyatsu.nastodon.R
-import com.nanoyatsu.nastodon.model.Apps
 import com.nanoyatsu.nastodon.model.AuthPreferenceManager
 import com.nanoyatsu.nastodon.presenter.MastodonApi
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
-import kotlinx.android.synthetic.main.auth_dialog.*
+import kotlinx.android.synthetic.main.activity_auth.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.HttpException
-import retrofit2.Response
 
 /**
  * 認証情報取得
  * インスタンスURL設定、アクセストークン取得
- * todo dialogとかactivityとか定めたら名前をかえる
  */
-class AuthDialog : AppCompatActivity() {
+class AuthActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.auth_dialog)
+        setContentView(R.layout.activity_auth)
 
         sendButton.setOnClickListener { sendAuth() }
         if (intent.action == Intent.ACTION_VIEW)
@@ -62,7 +57,7 @@ class AuthDialog : AppCompatActivity() {
     }
 
     private fun sendAuth() {
-        val pref = AuthPreferenceManager(this@AuthDialog)
+        val pref = AuthPreferenceManager(this@AuthActivity)
         val baseUrl = "https://${instanceUrl.text}/"
         pref.instanceUrl = baseUrl
 
@@ -81,7 +76,7 @@ class AuthDialog : AppCompatActivity() {
                         "&scope=${"read write follow"}"
                 val uri = Uri.parse(authPath)
                 val intent = Intent(Intent.ACTION_VIEW, uri)
-                this@AuthDialog.startActivity(intent)
+                this@AuthActivity.startActivity(intent)
 
             } catch (e: HttpException) {
                 e.printStackTrace()
