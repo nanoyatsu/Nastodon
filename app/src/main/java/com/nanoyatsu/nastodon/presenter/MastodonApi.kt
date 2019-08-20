@@ -7,6 +7,7 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 
+// todo ? review APIのディレクトリごとにクラスを分ける？
 interface MastodonApi {
     // そのうち消す
     @HTTP(method = "GET", path = "api/v1/statuses/100645800762440207")
@@ -22,6 +23,10 @@ interface MastodonApi {
         val redirect_uris: String = "mastodon://nastodon",
         val scopes: String = "read write follow"
     )
+
+    // verify_credentials
+    @HTTP(method = "GET", path = "api/v1/apps/")
+    suspend fun verifyCredentials(@Header("Authorization") authorization: String): Response<Apps>
 
     // 認証
     @HTTP(method = "POST", path = "oauth/token", hasBody = true)

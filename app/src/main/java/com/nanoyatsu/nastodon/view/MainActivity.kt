@@ -27,6 +27,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        // todo verify_credentials して認証に飛ばすか決める
+
         fab.setOnClickListener {
             val intent = Intent(this@MainActivity, TootEditActivity::class.java)
             startActivity(intent)
