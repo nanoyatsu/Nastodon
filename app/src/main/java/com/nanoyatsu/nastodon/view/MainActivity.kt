@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import com.nanoyatsu.nastodon.R
+import com.nanoyatsu.nastodon.model.Apps
 import com.nanoyatsu.nastodon.model.AuthPreferenceManager
 import com.nanoyatsu.nastodon.model.Status
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
@@ -18,16 +19,22 @@ import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 
-
+// todo 起動→認証確認→(バック履歴クリア)→認証画面orタイムライン画面 にする(今はタイムライン画面に同居)
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
+        val pref = AuthPreferenceManager(this@MainActivity)
         // todo verify_credentials して認証に飛ばすか決める
+        if (hasAuthInfo(pref) && verifyCredentials(pref)) {
+            startAuthDialog()
+            return
+        }
 
         fab.setOnClickListener {
             val intent = Intent(this@MainActivity, TootEditActivity::class.java)
@@ -43,9 +50,35 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
     }
 
+    fun startAuthDialog() {}
+
+    fun hasAuthInfo(pref: AuthPreferenceManager): Boolean {
+        if (pref.instanceUrl == "")
+            return false
+        if (pref.accessToken == "")
+            return false
+        return true
+    }
+
+    fun verifyCredentials(pref: AuthPreferenceManager): Boolean {
+        val api = MastodonApiManager(pref.instanceUrl).api
+        var result = false
+        runBlocking {
+            result = try {
+                val res = api.verifyCredentials(pref.accessToken)
+                val apps = res.body()
+                apps is Apps
+            } catch (e: HttpException) {
+                e.printStackTrace()
+                false
+            }
+        }
+        return result
+    }
+
     override fun onResume() {
         super.onResume()
-        val pref = AuthPreferenceManager(this)
+        val pref = AuthPreferenceManager(this@MainActivity)
         if (pref.instanceUrl == "")
             return
 

@@ -23,9 +23,8 @@ interface MastodonApi {
         val redirect_uris: String = "mastodon://nastodon",
         val scopes: String = "read write follow"
     )
-
     // verify_credentials
-    @HTTP(method = "GET", path = "api/v1/apps/")
+    @HTTP(method = "GET", path = "api/v1/apps/verify_credentials")
     suspend fun verifyCredentials(@Header("Authorization") authorization: String): Response<Apps>
 
     // 認証
