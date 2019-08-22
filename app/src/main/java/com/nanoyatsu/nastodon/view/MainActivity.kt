@@ -30,11 +30,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setSupportActionBar(toolbar)
 
         val pref = AuthPreferenceManager(this@MainActivity)
-        // todo verify_credentials して認証に飛ばすか決める
-        if (hasAuthInfo(pref) && verifyCredentials(pref)) {
+        // 認証有無の確認　// todo notがダサめ
+        if (!(hasAuthInfo(pref) && verifyCredentials(pref))) {
             startAuthDialog()
             return
         }
+
+        // todo 初期タイムラインへの遷移(まだ画面もない)
 
         fab.setOnClickListener {
             val intent = Intent(this@MainActivity, TootEditActivity::class.java)
@@ -50,7 +52,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
     }
 
-    fun startAuthDialog() {}
+    fun startAuthDialog() {
+        // todo 認証画面に行く
+    }
 
     fun hasAuthInfo(pref: AuthPreferenceManager): Boolean {
         if (pref.instanceUrl == "")
@@ -67,7 +71,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             result = try {
                 val res = api.verifyCredentials(pref.accessToken)
                 val apps = res.body()
-                apps is Apps
+                // nameも一致するか確認
+                apps is Apps && apps.name == getString(R.string.app_name)
             } catch (e: HttpException) {
                 e.printStackTrace()
                 false
