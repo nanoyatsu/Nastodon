@@ -30,4 +30,9 @@ data class Status(
     val pinned: Boolean?
 )
 
-enum class Visibility { public, unlisted, private, direct, }
+enum class Visibility(val label: String) {
+    PUBLIC("公開"),
+    UNLISTED("未収載"),
+    PRIVATE("非公開"),
+    DIRECT("ダイレクト"),
+}
