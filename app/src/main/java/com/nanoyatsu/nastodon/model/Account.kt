@@ -1,5 +1,9 @@
 package com.nanoyatsu.nastodon.model
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class Account(
     val id: String,
     val username: String,
@@ -20,7 +24,7 @@ data class Account(
     val moved: Account?,
 //    val fields:Array<Hash>?,
     val bot: Boolean?
-)
+):Parcelable
 
 //"account": {
 //    "id": "45717",
