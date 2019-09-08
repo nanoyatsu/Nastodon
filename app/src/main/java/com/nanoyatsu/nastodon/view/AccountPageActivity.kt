@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.activity_account_page.*
 import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 import retrofit2.Response
-import kotlin.reflect.KSuspendFunction2
+import kotlin.reflect.KSuspendFunction3
 
 class AccountPageActivity : AppCompatActivity() {
     enum class IntentKey { ACCOUNT }
@@ -35,27 +35,30 @@ class AccountPageActivity : AppCompatActivity() {
         val pref = AuthPreferenceManager(this@AccountPageActivity)
         val api = MastodonApiManager(pref.instanceUrl).api
         // todo 遷移してから読み込んで反映のほうがよさそう 渡し方を考える 部分適用みたいなことってできる？(_->Array<Account>にしたい)
+        //          →Parcelable乗せたクラス用意してその中に取得関数を持つくらいが妥当そう 持つのはDeferred(async)にしたらカッコつくかも（しれない）
+        // fixme トークン必要があとから判明したりして書き方がひどめ
         followingCount.also {
-            it.text = getString(R.string.accountFollowingCountFormat, account.followersCount)
-            it.setOnClickListener { transAccountPageActivity(account.id, api::getFollowingBy) }
+            it.text = getString(R.string.accountFollowingCountFormat, account.followingCount)
+            it.setOnClickListener { transAccountPageActivity(pref, account.id, api::getFollowingById) }
         }
 
         followersCount.also {
-            it.text = getString(R.string.accountFollowersCountFormat, account.followingCount)
-            it.setOnClickListener { transAccountPageActivity(account.id, api::getFollowersBy) }
+            it.text = getString(R.string.accountFollowersCountFormat, account.followersCount)
+            it.setOnClickListener { transAccountPageActivity(pref, account.id, api::getFollowersById) }
         }
     }
 
     private fun transAccountPageActivity(
+        pref: AuthPreferenceManager,
         targetId: String,
-        searchMethod: KSuspendFunction2<String, Int?, Response<Array<Account>>>
+        searchMethod: KSuspendFunction3<String, String, Int?, Response<Array<Account>>>
     ) {
         runBlocking {
             try {
-                val res = searchMethod(targetId, null)
-                val intent = Intent(this@AccountPageActivity, AccountsActivity::class.java).also {
+                val res = searchMethod(pref.accessToken,targetId, null)
+                val intent = Intent(this@AccountPageActivity, AccountListActivity::class.java).also {
                     it.putParcelableArrayListExtra(
-                        AccountsActivity.IntentKey.LIST.name,
+                        AccountListActivity.IntentKey.LIST.name,
                         res.body()?.toCollection(ArrayList())
                     )
                 }

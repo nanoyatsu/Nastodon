@@ -6,7 +6,7 @@ import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.model.Account
 import kotlinx.android.synthetic.main.content_main.*
 
-class AccountsActivity : AppCompatActivity() {
+class AccountListActivity : AppCompatActivity() {
     enum class IntentKey { LIST }
 
     override fun onCreate(savedInstanceState: Bundle?) {
