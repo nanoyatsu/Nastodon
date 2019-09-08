@@ -13,7 +13,7 @@
           android:id="@+id/accountAvatar"
           app:layout_constraintTop_toTopOf="parent"
           app:layout_constraintStart_toStartOf="parent"
-          />
+          app:layout_constraintBottom_toBottomOf="parent"/>
 
   <TextView
           android:layout_width="wrap_content"
@@ -23,8 +23,7 @@
           android:layout_marginStart="8dp"
           tools:text="tootUsername"
           app:layout_constraintTop_toTopOf="parent"
-          app:layout_constraintBottom_toTopOf="@+id/guideline"
-          android:layout_marginBottom="4dp"/>
+          />
 
   <TextView
           android:layout_width="0dp"
@@ -32,27 +31,41 @@
           android:id="@+id/username"
           app:layout_constraintStart_toEndOf="@+id/displayName"
           android:layout_marginStart="8dp"
-          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintEnd_toEndOf="@+id/barrier"
           tools:text="accountId"
           app:layout_constraintTop_toTopOf="parent"
-          app:layout_constraintBottom_toTopOf="@+id/guideline"
-          android:layout_marginBottom="4dp"/>
+          android:layout_marginEnd="4dp"/>
 
   <TextView
           android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:id="@+id/statusContent"
-          app:layout_constraintEnd_toEndOf="parent"
+          android:id="@+id/note"
+          app:layout_constraintEnd_toEndOf="@+id/barrier"
           app:layout_constraintStart_toEndOf="@+id/accountAvatar"
           android:layout_marginStart="8dp"
           tools:text="statusContent"
-          app:layout_constraintTop_toTopOf="@+id/guideline"
-          android:layout_marginTop="4dp"/>
+          app:layout_constraintTop_toBottomOf="@+id/displayName"
+          android:layout_marginEnd="4dp"
+          android:ellipsize="marquee"
+          android:singleLine="true"/>
 
-  <androidx.constraintlayout.widget.Guideline
-          android:orientation="horizontal"
+  <TextView
+          android:text="follow-\nsuru-\nbutton"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:id="@+id/guideline"
-          app:layout_constraintGuide_begin="24dp"/>
+          android:id="@+id/buttonFollow"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintStart_toEndOf="@+id/barrier"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintBottom_toBottomOf="parent"
+          android:layout_marginStart="4dp"/>
+
+  <androidx.constraintlayout.widget.Barrier
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:id="@+id/barrier"
+          app:barrierDirection="left"
+          tools:layout_editor_absoluteY="8dp"
+          tools:layout_editor_absoluteX="345dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

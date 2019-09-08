@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val res = api.getPublicTimeline(local = true)
                 val toots = res.body()
                 if (toots is Array<Status>) {
-                    val adapter = TimelineAdapter(baseContext, 1, toots)
+                    val adapter = TimelineAdapter(baseContext, toots)
                     adapter.notifyDataSetChanged()
                     timelineView.adapter = adapter
                 } else {

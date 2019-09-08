@@ -12,27 +12,27 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.model.Account
-import com.nanoyatsu.nastodon.model.Status
 
-class TimelineAdapter(
+class AccountsAdapter(
     context: Context,
-    private val toots: Array<Status>
+    private val accounts: Array<Account>
 ) :
-    ArrayAdapter<Status>(context, R.layout.card_toot, toots) {
+    ArrayAdapter<Account>(context, R.layout.card_toot, accounts) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
         val inflater: LayoutInflater = this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val thisView = convertView ?: inflater.inflate(R.layout.card_toot, parent, false)
+        val thisView = convertView ?: inflater.inflate(R.layout.card_account, parent, false)
 
-        thisView.findViewById<TextView>(R.id.displayName)?.text = toots[position].account.displayName
-        thisView.findViewById<TextView>(R.id.username)?.text = toots[position].account.username
+
+        thisView.findViewById<TextView>(R.id.displayName)?.text = accounts[position].displayName
+        thisView.findViewById<TextView>(R.id.username)?.text = accounts[position].username
         thisView.findViewById<TextView>(R.id.note)?.text =
-            Html.fromHtml(toots[position].content, Html.FROM_HTML_MODE_COMPACT)
+            Html.fromHtml(accounts[position].note, Html.FROM_HTML_MODE_COMPACT)
 
         val avatar = thisView.findViewById<ImageView>(R.id.accountAvatar)
-        Glide.with(this.context).load(toots[position].account.avatarStatic).circleCrop().into(avatar)
+        Glide.with(this.context).load(accounts[position].avatarStatic).circleCrop().into(avatar)
 
-        avatar.setOnClickListener { transAccountPage(it, toots[position].account) }
+        avatar.setOnClickListener { transAccountPage(it, accounts[position]) }
 
         return thisView
     }

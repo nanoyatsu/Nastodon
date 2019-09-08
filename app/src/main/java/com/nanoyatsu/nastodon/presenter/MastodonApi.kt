@@ -8,7 +8,7 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 
-// todo ? review APIのディレクトリごとにクラスを分ける？
+// todo APIのディレクトリごとにクラスを分ける
 interface MastodonApi {
     // そのうち消す
     @HTTP(method = "GET", path = "api/v1/statuses/100645800762440207")

@@ -1,6 +1,5 @@
 package com.nanoyatsu.nastodon.view
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
@@ -42,7 +41,7 @@ class TootEditActivity : AppCompatActivity() {
             try {
                 val res = MastodonApiManager(pref.instanceUrl).api.postToot(
                     authorization = pref.accessToken,
-                    status = statusContent.text.toString(),
+                    status = note.text.toString(),
                     visibility = paramVisibility.name.toLowerCase()
                 )
                 Log.d(

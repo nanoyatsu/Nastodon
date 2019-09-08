@@ -34,6 +34,7 @@ class AccountPageActivity : AppCompatActivity() {
 
         val pref = AuthPreferenceManager(this@AccountPageActivity)
         val api = MastodonApiManager(pref.instanceUrl).api
+        // todo 遷移してから読み込んで反映のほうがよさそう 渡し方を考える 部分適用みたいなことってできる？(_->Array<Account>にしたい)
         followingCount.also {
             it.text = getString(R.string.accountFollowingCountFormat, account.followersCount)
             it.setOnClickListener { transAccountPageActivity(account.id, api::getFollowingBy) }
@@ -53,7 +54,10 @@ class AccountPageActivity : AppCompatActivity() {
             try {
                 val res = searchMethod(targetId, null)
                 val intent = Intent(this@AccountPageActivity, AccountsActivity::class.java).also {
-                    it.putExtra(AccountsActivity.IntentKey.LIST.name, res.body())
+                    it.putParcelableArrayListExtra(
+                        AccountsActivity.IntentKey.LIST.name,
+                        res.body()?.toCollection(ArrayList())
+                    )
                 }
                 startActivity(intent)
             } catch (e: HttpException) {
