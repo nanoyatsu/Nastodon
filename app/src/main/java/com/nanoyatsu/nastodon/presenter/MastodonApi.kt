@@ -1,5 +1,6 @@
 package com.nanoyatsu.nastodon.presenter
 
+import com.nanoyatsu.nastodon.model.Account
 import com.nanoyatsu.nastodon.model.Apps
 import com.nanoyatsu.nastodon.model.Status
 import com.nanoyatsu.nastodon.model.Token
@@ -23,6 +24,7 @@ interface MastodonApi {
         val redirect_uris: String = "mastodon://nastodon",
         val scopes: String = "read write follow"
     )
+
     // verify_credentials
     @HTTP(method = "GET", path = "api/v1/apps/verify_credentials")
     suspend fun verifyCredentials(@Header("Authorization") authorization: String): Response<Apps>
@@ -65,5 +67,17 @@ interface MastodonApi {
         @Query("scheduled_at") scheduledAt: String? = null,
         @Query("language") language: String? = null
     ): Response<Status>
+
+    @HTTP(method = "GET", path = "api/v1/accounts/{id}/following")
+    suspend fun getFollowingBy(
+        @Path("id") id: String,
+        @Query("limit") limit: Int? = null // default 40
+    ): Response<Array<Account>>
+
+    @HTTP(method = "GET", path = "api/v1/accounts/{id}/followers")
+    suspend fun getFollowersBy(
+        @Path("id") id: String,
+        @Query("limit") limit: Int? = null // default 40
+    ): Response<Array<Account>>
 
 }
