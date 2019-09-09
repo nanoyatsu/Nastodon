@@ -3,20 +3,21 @@ package com.nanoyatsu.nastodon.view
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.nanoyatsu.nastodon.R
-import com.nanoyatsu.nastodon.model.Account
+import com.nanoyatsu.nastodon.presenter.AccountListGetter
 import kotlinx.android.synthetic.main.content_main.*
 
 class AccountListActivity : AppCompatActivity() {
-    enum class IntentKey { LIST }
+    enum class IntentKey { TITLE, GETTER }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.content_main)
 //        setSupportActionBar(toolBar) // todo そのうち
 
-        val accounts = intent.getParcelableArrayListExtra<Account>(IntentKey.LIST.name)
-        if (accounts is ArrayList<Account>) {
-            val adapter = AccountsAdapter(baseContext, accounts.toTypedArray())
+        val listGetter = intent.getSerializableExtra(IntentKey.GETTER.name)
+        if (listGetter is AccountListGetter) {
+            val accounts = listGetter()
+            val adapter = AccountsAdapter(baseContext, accounts)
             adapter.notifyDataSetChanged()
             timelineView.adapter = adapter
         }

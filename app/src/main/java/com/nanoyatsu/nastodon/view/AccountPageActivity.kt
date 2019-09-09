@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.model.Account
 import com.nanoyatsu.nastodon.model.AuthPreferenceManager
+import com.nanoyatsu.nastodon.presenter.AccountListGetter
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
 import kotlinx.android.synthetic.main.activity_account_page.*
 import kotlinx.coroutines.runBlocking
@@ -34,38 +35,41 @@ class AccountPageActivity : AppCompatActivity() {
 
         val pref = AuthPreferenceManager(this@AccountPageActivity)
         val api = MastodonApiManager(pref.instanceUrl).api
-        // todo 遷移してから読み込んで反映のほうがよさそう 渡し方を考える 部分適用みたいなことってできる？(_->Array<Account>にしたい)
-        //          →Parcelable乗せたクラス用意してその中に取得関数を持つくらいが妥当そう 持つのはDeferred(async)にしたらカッコつくかも（しれない）
         // fixme トークン必要があとから判明したりして書き方がひどめ
         followingCount.also {
             it.text = getString(R.string.accountFollowingCountFormat, account.followingCount)
-            it.setOnClickListener { transAccountPageActivity(pref, account.id, api::getFollowingById) }
+            it.setOnClickListener { transAccountList(pref, account.id, api::getFollowingById, "フォロー一覧") }
         }
 
         followersCount.also {
             it.text = getString(R.string.accountFollowersCountFormat, account.followersCount)
-            it.setOnClickListener { transAccountPageActivity(pref, account.id, api::getFollowersById) }
+            it.setOnClickListener { transAccountList(pref, account.id, api::getFollowersById, "フォロワー一覧") }
         }
     }
 
-    private fun transAccountPageActivity(
+    private fun transAccountList(
         pref: AuthPreferenceManager,
         targetId: String,
-        searchMethod: KSuspendFunction3<String, String, Int?, Response<Array<Account>>>
+        searchApi: KSuspendFunction3<String, String, Int?, Response<Array<Account>>>,
+        title: String
     ) {
-        runBlocking {
-            try {
-                val res = searchMethod(pref.accessToken,targetId, null)
-                val intent = Intent(this@AccountPageActivity, AccountListActivity::class.java).also {
-                    it.putParcelableArrayListExtra(
-                        AccountListActivity.IntentKey.LIST.name,
-                        res.body()?.toCollection(ArrayList())
-                    )
+        val func = {
+            runBlocking {
+                try {
+                    val res = searchApi(pref.accessToken, targetId, null)
+                    res.body()?: arrayOf()
+                } catch (e: HttpException) {
+                    e.printStackTrace()
+                    arrayOf<Account>()
                 }
-                startActivity(intent)
-            } catch (e: HttpException) {
-                e.printStackTrace()
             }
         }
+        val getter = AccountListGetter(func)
+        val intent = Intent(this@AccountPageActivity, AccountListActivity::class.java).also {
+            it.putExtra(AccountListActivity.IntentKey.TITLE.name, title)
+            it.putExtra(AccountListActivity.IntentKey.GETTER.name, getter)
+        }
+        // fixme E/ActivityManager: Sending non-protected broadcast で死ぬ
+        startActivity(intent)
     }
 }
