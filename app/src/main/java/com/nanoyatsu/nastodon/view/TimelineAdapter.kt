@@ -20,6 +20,9 @@ class TimelineAdapter(
 ) :
     ArrayAdapter<Status>(context, R.layout.card_toot, toots) {
 
+    // fixme スクロールのたびに通信をする影響？でかなり怒られる 挙動も重たくなっている ↓調べて直す
+    //  E/SELinux: avc:  denied  { find } for interface=vendor.qti.hardware.perf::IPerf sid=u:r:untrusted_app:s0:c89,c257,c512,c768 pid=29990 scontext=u:r:untrusted_app:s0:c89,c257,c512,c768 tcontext=u:object_r:hal_perf_hwservice:s0 tclass=hwservice_manager permissive=0
+    //  29990-29990/com.nanoyatsu.nastodon E/ANDR-PERF: IPerf::tryGetService failed!
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
         val inflater: LayoutInflater = this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val thisView = convertView ?: inflater.inflate(R.layout.card_toot, parent, false)

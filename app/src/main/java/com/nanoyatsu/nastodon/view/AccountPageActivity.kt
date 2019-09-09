@@ -64,14 +64,14 @@ class AccountPageActivity : AppCompatActivity() {
                 }
             }
         }
-        val getter = AccountListGetter(func)
+//        val getter = AccountListGetter(func)
         val intent = Intent(this@AccountPageActivity, AccountListActivity::class.java).also {
             it.putExtra(AccountListActivity.IntentKey.TITLE.name, title)
-            it.putExtra(AccountListActivity.IntentKey.GETTER.name, getter)
+            it.putExtra(AccountListActivity.IntentKey.GETTER.name, func as java.io.Serializable)
         }
-        // fixme E/ActivityManager: Sending non-protected broadcast で死ぬ
-        //      と思ったものの、Sending non-protected broadcast com.sonymobile.crashmonitor.CRASH_STATUSなので、別でクラッシュが起きている
-        //      結果、Parcelable encountered IOException writing serializable object なので、Serializeできていない。がんばれ。
+        // fixme Parcelable encountered IOException writing serializable object なので、Serializeできていない。
+        //  https://discuss.kotlinlang.org/t/are-closures-serializable/1620 らしいので直接キャストして渡せるかと思ったけどだめです
+
         startActivity(intent)
     }
 }
