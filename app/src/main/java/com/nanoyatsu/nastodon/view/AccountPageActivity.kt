@@ -70,6 +70,8 @@ class AccountPageActivity : AppCompatActivity() {
             it.putExtra(AccountListActivity.IntentKey.GETTER.name, getter)
         }
         // fixme E/ActivityManager: Sending non-protected broadcast で死ぬ
+        //      と思ったものの、Sending non-protected broadcast com.sonymobile.crashmonitor.CRASH_STATUSなので、別でクラッシュが起きている
+        //      結果、Parcelable encountered IOException writing serializable object なので、Serializeできていない。がんばれ。
         startActivity(intent)
     }
 }
