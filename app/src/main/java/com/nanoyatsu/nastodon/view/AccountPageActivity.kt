@@ -38,12 +38,12 @@ class AccountPageActivity : AppCompatActivity() {
         // fixme トークン必要があとから判明したりして書き方がひどめ
         followingCount.also {
             it.text = getString(R.string.accountFollowingCountFormat, account.followingCount)
-            it.setOnClickListener { transAccountList(pref, account.id, api::getFollowingById, "フォロー一覧") }
+//            it.setOnClickListener { transAccountList(pref, account.id, api::getFollowingById, "フォロー一覧") }
         }
 
         followersCount.also {
             it.text = getString(R.string.accountFollowersCountFormat, account.followersCount)
-            it.setOnClickListener { transAccountList(pref, account.id, api::getFollowersById, "フォロワー一覧") }
+//            it.setOnClickListener { transAccountList(pref, account.id, api::getFollowersById, "フォロワー一覧") }
         }
     }
 
