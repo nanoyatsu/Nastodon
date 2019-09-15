@@ -29,15 +29,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        val pref = AuthPreferenceManager(this@MainActivity)
-        // 認証有無の確認　// todo notがダサめ
-        if (!(hasAuthInfo(pref) && verifyCredentials(pref))) {
-            startAuthDialog()
-            return
-        }
-
-        // todo 初期タイムラインへの遷移(まだ画面もない)
-
         fab.setOnClickListener {
             val intent = Intent(this@MainActivity, TootEditActivity::class.java)
             startActivity(intent)
@@ -52,34 +43,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
     }
 
-    fun startAuthDialog() {
-        // todo 認証画面に行く
-    }
-
-    fun hasAuthInfo(pref: AuthPreferenceManager): Boolean {
-        if (pref.instanceUrl == "")
-            return false
-        if (pref.accessToken == "")
-            return false
-        return true
-    }
-
-    fun verifyCredentials(pref: AuthPreferenceManager): Boolean {
-        val api = MastodonApiManager(pref.instanceUrl).api
-        var result = false
-        runBlocking {
-            result = try {
-                val res = api.verifyCredentials(pref.accessToken)
-                val apps = res.body()
-                // nameも一致するか確認
-                apps is Apps && apps.name == getString(R.string.app_name)
-            } catch (e: HttpException) {
-                e.printStackTrace()
-                false
-            }
-        }
-        return result
-    }
 
     override fun onResume() {
         super.onResume()
