@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import com.nanoyatsu.nastodon.R
-import com.nanoyatsu.nastodon.model.Apps
+import com.nanoyatsu.nastodon.model.Account
 import com.nanoyatsu.nastodon.model.AuthPreferenceManager
 import com.nanoyatsu.nastodon.model.Status
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
@@ -18,8 +18,8 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 
 // todo 起動→認証確認→(バック履歴クリア)→認証画面orタイムライン画面 にする(今はタイムライン画面に同居)
@@ -50,26 +50,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (pref.instanceUrl == "")
             return
 
-        reloadPublicTimeline(pref.instanceUrl)
+        CoroutineScope(context = Dispatchers.Main).launch {
+            reloadPublicTimeline(pref.instanceUrl)
+        }
     }
 
-    private fun reloadPublicTimeline(url: String) {
+    private suspend fun reloadPublicTimeline(url: String) {
         val api = MastodonApiManager(url).api
-        CoroutineScope(context = Dispatchers.Main).launch {
+        val response = CoroutineScope(context = Dispatchers.IO).async {
             try {
                 val res = api.getPublicTimeline(local = true)
-                val toots = res.body()
-                if (toots is Array<Status>) {
-                    val adapter = TimelineAdapter(baseContext, toots)
-                    adapter.notifyDataSetChanged()
-                    timelineView.adapter = adapter
-                } else {
-//                    res.errorBody() でなんかする
-                }
+                res.body()
+                // todo レスポンスが期待通りじゃないとき
             } catch (e: HttpException) {
                 e.printStackTrace()
+                null
             }
         }
+        val toots = response.await()
+        if (toots is Array<Status>) {
+            val adapter = TimelineAdapter(baseContext, toots)
+            adapter.notifyDataSetChanged()
+            timelineView.adapter = adapter
+        } else {
+            // ここだと res.errorBody() できないのでまた考える
+        }
+
     }
 
     override fun onBackPressed() {
