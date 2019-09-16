@@ -4,15 +4,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import com.nanoyatsu.nastodon.R
-import com.nanoyatsu.nastodon.model.Account
 import com.nanoyatsu.nastodon.model.AuthPreferenceManager
 import com.nanoyatsu.nastodon.model.Status
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
+import com.nanoyatsu.nastodon.view.adapter.TimelineAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -22,7 +23,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
-// todo 起動→認証確認→(バック履歴クリア)→認証画面orタイムライン画面 にする(今はタイムライン画面に同居)
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,8 +50,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (pref.instanceUrl == "")
             return
 
+        progress_view.visibility = View.VISIBLE
         CoroutineScope(context = Dispatchers.Main).launch {
             reloadPublicTimeline(pref.instanceUrl)
+            progress_view.visibility = View.GONE
         }
     }
 

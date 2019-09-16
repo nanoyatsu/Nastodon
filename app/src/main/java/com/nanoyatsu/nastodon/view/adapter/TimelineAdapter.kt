@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.view
+package com.nanoyatsu.nastodon.view.adapter
 
 import android.content.Context
 import android.content.Intent
@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.model.Account
 import com.nanoyatsu.nastodon.model.Status
+import com.nanoyatsu.nastodon.view.AccountPageActivity
 
 class TimelineAdapter(
     context: Context,
