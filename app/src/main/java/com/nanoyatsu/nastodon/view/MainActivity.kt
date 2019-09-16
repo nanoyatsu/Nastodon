@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener {
+        floating_edit.setOnClickListener {
             val intent = Intent(this@MainActivity, TootEditActivity::class.java)
             startActivity(intent)
         }
