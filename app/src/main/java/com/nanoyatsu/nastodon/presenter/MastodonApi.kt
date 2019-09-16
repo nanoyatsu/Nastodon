@@ -10,10 +10,6 @@ import retrofit2.http.*
 
 // todo APIのディレクトリごとにクラスを分ける
 interface MastodonApi {
-    // そのうち消す
-    @HTTP(method = "GET", path = "api/v1/statuses/100645800762440207")
-    suspend fun getNanoFirstToot(): Response<Status>
-
     // 認証
     @HTTP(method = "POST", path = "api/v1/apps", hasBody = true)
     suspend fun getClientId(@Body appsBody: AppsBody = AppsBody()): Response<Apps>

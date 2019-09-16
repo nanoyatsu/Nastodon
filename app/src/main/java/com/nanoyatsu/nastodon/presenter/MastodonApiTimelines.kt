@@ -1,0 +1,3 @@
+package com.nanoyatsu.nastodon.presenter
+
+interface MastodonApiTimelines
