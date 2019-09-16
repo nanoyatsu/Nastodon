@@ -39,7 +39,7 @@ class TootEditActivity : AppCompatActivity() {
 
         CoroutineScope(context = Dispatchers.Main).launch {
             try {
-                val res = MastodonApiManager(pref.instanceUrl).api.postToot(
+                val res = MastodonApiManager(pref.instanceUrl).statuses.postToot(
                     authorization = pref.accessToken,
                     status = note.text.toString(),
                     visibility = paramVisibility.name.toLowerCase()

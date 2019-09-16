@@ -37,9 +37,6 @@ interface MastodonApi {
         val code: String
     )
 
-    @HTTP(method = "GET", path = "api/v1/statuses/{id}")
-    suspend fun getTootById(@Path("id") id: String): Response<Status>
-
     @HTTP(method = "GET", path = "api/v1/timelines/public")
     suspend fun getPublicTimeline(
         @Query("local") local: Boolean? = null, // default false
@@ -49,20 +46,6 @@ interface MastodonApi {
         @Query("min_id") minId: String? = null,
         @Query("limit") limit: Int? = null // default 20
     ): Response<Array<Status>>
-
-    @HTTP(method = "POST", path = "api/v1/statuses", hasBody = true)
-    suspend fun postToot(
-        @Header("Authorization") authorization: String,
-        @Query("status") status: String,
-        @Query("in_reply_to_id") inReplyToId: String? = null,
-        @Query("media_ids") mediaIds: String? = null,
-        @Query("poll") poll: String? = null,
-        @Query("sensitive") sensitive: String? = null,
-        @Query("spoiler_text") spoilerText: String? = null,
-        @Query("visibility") visibility: String, // direct, private, unlisted, public
-        @Query("scheduled_at") scheduledAt: String? = null,
-        @Query("language") language: String? = null
-    ): Response<Status>
 
     @HTTP(method = "GET", path = "api/v1/accounts/{id}/following")
     suspend fun getFollowingById(
