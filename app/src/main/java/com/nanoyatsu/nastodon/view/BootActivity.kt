@@ -2,16 +2,13 @@ package com.nanoyatsu.nastodon.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.nanoyatsu.nastodon.R
+import com.nanoyatsu.nastodon.model.Account
 import com.nanoyatsu.nastodon.model.Apps
 import com.nanoyatsu.nastodon.model.AuthPreferenceManager
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import retrofit2.HttpException
 
 class BootActivity : AppCompatActivity() {
@@ -42,7 +39,7 @@ class BootActivity : AppCompatActivity() {
     }
 
     private fun verifyCredentials(pref: AuthPreferenceManager): Boolean {
-        val api = MastodonApiManager(pref.instanceUrl).api
+        val api = MastodonApiManager(pref.instanceUrl).apps
         var result = false
         runBlocking {
             result = try {

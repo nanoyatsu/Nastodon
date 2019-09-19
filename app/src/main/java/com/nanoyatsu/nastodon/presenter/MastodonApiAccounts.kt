@@ -11,6 +11,10 @@ interface MastodonApiAccounts {
     // todo GET/api/v1/accounts/:id
     // todo POST /api/v1/accounts
     // todo GET /api/v1/accounts/verify_credentials
+    @HTTP(method = "GET", path = "api/v1/accounts/verify_credentials")
+    suspend fun verifyCredentials(
+        @Header("Authorization") authorization: String): Response<Account>
+
     // todo PATCH /api/v1/accounts/update_credentials
     // GET /api/v1/accounts/:id/followers
     @HTTP(method = "GET", path = "api/v1/accounts/{id}/followers")
