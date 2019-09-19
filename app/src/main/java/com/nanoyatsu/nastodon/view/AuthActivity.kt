@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.nanoyatsu.nastodon.R
+import com.nanoyatsu.nastodon.model.Account
 import com.nanoyatsu.nastodon.model.AuthPreferenceManager
 import com.nanoyatsu.nastodon.presenter.MastodonApi
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
@@ -12,6 +13,7 @@ import kotlinx.android.synthetic.main.activity_auth.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 
 /**
@@ -33,27 +35,44 @@ class AuthActivity : AppCompatActivity() {
         val uri = intent.data
         val pref = AuthPreferenceManager(this)
 
-        val code = uri?.getQueryParameter("code") ?: ""
-        val api = MastodonApiManager(pref.instanceUrl).api
-
-        CoroutineScope(context = Dispatchers.Main).launch {
+        CoroutineScope(context = Dispatchers.IO).launch {
+            val auth = MastodonApiManager(pref.instanceUrl).api
             try {
-                val res = api.getAccessToken(
+                val res = auth.getAccessToken(
                     MastodonApi.TokenBody(
                         client_id = pref.clientId,
                         client_secret = pref.clientSecret,
-                        code = code
+                        code = uri?.getQueryParameter("code") ?: ""
                     )
                 )
 
                 pref.accessToken = res.body()?.accessToken ?: ""
                 pref.accessTokenCreatedAt = res.body()?.createdAt ?: 0
+                val account = getOwnAccount(pref)
+                setAccountToPref(pref, account)
+
                 finish()
             } catch (e: HttpException) {
                 e.printStackTrace()
                 finish()
             }
         }
+    }
+
+    private fun getOwnAccount(pref: AuthPreferenceManager): Account? {
+        val verify = MastodonApiManager(pref.instanceUrl).accounts::verifyCredentials
+        return runBlocking { verify(pref.accessToken) }.body()
+    }
+
+    private fun setAccountToPref(pref: AuthPreferenceManager, account: Account?) {
+        if (account !is Account)
+            return
+
+        pref.accountId = account.id
+        pref.accountUsername = account.username
+        pref.accountDisplayName = account.displayName
+        pref.accountAvatar = account.avatar
+        pref.accountHeader = account.header
     }
 
     private fun sendAuth() {

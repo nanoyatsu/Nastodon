@@ -2,9 +2,6 @@ package com.nanoyatsu.nastodon.model
 
 import android.content.Context
 import android.content.SharedPreferences
-import retrofit2.http.Url
-import java.net.URL
-import java.net.URLEncoder
 
 class AuthPreferenceManager(context: Context) {
     enum class Key {
@@ -14,6 +11,11 @@ class AuthPreferenceManager(context: Context) {
         ClientSecret,
         AccessToken,
         AccessTokenCreatedAt,
+        AccountId,
+        AccountUsername,
+        AccountDisplayName,
+        AccountAvatar,
+        AccountHeader
     }
 
     private val pref: SharedPreferences =
@@ -44,11 +46,10 @@ class AuthPreferenceManager(context: Context) {
     var accessToken: String
         get() = pref.getString(Key.AccessToken.name, "") ?: ""
         set(value) {
-            if (value != "") {
-                prefEditor.putString(Key.AccessToken.name, "Bearer $value")
-//                prefEditor.putString(Key.AccessToken.name, "Bearer+$value")
-                prefEditor.apply()
-            }
+            if (value == "") return
+            prefEditor.putString(Key.AccessToken.name, "Bearer $value")
+            // prefEditor.putString(Key.AccessToken.name, "Bearer+$value")
+            prefEditor.apply()
         }
 
     var accessTokenCreatedAt: Int
@@ -59,4 +60,40 @@ class AuthPreferenceManager(context: Context) {
                 prefEditor.apply()
             }
         }
+
+    var accountId: String
+        get() = pref.getString(Key.AccountId.name, "") ?: ""
+        set(value) {
+            prefEditor.putString(Key.AccountId.name, value)
+            prefEditor.apply()
+        }
+
+    var accountUsername: String
+        get() = pref.getString(Key.AccountUsername.name, "") ?: ""
+        set(value) {
+            prefEditor.putString(Key.AccountUsername.name, value)
+            prefEditor.apply()
+        }
+
+    var accountDisplayName: String
+        get() = pref.getString(Key.AccountDisplayName.name, "") ?: ""
+        set(value) {
+            prefEditor.putString(Key.AccountDisplayName.name, value)
+            prefEditor.apply()
+        }
+
+    var accountAvatar: String
+        get() = pref.getString(Key.AccountAvatar.name, "") ?: ""
+        set(value) {
+            prefEditor.putString(Key.AccountAvatar.name, value)
+            prefEditor.apply()
+        }
+
+    var accountHeader: String
+        get() = pref.getString(Key.AccountHeader.name, "") ?: ""
+        set(value) {
+            prefEditor.putString(Key.AccountHeader.name, value)
+            prefEditor.apply()
+        }
+
 }
