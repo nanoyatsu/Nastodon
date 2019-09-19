@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private suspend fun reloadPublicTimeline(url: String) {
-        val api = MastodonApiManager(url).api
+        val api = MastodonApiManager(url).timelines
         val response = CoroutineScope(context = Dispatchers.IO).async {
             try {
                 val res = api.getPublicTimeline(local = true)

@@ -37,16 +37,6 @@ interface MastodonApi {
         val code: String
     )
 
-    @HTTP(method = "GET", path = "api/v1/timelines/public")
-    suspend fun getPublicTimeline(
-        @Query("local") local: Boolean? = null, // default false
-        @Query("only_media") onlyMedia: Boolean? = null, // default false
-        @Query("max_id") maxId: String? = null,
-        @Query("since_id") sinceId: String? = null,
-        @Query("min_id") minId: String? = null,
-        @Query("limit") limit: Int? = null // default 20
-    ): Response<Array<Status>>
-
     @HTTP(method = "GET", path = "api/v1/accounts/{id}/following")
     suspend fun getFollowingById(
         @Header("Authorization") authorization: String,
