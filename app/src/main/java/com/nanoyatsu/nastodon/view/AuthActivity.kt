@@ -61,7 +61,7 @@ class AuthActivity : AppCompatActivity() {
         val baseUrl = "https://${instanceUrl.text}/"
         pref.instanceUrl = baseUrl
 
-        val api = MastodonApiManager(baseUrl).api
+        val api = MastodonApiManager(baseUrl).apps
         CoroutineScope(context = Dispatchers.Main).launch {
             try {
                 val res = api.getClientId()

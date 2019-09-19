@@ -1,30 +1,11 @@
 package com.nanoyatsu.nastodon.presenter
 
-import com.nanoyatsu.nastodon.model.Account
-import com.nanoyatsu.nastodon.model.Apps
-import com.nanoyatsu.nastodon.model.Status
 import com.nanoyatsu.nastodon.model.Token
-import retrofit2.Call
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.HTTP
 
-// todo APIのディレクトリごとにクラスを分ける
 interface MastodonApi {
-    // 認証
-    @HTTP(method = "POST", path = "api/v1/apps", hasBody = true)
-    suspend fun getClientId(@Body appsBody: AppsBody = AppsBody()): Response<Apps>
-
-    data class AppsBody(
-        val client_name: String = "Nastodon",
-//        val redirect_uris: String = "urn:ietf:wg:oauth:2.0:oob",
-        val redirect_uris: String = "mastodon://nastodon",
-        val scopes: String = "read write follow"
-    )
-
-    // verify_credentials
-    @HTTP(method = "GET", path = "api/v1/apps/verify_credentials")
-    suspend fun verifyCredentials(@Header("Authorization") authorization: String): Response<Apps>
-
     // 認証
     @HTTP(method = "POST", path = "oauth/token", hasBody = true)
     suspend fun getAccessToken(@Body tokenBody: TokenBody): Response<Token>
@@ -36,6 +17,4 @@ interface MastodonApi {
         val grant_type: String = "authorization_code",
         val code: String
     )
-
-
 }
