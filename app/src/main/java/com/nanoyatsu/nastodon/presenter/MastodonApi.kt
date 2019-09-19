@@ -37,18 +37,5 @@ interface MastodonApi {
         val code: String
     )
 
-    @HTTP(method = "GET", path = "api/v1/accounts/{id}/following")
-    suspend fun getFollowingById(
-        @Header("Authorization") authorization: String,
-        @Path("id") id: String,
-        @Query("limit") limit: Int? = null // default 40
-    ): Response<Array<Account>>
-
-    @HTTP(method = "GET", path = "api/v1/accounts/{id}/followers")
-    suspend fun getFollowersById(
-        @Header("Authorization") authorization: String,
-        @Path("id") id: String,
-        @Query("limit") limit: Int? = null // default 40
-    ): Response<Array<Account>>
 
 }
