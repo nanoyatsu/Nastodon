@@ -8,6 +8,8 @@ import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.navigation.NavigationView
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.model.AuthPreferenceManager
@@ -71,9 +73,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         val toots = response.await()
         if (toots is Array<Status>) {
-            val adapter = TimelineAdapter(baseContext, toots)
-            adapter.notifyDataSetChanged()
+            val layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
+            timelineView.layoutManager = layoutManager
+
+            val toArrayList = arrayListOf<Status>().also { it.addAll(toots) }
+            val adapter = TimelineAdapter(baseContext, toArrayList)
             timelineView.adapter = adapter
+            adapter.notifyDataSetChanged()
         } else {
             // ここだと res.errorBody() できないのでまた考える
         }
