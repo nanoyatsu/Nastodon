@@ -1,58 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                   xmlns:tools="http://schemas.android.com/tools"
-                                                   android:layout_width="match_parent"
-                                                   android:layout_height="wrap_content"
-                                                   android:padding="8dp"
-        >
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
 
-  <ImageView
-          android:layout_width="48dp"
-          android:layout_height="48dp"
-          android:id="@+id/accountAvatar"
-          app:layout_constraintTop_toTopOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          />
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp"
+    android:layout_marginBottom="2dp">
 
-  <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:id="@+id/displayName"
-          app:layout_constraintStart_toEndOf="@+id/accountAvatar"
-          android:layout_marginStart="8dp"
-          tools:text="tootUsername"
-          app:layout_constraintTop_toTopOf="parent"
-          app:layout_constraintBottom_toTopOf="@+id/guideline"
-          android:layout_marginBottom="4dp"/>
+    <ImageView
+      android:layout_width="48dp"
+      android:layout_height="48dp"
+      android:id="@+id/accountAvatar"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintStart_toStartOf="parent" />
 
-  <TextView
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:id="@+id/username"
-          app:layout_constraintStart_toEndOf="@+id/displayName"
-          android:layout_marginStart="8dp"
-          app:layout_constraintEnd_toEndOf="parent"
-          tools:text="accountId"
-          app:layout_constraintTop_toTopOf="parent"
-          app:layout_constraintBottom_toTopOf="@+id/guideline"
-          android:layout_marginBottom="4dp"/>
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/displayName"
+      app:layout_constraintStart_toEndOf="@+id/accountAvatar"
+      android:layout_marginStart="8dp"
+      tools:text="tootUsername"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toTopOf="@+id/guideline"
+      android:layout_marginBottom="4dp" />
 
-  <TextView
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:id="@+id/note"
-          app:layout_constraintEnd_toEndOf="parent"
-          app:layout_constraintStart_toEndOf="@+id/accountAvatar"
-          android:layout_marginStart="8dp"
-          tools:text="statusContent"
-          app:layout_constraintTop_toTopOf="@+id/guideline"
-          android:layout_marginTop="4dp"/>
+    <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:id="@+id/username"
+      app:layout_constraintStart_toEndOf="@+id/displayName"
+      android:layout_marginStart="8dp"
+      app:layout_constraintEnd_toEndOf="parent"
+      tools:text="accountId"
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintBottom_toTopOf="@+id/guideline"
+      android:layout_marginBottom="4dp" />
 
-  <androidx.constraintlayout.widget.Guideline
-          android:orientation="horizontal"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:id="@+id/guideline"
-          app:layout_constraintGuide_begin="24dp"/>
+    <androidx.constraintlayout.widget.Guideline
+      android:orientation="horizontal"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/guideline"
+      app:layout_constraintGuide_begin="24dp" />
+
+    <TextView
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:id="@+id/note"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toEndOf="@+id/accountAvatar"
+      android:layout_marginStart="8dp"
+      tools:text="statusContent"
+      app:layout_constraintTop_toTopOf="@+id/guideline"
+      android:layout_marginTop="4dp" />
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+  <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@drawable/shape_divider"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
