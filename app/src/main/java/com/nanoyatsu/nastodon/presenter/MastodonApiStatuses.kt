@@ -2,18 +2,15 @@ package com.nanoyatsu.nastodon.presenter
 
 import com.nanoyatsu.nastodon.model.Status
 import retrofit2.Response
-import retrofit2.http.HTTP
-import retrofit2.http.Header
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface MastodonApiStatuses {
     // そのうち消す
-    @HTTP(method = "GET", path = "api/v1/statuses/100645800762440207")
+    @GET("api/v1/statuses/100645800762440207")
     suspend fun getNanoFirstToot(): Response<Status>
 
     // GET /api/v1/statuses/:id
-    @HTTP(method = "GET", path = "api/v1/statuses/{id}")
+    @GET("api/v1/statuses/{id}")
     suspend fun getTootById(@Path("id") id: String): Response<Status>
 
     // todo GET /api/v1/statuses/:id/context
@@ -22,7 +19,7 @@ interface MastodonApiStatuses {
     // todo GET /api/v1/statuses/:id/favourited_by
 
     // POST /api/v1/statuses
-    @HTTP(method = "POST", path = "api/v1/statuses", hasBody = true)
+    @POST("api/v1/statuses")
     suspend fun postToot(
         @Header("Authorization") authorization: String,
         @Query("status") status: String,

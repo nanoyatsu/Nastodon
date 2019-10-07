@@ -3,12 +3,13 @@ package com.nanoyatsu.nastodon.presenter
 import com.nanoyatsu.nastodon.model.Apps
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.HTTP
+import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.POST
 
 interface MastodonApiApps {
     // POST /api/v1/apps
-    @HTTP(method = "POST", path = "api/v1/apps", hasBody = true)
+    @POST("api/v1/apps")
     suspend fun getClientId(@Body appsBody: AppsBody = AppsBody()): Response<Apps>
 
     data class AppsBody(
@@ -19,6 +20,6 @@ interface MastodonApiApps {
     )
 
     // GET /api/v1/apps/verify_credentials
-    @HTTP(method = "GET", path = "api/v1/apps/verify_credentials")
+    @GET("api/v1/apps/verify_credentials")
     suspend fun verifyCredentials(@Header("Authorization") authorization: String): Response<Apps>
 }

@@ -2,7 +2,7 @@ package com.nanoyatsu.nastodon.presenter
 
 import com.nanoyatsu.nastodon.model.Status
 import retrofit2.Response
-import retrofit2.http.HTTP
+import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface MastodonApiTimelines {
@@ -10,7 +10,7 @@ interface MastodonApiTimelines {
     // todo GET /api/v1/conversations
 
     // GET /api/v1/timelines/public
-    @HTTP(method = "GET", path = "api/v1/timelines/public")
+    @GET("api/v1/timelines/public")
     suspend fun getPublicTimeline(
         @Query("local") local: Boolean? = null, // default false
         @Query("only_media") onlyMedia: Boolean? = null, // default false
