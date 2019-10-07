@@ -55,9 +55,40 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toEndOf="@+id/accountAvatar"
       android:layout_marginStart="8dp"
+      android:layout_marginEnd="8dp"
       tools:text="statusContent"
       app:layout_constraintTop_toTopOf="@+id/guideline"
       android:layout_marginTop="4dp" />
+
+    <ImageButton
+      android:id="@+id/button_reply"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:background="@drawable/ic_reply_white"
+      android:backgroundTint="@color/colorPrimaryDark"
+      app:layout_constraintStart_toEndOf="@+id/accountAvatar"
+      app:layout_constraintTop_toBottomOf="@id/note" />
+
+    <ImageButton
+      android:id="@+id/button_repeat"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:background="@drawable/ic_repeat_white"
+      android:backgroundTint="@color/colorPrimaryDark"
+      app:layout_constraintTop_toBottomOf="@id/note"
+      app:layout_constraintStart_toEndOf="@id/button_reply" />
+
+    <ImageButton
+      android:id="@+id/button_star"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="16dp"
+      android:background="@drawable/ic_star_white"
+      android:backgroundTint="@color/colorPrimaryDark"
+      app:layout_constraintTop_toBottomOf="@id/note"
+      app:layout_constraintStart_toEndOf="@id/button_repeat" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 

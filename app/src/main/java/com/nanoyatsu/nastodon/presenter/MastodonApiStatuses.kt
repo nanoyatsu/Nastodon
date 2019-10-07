@@ -34,9 +34,21 @@ interface MastodonApiStatuses {
     ): Response<Status>
 
     // todo DELETE /api/v1/statuses/:id
-    // todo POST /api/v1/statuses/:id/reblog
-    // todo POST /api/v1/statuses/:id/unreblog
-    // todo POST /api/v1/statuses/:id/pin
-    // todo POST /api/v1/statuses/:id/unpin
+
+    // POST /api/v1/statuses/:id/reblog
+    @POST("api/v1/statuses/{id}/reblog")
+    suspend fun reblog(@Path("id") id: String): Response<Status>
+
+    // POST /api/v1/statuses/:id/unreblog
+    @POST("api/v1/statuses/{id}/unreblog")
+    suspend fun unReblog(@Path("id") id: String): Response<Status>
+
+    // POST /api/v1/statuses/:id/pin
+    @POST("api/v1/statuses/{id}/pin")
+    suspend fun pin(@Path("id") id: String): Response<Status>
+
+    // POST /api/v1/statuses/:id/unpin
+    @POST("api/v1/statuses/{id}/unpin")
+    suspend fun unPin(@Path("id") id: String): Response<Status>
 
 }
