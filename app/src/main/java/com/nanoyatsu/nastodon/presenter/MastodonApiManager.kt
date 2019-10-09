@@ -3,6 +3,8 @@ package com.nanoyatsu.nastodon.presenter
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -12,6 +14,12 @@ class MastodonApiManager(baseUrl: String) {
     private val basePathV1 = "api/v1/"
 
     init {
+        val logging = HttpLoggingInterceptor().also {
+            it.level = HttpLoggingInterceptor.Level.BODY
+        }
+        val httpClient = OkHttpClient.Builder().also {
+            it.addInterceptor(logging)
+        }
         gson = GsonBuilder().let {
             it.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
             it.create()
@@ -19,6 +27,7 @@ class MastodonApiManager(baseUrl: String) {
         retrofit = Retrofit.Builder().let {
             it.baseUrl(baseUrl)
 //            it.baseUrl(baseUrl + basePathV1)
+            it.client(httpClient.build())
             it.addConverterFactory(GsonConverterFactory.create(gson))
             it.build()
         }
