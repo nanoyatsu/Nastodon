@@ -37,18 +37,30 @@ interface MastodonApiStatuses {
 
     // POST /api/v1/statuses/:id/reblog
     @POST("api/v1/statuses/{id}/reblog")
-    suspend fun reblog(@Path("id") id: String): Response<Status>
+    suspend fun reblog(
+        @Header("Authorization") authorization: String,
+        @Path("id") id: String
+    ): Response<Status>
 
     // POST /api/v1/statuses/:id/unreblog
     @POST("api/v1/statuses/{id}/unreblog")
-    suspend fun unReblog(@Path("id") id: String): Response<Status>
+    suspend fun unReblog(
+        @Header("Authorization") authorization: String,
+        @Path("id") id: String
+    ): Response<Status>
 
     // POST /api/v1/statuses/:id/pin
     @POST("api/v1/statuses/{id}/pin")
-    suspend fun pin(@Path("id") id: String): Response<Status>
+    suspend fun pin(
+        @Header("Authorization") authorization: String,
+        @Path("id") id: String
+    ): Response<Status>
 
     // POST /api/v1/statuses/:id/unpin
     @POST("api/v1/statuses/{id}/unpin")
-    suspend fun unPin(@Path("id") id: String): Response<Status>
+    suspend fun unPin(
+        @Header("Authorization") authorization: String,
+        @Path("id") id: String
+    ): Response<Status>
 
 }

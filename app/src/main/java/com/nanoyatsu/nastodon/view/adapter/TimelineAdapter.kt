@@ -2,6 +2,7 @@ package com.nanoyatsu.nastodon.view.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
@@ -45,8 +46,18 @@ class TimelineAdapter(private val context: Context, private val toots: ArrayList
         holder.username.text = toot.account.username
         holder.note.text = Html.fromHtml(toot.content, Html.FROM_HTML_MODE_COMPACT)
 
-        holder.buttonReblog.setOnClickListener { resetStatus(position, doReblog(toot.id, toot.reblogged ?: false)) }
-        holder.buttonFav.setOnClickListener { resetStatus(position, doFav(toot.id, toot.favourited ?: false)) }
+        holder.buttonReblog.setOnClickListener {
+            resetStatus(
+                position,
+                doReblog(toots[position].id, toots[position].reblogged ?: false)
+            )
+        }
+        holder.buttonFav.setOnClickListener {
+            resetStatus(
+                position,
+                doFav(it, toots[position].id, toots[position].favourited ?: false)
+            )
+        }
     }
 
     private fun transAccountPage(v: View, account: Account) {
@@ -55,36 +66,38 @@ class TimelineAdapter(private val context: Context, private val toots: ArrayList
         v.context.startActivity(intent)
     }
 
-    // fixme たぶんまだ動いてない
     private fun doReblog(id: String, reblogged: Boolean): Status? {
         val pref = AuthPreferenceManager(context)
         val api = MastodonApiManager(pref.instanceUrl).statuses
         if (reblogged) // todo アイコンの色変える→失敗したら戻す
-            return runBlocking(Dispatchers.IO) { api.unReblog(id).body() }
+            return runBlocking(Dispatchers.IO) { api.unReblog(pref.accessToken, id).body() }
         else
-            return runBlocking(Dispatchers.IO) { api.reblog(id).body() }
+            return runBlocking(Dispatchers.IO) { api.reblog(pref.accessToken, id).body() }
     }
 
-    private fun doFav(id: String, favourited: Boolean): Status? { // todo doReblogと抽象化
+    private fun doFav(view: View, id: String, favourited: Boolean): Status? { // todo doReblogと抽象化
         val pref = AuthPreferenceManager(context)
-        val api = MastodonApiManager(pref.instanceUrl).statuses
-        if (favourited)
+        val api = MastodonApiManager(pref.instanceUrl).favourites
+        if (favourited) {
+            view.background.setTint(Color.GRAY)
             return runBlocking(Dispatchers.IO) {
-                val res = api.unPin(id)
+                val res = api.unFavourite(pref.accessToken, id)
                 res.body()
             }
-        else
+        } else {
+            view.background.setTint(context.getColor(R.color.colorPrimary))
             return runBlocking(Dispatchers.IO) {
-                val res = api.pin(id)
+                val res = api.favourite(pref.accessToken, id)
                 res.body()
             }
-
+        }
     }
 
     private fun resetStatus(position: Int, new: Status?) {
         if (new == null) return
         toots[position] = new
-        notifyItemChanged(position) // todo payload // https://qiita.com/ralph/items/e56844976117d9883e34
+        notifyDataSetChanged()
+//        notifyItemChanged(position) // todo payload // https://qiita.com/ralph/items/e56844976117d9883e34
     }
 
     class ViewHolder(toot: ConstraintLayout) : RecyclerView.ViewHolder(toot) {

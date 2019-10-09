@@ -52,8 +52,8 @@ class MastodonApiManager(baseUrl: String) {
 //    get() = retrofit.create(MastodonApidomain_blocks::class.java)
 // val endorsements: MastodonApiendorsements
 //    get() = retrofit.create(MastodonApiendorsements::class.java)
-// val favourites: MastodonApifavourites
-//    get() = retrofit.create(MastodonApifavourites::class.java)
+ val favourites: MastodonApiFavourites
+    get() = retrofit.create(MastodonApiFavourites::class.java)
 // val filters: MastodonApifilters
 //    get() = retrofit.create(MastodonApifilters::class.java)
 // val follow_requests: MastodonApifollow_requests
