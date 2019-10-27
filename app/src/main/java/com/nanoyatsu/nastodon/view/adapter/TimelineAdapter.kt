@@ -70,13 +70,13 @@ class TimelineAdapter(private val context: Context, private val toots: ArrayList
         val pref = AuthPreferenceManager(context)
         val api = MastodonApiManager(pref.instanceUrl).favourites
         if (favourited) {
-            view.background.setTint(Color.GRAY)
+//            view.background.setTint(Color.GRAY)
             return runBlocking(Dispatchers.IO) {
                 val res = api.unFavourite(pref.accessToken, id)
                 res.body()
             }
         } else {
-            view.background.setTint(context.getColor(R.color.colorPrimary))
+//            view.background.setTint(context.getColor(R.color.colorPrimary))
             return runBlocking(Dispatchers.IO) {
                 val res = api.favourite(pref.accessToken, id)
                 res.body()
