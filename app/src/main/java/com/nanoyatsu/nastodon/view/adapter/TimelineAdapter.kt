@@ -7,13 +7,11 @@ import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nanoyatsu.nastodon.R
+import com.nanoyatsu.nastodon.databinding.CardTootBinding
 import com.nanoyatsu.nastodon.model.Account
 import com.nanoyatsu.nastodon.model.AuthPreferenceManager
 import com.nanoyatsu.nastodon.model.Status
@@ -30,29 +28,31 @@ class TimelineAdapter(private val context: Context, private val toots: ArrayList
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val toot = LayoutInflater.from(context).inflate(R.layout.card_toot, parent, false) as ConstraintLayout
-        return ViewHolder(toot)
+        val binding =
+            DataBindingUtil.inflate<CardTootBinding>(LayoutInflater.from(context), R.layout.card_toot, parent, false)
+//        val toot = LayoutInflater.from(context).inflate(R.layout.card_toot, parent, false) as ConstraintLayout
+        return ViewHolder(binding)
     }
 
     // fixme スクロールのたびに通信をする影響？でかなり怒られる 挙動も重たくなっている ↓調べて直す
     //  E/SELinux: avc:  denied  { find } for interface=vendor.qti.hardware.perf::IPerf sid=u:r:untrusted_app:s0:c89,c257,c512,c768 pid=29990 scontext=u:r:untrusted_app:s0:c89,c257,c512,c768 tcontext=u:object_r:hal_perf_hwservice:s0 tclass=hwservice_manager permissive=0
     //  29990-29990/com.nanoyatsu.nastodon E/ANDR-PERF: IPerf::tryGetService failed!
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(vh: ViewHolder, position: Int) {
         val toot = toots[position]
-        Glide.with(this.context).load(toot.account.avatarStatic).circleCrop().into(holder.accountAvatar)
-        holder.accountAvatar.setOnClickListener { transAccountPage(it, toot.account) }
+        Glide.with(this.context).load(toot.account.avatarStatic).circleCrop().into(vh.binding.accountAvatar)
+        vh.binding.accountAvatar.setOnClickListener { transAccountPage(it, toot.account) }
 
-        holder.displayName.text = toot.account.displayName
-        holder.username.text = toot.account.username
-        holder.note.text = Html.fromHtml(toot.content, Html.FROM_HTML_MODE_COMPACT)
+        vh.binding.displayName.text = toot.account.displayName
+        vh.binding.username.text = toot.account.username
+        vh.binding.note.text = Html.fromHtml(toot.content, Html.FROM_HTML_MODE_COMPACT)
 
-        holder.buttonReblog.setOnClickListener {
+        vh.binding.buttonRepeat.setOnClickListener {
             resetStatus(
                 position,
                 doReblog(toots[position].id, toots[position].reblogged ?: false)
             )
         }
-        holder.buttonFav.setOnClickListener {
+        vh.binding.buttonStar.setOnClickListener {
             resetStatus(
                 position,
                 doFav(it, toots[position].id, toots[position].favourited ?: false)
@@ -100,13 +100,14 @@ class TimelineAdapter(private val context: Context, private val toots: ArrayList
 //        notifyItemChanged(position) // todo payload // https://qiita.com/ralph/items/e56844976117d9883e34
     }
 
-    class ViewHolder(toot: ConstraintLayout) : RecyclerView.ViewHolder(toot) {
-        val displayName: TextView = toot.findViewById(R.id.displayName)
-        val username: TextView = toot.findViewById(R.id.username)
-        val note: TextView = toot.findViewById(R.id.note)
-        val accountAvatar: ImageView = toot.findViewById(R.id.accountAvatar)
-        val buttonReply: ImageButton = toot.findViewById(R.id.button_reply)
-        val buttonReblog: ImageButton = toot.findViewById(R.id.button_repeat)
-        val buttonFav: ImageButton = toot.findViewById(R.id.button_star)
+    class ViewHolder(val binding: CardTootBinding) : RecyclerView.ViewHolder(binding.root) {
+//    class ViewHolder(toot: ConstraintLayout) : RecyclerView.ViewHolder(toot) {
+//        val displayName: TextView = toot.findViewById(R.id.displayName)
+//        val username: TextView = toot.findViewById(R.id.username)
+//        val note: TextView = toot.findViewById(R.id.note)
+//        val accountAvatar: ImageView = toot.findViewById(R.id.accountAvatar)
+//        val buttonReply: ImageButton = toot.findViewById(R.id.button_reply)
+//        val buttonReblog: ImageButton = toot.findViewById(R.id.button_repeat)
+//        val buttonFav: ImageButton = toot.findViewById(R.id.button_star)
     }
 }
