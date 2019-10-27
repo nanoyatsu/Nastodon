@@ -48,6 +48,7 @@ class TimelineAdapter(private val context: Context, private val toots: ArrayList
                 doFav(it, toots[position].id, toots[position].favourited ?: false)
             )
         }
+        vh.binding.executePendingBindings()
     }
 
     private fun transAccountPage(v: View, account: Account) {
