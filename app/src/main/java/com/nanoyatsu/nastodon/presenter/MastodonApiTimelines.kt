@@ -3,6 +3,7 @@ package com.nanoyatsu.nastodon.presenter
 import com.nanoyatsu.nastodon.model.Status
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Query
 
 interface MastodonApiTimelines {
@@ -12,6 +13,7 @@ interface MastodonApiTimelines {
     // GET /api/v1/timelines/public
     @GET("api/v1/timelines/public")
     suspend fun getPublicTimeline(
+        @Header("Authorization") authorization: String? = null, // 認証無しでも取得できる
         @Query("local") local: Boolean? = null, // default false
         @Query("only_media") onlyMedia: Boolean? = null, // default false
         @Query("max_id") maxId: String? = null,

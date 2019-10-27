@@ -54,16 +54,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         progress_view.visibility = View.VISIBLE
         CoroutineScope(context = Dispatchers.Main).launch {
-            reloadPublicTimeline(pref.instanceUrl)
+            reloadPublicTimeline(pref.accessToken, pref.instanceUrl)
             progress_view.visibility = View.GONE
         }
     }
 
-    private suspend fun reloadPublicTimeline(url: String) {
+    private suspend fun reloadPublicTimeline(token: String, url: String) {
         val api = MastodonApiManager(url).timelines
         val response = CoroutineScope(context = Dispatchers.IO).async {
             try {
-                val res = api.getPublicTimeline(local = true)
+                val res = api.getPublicTimeline(authorization = token, local = true)
                 res.body()
                 // todo レスポンスが期待通りじゃないとき
             } catch (e: HttpException) {
