@@ -8,28 +8,20 @@ import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.navigation.NavigationView
 import com.nanoyatsu.nastodon.R
-import com.nanoyatsu.nastodon.model.AuthPreferenceManager
-import com.nanoyatsu.nastodon.model.Status
-import com.nanoyatsu.nastodon.presenter.MastodonApiManager
-import com.nanoyatsu.nastodon.view.adapter.TimelineAdapter
+import com.nanoyatsu.nastodon.view.fragment.PublicTimeLineFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.content_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import retrofit2.HttpException
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+
+        setMainFragment(supportFragmentManager)
 
         floating_edit.setOnClickListener {
             val intent = Intent(this@MainActivity, TootEditActivity::class.java)
@@ -45,45 +37,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
     }
 
-
-    override fun onResume() {
-        super.onResume()
-        val pref = AuthPreferenceManager(this@MainActivity)
-        if (pref.instanceUrl == "")
-            return
-
-        progress_view.visibility = View.VISIBLE
-        CoroutineScope(context = Dispatchers.Main).launch {
-            reloadPublicTimeline(pref.accessToken, pref.instanceUrl)
-            progress_view.visibility = View.GONE
+    private fun setMainFragment(fragmentManager: FragmentManager) {
+        fragmentManager.beginTransaction().also {
+            it.add(R.id.content_main, PublicTimeLineFragment())
+            it.commit()
         }
-    }
-
-    private suspend fun reloadPublicTimeline(token: String, url: String) {
-        val api = MastodonApiManager(url).timelines
-        val response = CoroutineScope(context = Dispatchers.IO).async {
-            try {
-                val res = api.getPublicTimeline(authorization = token, local = true)
-                res.body()
-                // todo レスポンスが期待通りじゃないとき
-            } catch (e: HttpException) {
-                e.printStackTrace()
-                null
-            }
-        }
-        val toots = response.await()
-        if (toots is Array<Status>) {
-            val layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
-            timelineView.layoutManager = layoutManager
-
-            val toArrayList = arrayListOf<Status>().also { it.addAll(toots) }
-            val adapter = TimelineAdapter(baseContext, toArrayList)
-            timelineView.adapter = adapter
-            adapter.notifyDataSetChanged()
-        } else {
-            // ここだと res.errorBody() できないのでまた考える
-        }
-
     }
 
     override fun onBackPressed() {
@@ -135,5 +93,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    public fun progressStart() {
+        progress_view.visibility = View.VISIBLE
+    }
+
+    public fun progressEnd() {
+        progress_view.visibility = View.GONE
     }
 }

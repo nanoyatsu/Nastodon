@@ -5,11 +5,15 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   tools:context=".view.MainActivity">
-
+  <!-- todo 既に経緯が不透明だがCoordinatorLayout的な機能を何ら使っていない 差し替える -->
   <com.google.android.material.appbar.AppBarLayout
+    android:id="@+id/appBarLayout"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:theme="@style/AppTheme.AppBarOverlay">
+    android:fitsSystemWindows="true"
+    android:theme="@style/AppTheme.AppBarOverlay"
+    app:layout_scrollFlags="scroll|enterAlways"
+    app:toolbarId="@+id/toolbar">
 
     <androidx.appcompat.widget.Toolbar
       android:id="@+id/toolbar"
@@ -20,7 +24,12 @@
 
   </com.google.android.material.appbar.AppBarLayout>
 
-  <include layout="@layout/content_main" />
+  <!-- todo toolbarの下にはみでてる CoordinatorLayoutをやめる時に直す -->
+  <androidx.fragment.app.FragmentContainerView
+    android:id="@+id/content_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_anchor="@id/appBarLayout" />
 
   <com.google.android.material.floatingactionbutton.FloatingActionButton
     android:id="@+id/floating_edit"
