@@ -9,6 +9,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.view.fragment.PublicTimeLineFragment
@@ -34,6 +35,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
+        // 下ナビゲーション
+        navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
+        // 左ナビゲーション todo ←↑こいつらわかりにくいのでわかりやすくする
         nav_view.setNavigationItemSelectedListener(this)
     }
 
@@ -66,6 +70,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    // todo 左のナビゲーションと下のナビゲーションで名前がダブっている リネーム
+    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        when (item.itemId) {
+            R.id.navigation_timeline -> {
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_notice -> {
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_global_timeline -> {
+                return@OnNavigationItemSelectedListener true
+            }
+        }
+        false
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
