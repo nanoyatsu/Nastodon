@@ -22,6 +22,16 @@ import retrofit2.HttpException
 
 class PublicTimeLineFragment() : Fragment() {
 
+    private lateinit var getMethod: GetMethod
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let { bundle ->
+            getMethod =
+                GetMethod.values().find { it.name == bundle.getString(BundleKey.GET_METHOD.name) } ?: GetMethod.HOME
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.content_main, container, false)
@@ -77,4 +87,18 @@ class PublicTimeLineFragment() : Fragment() {
         super.onResume()
         loading()  // 仮置
     }
+
+    companion object {
+        enum class BundleKey { GET_METHOD }
+        enum class GetMethod { HOME, LOCAL, GLOBAL, SEARCH }
+
+        @JvmStatic
+        fun newInstance(method: GetMethod) =
+            HomeTimeLineFragment().apply {
+                arguments = Bundle().apply {
+                    putString(BundleKey.GET_METHOD.name, method.name)
+                }
+            }
+    }
+
 }
