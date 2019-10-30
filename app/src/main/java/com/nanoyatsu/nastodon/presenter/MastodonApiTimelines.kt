@@ -7,7 +7,16 @@ import retrofit2.http.Header
 import retrofit2.http.Query
 
 interface MastodonApiTimelines {
-    // todo GET /api/v1/timelines/home
+    // GET /api/v1/timelines/home
+    @GET("/api/v1/timelines/home")
+    suspend fun getHomeTimeline(
+        @Header("Authorization") authorization: String,
+        @Query("max_id") maxId: String? = null, // returns are older than ID
+        @Query("since_id") sinceId: String? = null, // returns are newer than ID
+        @Query("min_id") minId: String? = null, // returns are immediately newer than ID (?? todo 試す)
+        @Query("limit") limit: Int? = null // default 20
+    ): Response<Array<Status>>
+
     // todo GET /api/v1/conversations
 
     // GET /api/v1/timelines/public
