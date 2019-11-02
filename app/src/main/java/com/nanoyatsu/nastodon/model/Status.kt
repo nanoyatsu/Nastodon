@@ -7,7 +7,7 @@ data class Status(
     val account: Account,
     val inReplyToId: String?,
     val inReplyToAccountId: String?,
-    val reblog: String?,
+    val reblog: Status?,
     val content: String,
     val createdAt: String,
 //    val emojis:Array<Emoji>
