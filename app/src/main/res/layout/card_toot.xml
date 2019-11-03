@@ -83,7 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:background="@drawable/ic_reply_white"
-        android:backgroundTint="@{ @color/colorPrimaryDark}"
+        android:backgroundTint="@color/colorPrimaryDark"
         app:layout_constraintStart_toEndOf="@+id/accountAvatar"
         app:layout_constraintTop_toBottomOf="@id/note"
         android:contentDescription="@string/button_reply" />
@@ -94,7 +94,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:background="@drawable/ic_repeat_white"
-        android:backgroundTint="@{toot.reblogged == true ? @color/colorPrimaryDark : Color.GRAY}"
+        android:backgroundTint="@{safeUnbox(toot.reblogged) == true ? @color/colorPrimaryDark : Color.GRAY}"
         app:layout_constraintTop_toBottomOf="@id/note"
         app:layout_constraintStart_toEndOf="@id/button_reply"
         android:contentDescription="@string/button_repeat" />
@@ -105,7 +105,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:background="@drawable/ic_star_white"
-        android:backgroundTint="@{toot.favourited == true ? @color/colorPrimaryDark : Color.GRAY}"
+        android:backgroundTint="@{safeUnbox(toot.favourited) == true ? @color/colorPrimaryDark : Color.GRAY}"
         app:layout_constraintTop_toBottomOf="@id/note"
         app:layout_constraintStart_toEndOf="@id/button_repeat"
         android:contentDescription="@string/button_star" />
