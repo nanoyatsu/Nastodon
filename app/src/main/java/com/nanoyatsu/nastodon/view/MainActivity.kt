@@ -75,12 +75,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun setTabButton(fm: FragmentManager) {
         val selectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-            // todo refactor 2回探す必要はないと思う　あと必要以上に難解な書き方では
             val selected = timelineTabs.find { it.first == item.itemId }
-            val showing = fm.findFragmentByTag(selected?.second?.name)
                 ?: return@OnNavigationItemSelectedListener false
+            val showing = fm.findFragmentByTag(selected.second.name)
 
-            fm.beginTransaction().show(showing)
+            fm.beginTransaction().also { trans ->
+                fm.fragments.forEach { trans.hide(it) }
+
+                if (showing == null)
+                    trans.add(R.id.content_main, TimelineFragment.newInstance(selected.second), selected.second.name)
+                else
+                    trans.show(showing)
+
+                trans.commit()
+            }
             true
         }
 
