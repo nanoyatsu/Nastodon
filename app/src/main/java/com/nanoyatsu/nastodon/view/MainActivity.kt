@@ -35,14 +35,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
-        // 下ナビゲーション
-        navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
-        // 左ナビゲーション todo ←↑こいつらわかりにくいのでわかりやすくする
-        nav_view.setNavigationItemSelectedListener(this)
+        // 下部タブ
+        setTabButton(supportFragmentManager)
+        // 左部メニュー(Navigation Drawer)
+        setNavigationDrawer(nav_view)
     }
 
-    private fun setMainFragment(fragmentManager: FragmentManager) {
-        fragmentManager.beginTransaction().also {
+    private fun setMainFragment(fm: FragmentManager) {
+        fm.beginTransaction().also {
             val method = TimelineFragment.GetMethod.LOCAL
             it.add(R.id.content_main, TimelineFragment.newInstance(method), method.name)
             it.commit()
@@ -58,35 +58,37 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    // todo 左のナビゲーションと下のナビゲーションで名前がダブっている リネーム
-    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        when (item.itemId) {
-            R.id.navigation_timeline -> {
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_notice -> {
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_global_timeline -> {
-                return@OnNavigationItemSelectedListener true
-            }
+    private val timelineTabs =
+        arrayOf(R.id.navigation_timeline, R.id.navigation_notice, R.id.navigation_global_timeline)
+            .zip(TimelineFragment.GetMethod.values())
+
+    private fun setTabButton(fm: FragmentManager) {
+        val selectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+            // todo refactor 2回探す必要はないと思う　あと必要以上に難解な書き方では
+            val selected = timelineTabs.find { it.first == item.itemId }
+            val showing = fm.findFragmentByTag(selected?.second?.name)
+                ?: return@OnNavigationItemSelectedListener false
+
+            fm.beginTransaction().show(showing)
+            true
         }
-        false
+
+        navigation.setOnNavigationItemSelectedListener(selectedListener)
+    }
+
+    private fun setNavigationDrawer(view: NavigationView) {
+        view.setNavigationItemSelectedListener(this)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
