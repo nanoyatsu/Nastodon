@@ -21,7 +21,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 
-class PublicTimeLineFragment() : Fragment() {
+class TimelineFragment() : Fragment() {
+    enum class BundleKey { GET_METHOD }
+    enum class GetMethod { HOME, LOCAL, GLOBAL, SEARCH }
 
     private lateinit var getMethod: GetMethod
 
@@ -50,7 +52,12 @@ class PublicTimeLineFragment() : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        loading()
+//        loading()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loading()  // 仮置
     }
 
     private fun loading() {
@@ -78,10 +85,15 @@ class PublicTimeLineFragment() : Fragment() {
 
     private suspend fun reloadPublicTimeline(token: String, url: String) {
         val context = this.context ?: return
-        val api = MastodonApiManager(url).timelines
         val response = CoroutineScope(context = Dispatchers.IO).async {
             try {
-                val res = api.getPublicTimeline(authorization = token, local = true)
+                val res = when (getMethod) {
+                    GetMethod.HOME -> callHomeTimeline()
+                    GetMethod.LOCAL -> callLocalPublicTimeline()
+                    GetMethod.GLOBAL -> callGlobalPublicTimeline()
+                    GetMethod.SEARCH -> callHomeTimeline() // todo
+                }
+//                val res = api.getPublicTimeline(authorization = token, local = true)
                 res.body()
                 // todo レスポンスが期待通りじゃないとき
             } catch (e: HttpException) {
@@ -103,18 +115,9 @@ class PublicTimeLineFragment() : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        loading()  // 仮置
-    }
-
     companion object {
-        enum class BundleKey { GET_METHOD }
-        enum class GetMethod { HOME, LOCAL, GLOBAL, SEARCH }
-
-        @JvmStatic
         fun newInstance(method: GetMethod) =
-            HomeTimeLineFragment().apply {
+            TimelineFragment().apply {
                 arguments = Bundle().apply {
                     putString(BundleKey.GET_METHOD.name, method.name)
                 }

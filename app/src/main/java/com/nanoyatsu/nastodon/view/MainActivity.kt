@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.nanoyatsu.nastodon.R
-import com.nanoyatsu.nastodon.view.fragment.PublicTimeLineFragment
+import com.nanoyatsu.nastodon.view.fragment.TimelineFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
@@ -43,7 +43,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun setMainFragment(fragmentManager: FragmentManager) {
         fragmentManager.beginTransaction().also {
-            it.add(R.id.content_main, PublicTimeLineFragment())
+            val method = TimelineFragment.GetMethod.LOCAL
+            it.add(R.id.content_main, TimelineFragment.newInstance(method), method.name)
             it.commit()
         }
     }
