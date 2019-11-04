@@ -51,13 +51,16 @@ class TimelineFragment() : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-//        loading()
+        // SwipeRefreshLayout 引っ張って更新するやつ
+        swipe_refresh.setOnRefreshListener {
+            loading()
+            swipe_refresh.isRefreshing = false // fixme coroutineで読んでいるのでloading()の終了を待ってない
+        }
+        loading()
     }
 
     override fun onResume() {
         super.onResume()
-        loading()  // 仮置
     }
 
     private fun loading() {
@@ -104,7 +107,7 @@ class TimelineFragment() : Fragment() {
         val toots = response.await()
         if (toots is Array<Status>) {
             val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            timelineView.layoutManager = layoutManager
+            timelineView.layoutManager = layoutManager // fixme 画面回転を連続したりするとNPE
 
             val toArrayList = arrayListOf<Status>().also { it.addAll(toots) }
             val adapter = TimelineAdapter(context, toArrayList)
