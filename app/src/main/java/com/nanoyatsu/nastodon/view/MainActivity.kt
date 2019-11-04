@@ -9,21 +9,27 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.view.fragment.TimelineFragment
+import com.nanoyatsu.nastodon.viewModel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+    lateinit var viewModel: MainViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // 上部ToolBar
         setSupportActionBar(toolbar)
 
-        setMainFragment(supportFragmentManager)
-
+        // FloatingButton todo 関数化・処理分割
         floating_edit.setOnClickListener {
             val intent = Intent(this@MainActivity, TootEditActivity::class.java)
             startActivity(intent)
@@ -39,14 +45,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setTabButton(supportFragmentManager)
         // 左部メニュー(Navigation Drawer)
         setNavigationDrawer(nav_view)
+
+        // 初期化あるいは再構成
+        viewModel = ViewModelProvider(this@MainActivity).get(MainViewModel::class.java)
+        restoreView(viewModel)
     }
 
-    private fun setMainFragment(fm: FragmentManager) {
-        fm.beginTransaction().also {
-            val method = TimelineFragment.GetMethod.LOCAL
-            it.add(R.id.content_main, TimelineFragment.newInstance(method), method.name)
-            it.commit()
-        }
+    private fun restoreView(vm: MainViewModel) {
+        navigation.findViewById<View>(vm.selectedTab).callOnClick()
     }
 
     override fun onBackPressed() {
@@ -77,6 +83,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val selectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
             val selected = timelineTabs.find { it.first == item.itemId }
                 ?: return@OnNavigationItemSelectedListener false
+            viewModel.selectedTab = selected.first
             val showing = fm.findFragmentByTag(selected.second.name)
 
             fm.beginTransaction().also { trans ->
