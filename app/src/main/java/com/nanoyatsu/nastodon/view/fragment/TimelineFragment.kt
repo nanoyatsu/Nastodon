@@ -69,9 +69,14 @@ class TimelineFragment() : Fragment() {
         if (pref.instanceUrl == "")
             return
 
+        val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        timelineView.layoutManager = layoutManager // fixme 画面回転を連続したりするとNPE
+        val timeline = ArrayList<Status>()
+        timelineView.adapter = TimelineAdapter(context, timeline)
+
         context.progressStart() // review リスナー化したほうがよいか？
         CoroutineScope(context = Dispatchers.Main).launch {
-            reloadTimeline()
+            reloadTimeline(timeline)
             context.progressEnd()
         }
     }
@@ -86,7 +91,7 @@ class TimelineFragment() : Fragment() {
     private suspend fun callGlobalPublicTimeline() =
         timelinesApi.getPublicTimeline(authorization = pref.accessToken, local = false)
 
-    private suspend fun reloadTimeline() {
+    private suspend fun reloadTimeline(timeline: ArrayList<Status>) {
         val context = this.context ?: return
         val response = CoroutineScope(context = Dispatchers.IO).async {
             try {
@@ -106,13 +111,12 @@ class TimelineFragment() : Fragment() {
         }
         val toots = response.await()
         if (toots is Array<Status>) {
-            val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            timelineView.layoutManager = layoutManager // fixme 画面回転を連続したりするとNPE
 
-            val toArrayList = arrayListOf<Status>().also { it.addAll(toots) }
-            val adapter = TimelineAdapter(context, toArrayList)
-            timelineView.adapter = adapter
-            adapter.notifyDataSetChanged()
+//            val toArrayList = arrayListOf<Status>().also { it.addAll(toots) }
+            timeline.addAll(toots.toList())
+//            val adapter = TimelineAdapter(context, toArrayList)
+//            timelineView.adapter = adapter
+            timelineView.adapter?.notifyDataSetChanged()
         } else {
             // ここだと res.errorBody() できないのでまた考える
         }
