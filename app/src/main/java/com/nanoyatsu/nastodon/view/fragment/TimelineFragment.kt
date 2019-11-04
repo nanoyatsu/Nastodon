@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.nanoyatsu.layoutComponent.InfiniteScrollListener
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.model.AuthPreferenceManager
 import com.nanoyatsu.nastodon.model.Status
@@ -74,6 +75,13 @@ class TimelineFragment() : Fragment() {
         val timeline = ArrayList<Status>()
         timelineView.adapter = TimelineAdapter(context, timeline)
 
+        timelineView.clearOnScrollListeners()
+        timelineView.addOnScrollListener(object : InfiniteScrollListener(layoutManager) {
+            override fun onLoadMore(current_page: Int) {
+                // todo
+            }
+        })
+
         context.progressStart() // review リスナー化したほうがよいか？
         CoroutineScope(context = Dispatchers.Main).launch {
             reloadTimeline(timeline)
@@ -82,26 +90,26 @@ class TimelineFragment() : Fragment() {
     }
 
     // todo 同じ型シグネチャで取得関数を用意する enumに紐付けたいが、staticとの絡みで案が必要
-    private suspend fun callHomeTimeline() =
-        timelinesApi.getHomeTimeline(authorization = pref.accessToken)
+    private suspend fun callHomeTimeline(maxId: String?, sinceId: String?) =
+        timelinesApi.getHomeTimeline(pref.accessToken, maxId, sinceId)
 
-    private suspend fun callLocalPublicTimeline() =
-        timelinesApi.getPublicTimeline(authorization = pref.accessToken, local = true)
+    private suspend fun callLocalPublicTimeline(maxId: String?, sinceId: String?) =
+        timelinesApi.getPublicTimeline(authorization = pref.accessToken, local = true, maxId = maxId, sinceId = sinceId)
 
-    private suspend fun callGlobalPublicTimeline() =
-        timelinesApi.getPublicTimeline(authorization = pref.accessToken, local = false)
+    private suspend fun callGlobalPublicTimeline(maxId: String?, sinceId: String?) =
+        timelinesApi.getPublicTimeline(
+            authorization = pref.accessToken, local = false, maxId = maxId, sinceId = sinceId
+        )
 
-    private suspend fun reloadTimeline(timeline: ArrayList<Status>) {
-        val context = this.context ?: return
+    private suspend fun reloadTimeline(timeline: ArrayList<Status>, maxId: String? = null, sinceId: String? = null) {
         val response = CoroutineScope(context = Dispatchers.IO).async {
             try {
-                val res = when (getMethod) {
-                    GetMethod.HOME -> callHomeTimeline()
-                    GetMethod.LOCAL -> callLocalPublicTimeline()
-                    GetMethod.GLOBAL -> callGlobalPublicTimeline()
-                    GetMethod.SEARCH -> callHomeTimeline() // todo
+                val res = when (getMethod) { // todo enum要素化
+                    GetMethod.HOME -> callHomeTimeline(maxId, sinceId)
+                    GetMethod.LOCAL -> callLocalPublicTimeline(maxId, sinceId)
+                    GetMethod.GLOBAL -> callGlobalPublicTimeline(maxId, sinceId)
+                    GetMethod.SEARCH -> callHomeTimeline(maxId, sinceId) // todo
                 }
-//                val res = api.getPublicTimeline(authorization = token, local = true)
                 res.body()
                 // todo レスポンスが期待通りじゃないとき
             } catch (e: HttpException) {
