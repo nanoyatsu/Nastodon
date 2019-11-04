@@ -53,17 +53,17 @@ class TimelineFragment() : Fragment() {
         super.onActivityCreated(savedInstanceState)
         // SwipeRefreshLayout 引っ張って更新するやつ
         swipe_refresh.setOnRefreshListener {
-            loading()
+            initTimeline()
             swipe_refresh.isRefreshing = false // fixme coroutineで読んでいるのでloading()の終了を待ってない
         }
-        loading()
+        initTimeline()
     }
 
     override fun onResume() {
         super.onResume()
     }
 
-    private fun loading() {
+    private fun initTimeline() {
         val context = this.context as? MainActivity ?: return
         val pref = AuthPreferenceManager(context)
         if (pref.instanceUrl == "")
@@ -71,7 +71,7 @@ class TimelineFragment() : Fragment() {
 
         context.progressStart() // review リスナー化したほうがよいか？
         CoroutineScope(context = Dispatchers.Main).launch {
-            reloadPublicTimeline(pref.accessToken, pref.instanceUrl)
+            reloadTimeline()
             context.progressEnd()
         }
     }
@@ -86,7 +86,7 @@ class TimelineFragment() : Fragment() {
     private suspend fun callGlobalPublicTimeline() =
         timelinesApi.getPublicTimeline(authorization = pref.accessToken, local = false)
 
-    private suspend fun reloadPublicTimeline(token: String, url: String) {
+    private suspend fun reloadTimeline() {
         val context = this.context ?: return
         val response = CoroutineScope(context = Dispatchers.IO).async {
             try {
