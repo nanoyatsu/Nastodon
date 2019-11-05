@@ -16,11 +16,9 @@ import com.nanoyatsu.nastodon.presenter.MastodonApiTimelines
 import com.nanoyatsu.nastodon.view.MainActivity
 import com.nanoyatsu.nastodon.view.adapter.TimelineAdapter
 import kotlinx.android.synthetic.main.content_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.HttpException
+import retrofit2.Response
 
 class TimelineFragment() : Fragment() {
     enum class BundleKey { GET_METHOD }
@@ -72,7 +70,7 @@ class TimelineFragment() : Fragment() {
 
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         timelineView.layoutManager = layoutManager // fixme 画面回転を連続したりするとNPE
-        val timeline = ArrayList<Status>()
+        val timeline = ArrayList<Status>() // todo ViewModelに持つ
         timelineView.adapter = TimelineAdapter(context, timeline)
 
         timelineView.clearOnScrollListeners()
@@ -102,31 +100,29 @@ class TimelineFragment() : Fragment() {
         )
 
     private suspend fun reloadTimeline(timeline: ArrayList<Status>, maxId: String? = null, sinceId: String? = null) {
-        val response = CoroutineScope(context = Dispatchers.IO).async {
-            try {
-                val res = when (getMethod) { // todo enum要素化
-                    GetMethod.HOME -> callHomeTimeline(maxId, sinceId)
-                    GetMethod.LOCAL -> callLocalPublicTimeline(maxId, sinceId)
-                    GetMethod.GLOBAL -> callGlobalPublicTimeline(maxId, sinceId)
-                    GetMethod.SEARCH -> callHomeTimeline(maxId, sinceId) // todo
-                }
-                res.body()
-                // todo レスポンスが期待通りじゃないとき
-            } catch (e: HttpException) {
-                e.printStackTrace()
-                null
+        val getter = CoroutineScope(Dispatchers.IO).async {
+            when (getMethod) { // todo enum要素化
+                GetMethod.HOME -> callHomeTimeline(maxId, sinceId)
+                GetMethod.LOCAL -> callLocalPublicTimeline(maxId, sinceId)
+                GetMethod.GLOBAL -> callGlobalPublicTimeline(maxId, sinceId)
+                GetMethod.SEARCH -> callHomeTimeline(maxId, sinceId)
             }
         }
-        val toots = response.await()
-        if (toots is Array<Status>) {
 
-//            val toArrayList = arrayListOf<Status>().also { it.addAll(toots) }
-            timeline.addAll(toots.toList())
-//            val adapter = TimelineAdapter(context, toArrayList)
-//            timelineView.adapter = adapter
-            timelineView.adapter?.notifyDataSetChanged()
-        } else {
-            // ここだと res.errorBody() できないのでまた考える
+        val toots = getByApi(getter)
+        timeline.addAll(toots.toList())
+        timelineView.adapter?.notifyDataSetChanged()
+    }
+
+    private suspend fun getByApi(getter: Deferred<Response<Array<Status>>>): Array<Status> {
+        return try {
+            val res = getter.await()
+            res.body()
+                ?: arrayOf() // todo レスポンスが期待通りじゃないときの処理 res.errorBody()
+        } catch (e: HttpException) {
+            e.printStackTrace()
+            // todo 通信失敗のときの処理
+            arrayOf()
         }
     }
 
