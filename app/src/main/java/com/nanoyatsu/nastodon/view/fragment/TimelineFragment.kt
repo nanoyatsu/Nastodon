@@ -76,7 +76,7 @@ class TimelineFragment() : Fragment() {
         timelineView.clearOnScrollListeners()
         timelineView.addOnScrollListener(object : InfiniteScrollListener(layoutManager) {
             override fun onLoadMore(current_page: Int) {
-                // todo
+                reloadTimeline(timeline, timeline.last().id, null)
             }
         })
 
@@ -99,17 +99,22 @@ class TimelineFragment() : Fragment() {
             authorization = pref.accessToken, local = false, maxId = maxId, sinceId = sinceId
         )
 
-    private suspend fun reloadTimeline(timeline: ArrayList<Status>, maxId: String? = null, sinceId: String? = null) {
+    private fun returnTimelineGetter(getMethod: GetMethod): suspend ((String?, String?) -> Response<Array<Status>>) {
+        val callApi = when (getMethod) {
+            GetMethod.HOME -> ::callHomeTimeline
+            GetMethod.LOCAL -> ::callLocalPublicTimeline
+            GetMethod.GLOBAL -> ::callGlobalPublicTimeline
+            GetMethod.SEARCH -> ::callHomeTimeline
+        }
+        return { maxId: String?, sinceId: String? -> callApi(maxId, sinceId) }
+    }
+
+    private fun reloadTimeline(timeline: ArrayList<Status>, maxId: String? = null, sinceId: String? = null) {
         val getter = CoroutineScope(Dispatchers.IO).async {
-            when (getMethod) { // todo enum要素化
-                GetMethod.HOME -> callHomeTimeline(maxId, sinceId)
-                GetMethod.LOCAL -> callLocalPublicTimeline(maxId, sinceId)
-                GetMethod.GLOBAL -> callGlobalPublicTimeline(maxId, sinceId)
-                GetMethod.SEARCH -> callHomeTimeline(maxId, sinceId)
-            }
+            returnTimelineGetter(getMethod)(maxId, sinceId)
         }
 
-        val toots = getByApi(getter)
+        val toots = runBlocking(Dispatchers.IO) { getByApi(getter) }
         timeline.addAll(toots.toList())
         timelineView.adapter?.notifyDataSetChanged()
     }
