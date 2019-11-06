@@ -18,7 +18,8 @@ import com.nanoyatsu.nastodon.viewModel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
+    TimelineFragment.EventListener {
 
     lateinit var viewModel: MainViewModel
 
@@ -133,11 +134,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    public fun progressStart() {
+    override fun progressStart() {
         progress_view.visibility = View.VISIBLE
     }
 
-    public fun progressEnd() {
+    override fun progressEnd() {
         progress_view.visibility = View.GONE
     }
 }
