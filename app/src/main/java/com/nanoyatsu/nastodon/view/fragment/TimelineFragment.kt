@@ -143,6 +143,10 @@ class TimelineFragment() : Fragment() {
         }
     }
 
+    public fun focusTop() {
+        timelineView.scrollToPosition(0)
+    }
+
     interface EventListener {
         fun progressStart()
         fun progressEnd()

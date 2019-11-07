@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun restoreView(vm: MainViewModel) {
-        navigation.findViewById<View>(vm.selectedTab).callOnClick()
+        navigation.findViewById<View>(vm.selectedTabId).callOnClick()
     }
 
     override fun onBackPressed() {
@@ -81,12 +81,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             .zip(TimelineFragment.GetMethod.values())
 
     private fun setTabButton(fm: FragmentManager) {
-        val selectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-            val selected = timelineTabs.find { it.first == item.itemId }
-                ?: return@OnNavigationItemSelectedListener false
-            viewModel.selectedTab = selected.first
-            val showing = fm.findFragmentByTag(selected.second.name)
-
+        fun fragmentTransition(selected: Pair<Int, TimelineFragment.GetMethod>, showing: TimelineFragment?) {
+            viewModel.selectedTabId = selected.first
             fm.beginTransaction().also { trans ->
                 fm.fragments.forEach { trans.hide(it) }
 
@@ -94,9 +90,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     trans.add(R.id.content_main, TimelineFragment.newInstance(selected.second), selected.second.name)
                 else
                     trans.show(showing)
-
                 trans.commit()
             }
+        }
+
+        val selectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+            val selected = timelineTabs.find { it.first == item.itemId }
+                ?: return@OnNavigationItemSelectedListener false
+            val showing = fm.findFragmentByTag(selected.second.name) as? TimelineFragment
+
+            if (showing != null && viewModel.selectedTabId == selected.first)
+                showing.focusTop()
+            else
+                fragmentTransition(selected, showing)
             true
         }
 
