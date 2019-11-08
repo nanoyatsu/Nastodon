@@ -73,6 +73,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:text="@{Html.fromHtml(toot.content, Html.FROM_HTML_MODE_COMPACT)}"
+        android:autoLink="all"
         tools:text="statusContent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
         android:layout_marginTop="4dp" />
