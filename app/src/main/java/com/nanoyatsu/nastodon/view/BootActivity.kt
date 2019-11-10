@@ -27,6 +27,7 @@ class BootActivity : AppCompatActivity() {
                     Intent(this@BootActivity, AuthActivity::class.java)
                 }
             startActivity(transIntent)
+            finish()
         }
     }
 
