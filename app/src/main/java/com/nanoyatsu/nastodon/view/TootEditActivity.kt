@@ -5,23 +5,31 @@ import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.nanoyatsu.nastodon.R
-import com.nanoyatsu.nastodon.model.AuthPreferenceManager
+import com.nanoyatsu.nastodon.data.NastodonDataBase
+import com.nanoyatsu.nastodon.data.dao.AuthInfoDao
+import com.nanoyatsu.nastodon.data.entity.AuthInfo
 import com.nanoyatsu.nastodon.model.Visibility
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
 import kotlinx.android.synthetic.main.activity_toot_edit.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 
 class TootEditActivity : AppCompatActivity() {
+
+    private lateinit var authInfoDao: AuthInfoDao
+    private lateinit var auth: AuthInfo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_toot_edit)
-        val pref = AuthPreferenceManager(this@TootEditActivity)
-        if (pref.accessToken == "") finish()
+        authInfoDao = NastodonDataBase.getInstance().authInfoDao()
+        // todo マルチアカウント考慮
+        runBlocking(context = Dispatchers.IO) { auth = authInfoDao.getAll().first() }
+        if (auth.instanceUrl == "") finish() // todo 認証に行く
 
         val adapter = ArrayAdapter(
             this@TootEditActivity,
@@ -34,13 +42,12 @@ class TootEditActivity : AppCompatActivity() {
     }
 
     private fun sendToot() {
-        val pref = AuthPreferenceManager(this@TootEditActivity)
         val paramVisibility = Visibility.values()[visibilitySpinner.selectedItemPosition] // ちょっと型安全を失ってる
 
         CoroutineScope(context = Dispatchers.Main).launch {
             try {
-                val res = MastodonApiManager(pref.instanceUrl).statuses.postToot(
-                    authorization = pref.accessToken,
+                val res = MastodonApiManager(auth.instanceUrl).statuses.postToot(
+                    authorization = auth.accessToken,
                     status = note.text.toString(),
                     visibility = paramVisibility.name.toLowerCase()
                 )

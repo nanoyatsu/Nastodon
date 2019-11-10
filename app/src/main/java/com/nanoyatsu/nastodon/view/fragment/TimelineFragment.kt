@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.layoutComponent.InfiniteScrollListener
 import com.nanoyatsu.nastodon.R
-import com.nanoyatsu.nastodon.model.AuthPreferenceManager
+import com.nanoyatsu.nastodon.data.NastodonDataBase
+import com.nanoyatsu.nastodon.data.dao.AuthInfoDao
+import com.nanoyatsu.nastodon.data.entity.AuthInfo
 import com.nanoyatsu.nastodon.model.Status
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
 import com.nanoyatsu.nastodon.presenter.MastodonApiTimelines
@@ -19,6 +21,7 @@ import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 import retrofit2.Response
 
@@ -31,7 +34,8 @@ class TimelineFragment() : Fragment() {
 
     // todo 外から入れるようにする
     private lateinit var timelinesApi: MastodonApiTimelines
-    private lateinit var pref: AuthPreferenceManager
+    private lateinit var authInfoDao: AuthInfoDao
+    private lateinit var auth: AuthInfo
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -45,10 +49,12 @@ class TimelineFragment() : Fragment() {
                 GetMethod.values().find { it.name == bundle.getString(BundleKey.GET_METHOD.name) } ?: GetMethod.HOME
         }
 
-        val context = this.context ?: return
-        pref = AuthPreferenceManager(context)
-        if (pref.instanceUrl == "") return // そのまま認証に行ってもいい
-        timelinesApi = MastodonApiManager(pref.instanceUrl).timelines
+        authInfoDao = NastodonDataBase.getInstance().authInfoDao()
+        // todo マルチアカウント考慮
+        runBlocking(context = Dispatchers.IO) { auth = authInfoDao.getAll().first() }
+        if (auth.instanceUrl == "") return // todo 認証に行く
+
+        timelinesApi = MastodonApiManager(auth.instanceUrl).timelines
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -79,9 +85,6 @@ class TimelineFragment() : Fragment() {
 
     private suspend fun initTimeline() {
         val context = this.context ?: return
-        val pref = AuthPreferenceManager(context)
-        if (pref.instanceUrl == "")
-            return
 
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         timelineView.layoutManager = layoutManager // fixme 画面回転を連続したりするとNPE
@@ -104,14 +107,19 @@ class TimelineFragment() : Fragment() {
 
     // todo 同じ型シグネチャで取得関数を用意する enumに紐付けたいが、staticとの絡みで案が必要
     private suspend fun callHomeTimeline(maxId: String?, sinceId: String?) =
-        timelinesApi.getHomeTimeline(pref.accessToken, maxId, sinceId)
+        timelinesApi.getHomeTimeline(auth.accessToken, maxId, sinceId)
 
     private suspend fun callLocalPublicTimeline(maxId: String?, sinceId: String?) =
-        timelinesApi.getPublicTimeline(authorization = pref.accessToken, local = true, maxId = maxId, sinceId = sinceId)
+        timelinesApi.getPublicTimeline(
+            authorization = auth.accessToken,
+            local = true,
+            maxId = maxId,
+            sinceId = sinceId
+        )
 
     private suspend fun callGlobalPublicTimeline(maxId: String?, sinceId: String?) =
         timelinesApi.getPublicTimeline(
-            authorization = pref.accessToken, local = false, maxId = maxId, sinceId = sinceId
+            authorization = auth.accessToken, local = false, maxId = maxId, sinceId = sinceId
         )
 
     private fun returnTimelineGetter(getMethod: GetMethod): suspend ((String?, String?) -> Response<Array<Status>>) {
@@ -124,7 +132,11 @@ class TimelineFragment() : Fragment() {
         return { maxId: String?, sinceId: String? -> callApi(maxId, sinceId) }
     }
 
-    private suspend fun reloadTimeline(timeline: ArrayList<Status>, maxId: String? = null, sinceId: String? = null) {
+    private suspend fun reloadTimeline(
+        timeline: ArrayList<Status>,
+        maxId: String? = null,
+        sinceId: String? = null
+    ) {
         val getter = suspend { returnTimelineGetter(getMethod)(maxId, sinceId) }
         val toots = getByApi(getter)
         timeline.addAll(toots.toList())
@@ -143,7 +155,7 @@ class TimelineFragment() : Fragment() {
         }
     }
 
-    public fun focusTop() {
+    fun focusTop() {
         timelineView.scrollToPosition(0)
     }
 

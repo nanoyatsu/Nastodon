@@ -6,11 +6,13 @@ import android.text.Html
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.nanoyatsu.nastodon.R
+import com.nanoyatsu.nastodon.data.NastodonDataBase
+import com.nanoyatsu.nastodon.data.dao.AuthInfoDao
+import com.nanoyatsu.nastodon.data.entity.AuthInfo
 import com.nanoyatsu.nastodon.model.Account
-import com.nanoyatsu.nastodon.model.AuthPreferenceManager
-import com.nanoyatsu.nastodon.presenter.AccountListGetter
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
 import kotlinx.android.synthetic.main.activity_account_page.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 import retrofit2.Response
@@ -18,6 +20,9 @@ import kotlin.reflect.KSuspendFunction3
 
 class AccountPageActivity : AppCompatActivity() {
     enum class IntentKey { ACCOUNT }
+
+    private lateinit var authInfoDao: AuthInfoDao
+    private lateinit var auth: AuthInfo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,23 +37,26 @@ class AccountPageActivity : AppCompatActivity() {
         username.text = account.username
         note.text = Html.fromHtml(account.note, Html.FROM_HTML_MODE_COMPACT)
 
+        authInfoDao = NastodonDataBase.getInstance().authInfoDao()
+        // todo マルチアカウント考慮
+        runBlocking(context = Dispatchers.IO) { auth = authInfoDao.getAll().first() }
+        if (auth.instanceUrl == "") return // todo 認証に行く
 
-        val pref = AuthPreferenceManager(this@AccountPageActivity)
-        val api = MastodonApiManager(pref.instanceUrl).api
+        val api = MastodonApiManager(auth.instanceUrl).api
         // fixme トークン必要があとから判明したりして書き方がひどめ
         followingCount.also {
             it.text = getString(R.string.accountFollowingCountFormat, account.followingCount)
-//            it.setOnClickListener { transAccountList(pref, account.id, api::getFollowingById, "フォロー一覧") }
+//            it.setOnClickListener { transAccountList(auth, account.id, api::getFollowingById, "フォロー一覧") }
         }
 
         followersCount.also {
             it.text = getString(R.string.accountFollowersCountFormat, account.followersCount)
-//            it.setOnClickListener { transAccountList(pref, account.id, api::getFollowersById, "フォロワー一覧") }
+//            it.setOnClickListener { transAccountList(auth, account.id, api::getFollowersById, "フォロワー一覧") }
         }
     }
 
     private fun transAccountList(
-        pref: AuthPreferenceManager,
+        auth: AuthInfo,
         targetId: String,
         searchApi: KSuspendFunction3<String, String, Int?, Response<Array<Account>>>,
         title: String
@@ -56,8 +64,8 @@ class AccountPageActivity : AppCompatActivity() {
         val func = {
             runBlocking {
                 try {
-                    val res = searchApi(pref.accessToken, targetId, null)
-                    res.body()?: arrayOf()
+                    val res = searchApi(auth.accessToken, targetId, null)
+                    res.body() ?: arrayOf()
                 } catch (e: HttpException) {
                     e.printStackTrace()
                     arrayOf<Account>()

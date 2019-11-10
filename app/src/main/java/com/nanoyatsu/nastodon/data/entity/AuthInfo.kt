@@ -6,15 +6,15 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "auth_info")
 data class AuthInfo(
-    @PrimaryKey(autoGenerate = true) val index: Int,
-    @ColumnInfo(name = "instance_url") val instanceUrl: String,
-    @ColumnInfo(name = "client_id") val clientId: String,
-    @ColumnInfo(name = "client_secret") val clientSecret: String,
-    @ColumnInfo(name = "access_token") val accessToken: String,
-    @ColumnInfo(name = "token_created_at") val tokenCreatedAt: Int,
-    @ColumnInfo(name = "account_id") val accountId: String,
-    @ColumnInfo(name = "account_username") val accountUsername: String,
-    @ColumnInfo(name = "account_display_name") val accountDisplayName: String,
-    @ColumnInfo(name = "account_avatar") val accountAvatar: String,
-    @ColumnInfo(name = "account_header") val accountHeader: String
+    @PrimaryKey(autoGenerate = true) val index: Int = 0,
+    @ColumnInfo(name = "instance_url") var instanceUrl: String = "",
+    @ColumnInfo(name = "client_id") var clientId: String = "",
+    @ColumnInfo(name = "client_secret") var clientSecret: String = "",
+    @ColumnInfo(name = "access_token") var accessToken: String = "",
+    @ColumnInfo(name = "token_created_at") var tokenCreatedAt: Int = 0,
+    @ColumnInfo(name = "account_id") var accountId: String = "",
+    @ColumnInfo(name = "account_username") var accountUsername: String = "",
+    @ColumnInfo(name = "account_display_name") var accountDisplayName: String = "",
+    @ColumnInfo(name = "account_avatar") var accountAvatar: String = "",
+    @ColumnInfo(name = "account_header") var accountHeader: String = ""
 )

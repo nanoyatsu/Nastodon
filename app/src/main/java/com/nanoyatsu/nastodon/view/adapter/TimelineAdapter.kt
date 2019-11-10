@@ -2,7 +2,6 @@ package com.nanoyatsu.nastodon.view.adapter
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +9,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nanoyatsu.nastodon.R
+import com.nanoyatsu.nastodon.data.NastodonDataBase
+import com.nanoyatsu.nastodon.data.dao.AuthInfoDao
+import com.nanoyatsu.nastodon.data.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.CardTootBinding
 import com.nanoyatsu.nastodon.model.Account
-import com.nanoyatsu.nastodon.model.AuthPreferenceManager
 import com.nanoyatsu.nastodon.model.Status
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
 import com.nanoyatsu.nastodon.view.AccountPageActivity
@@ -21,6 +22,12 @@ import kotlinx.coroutines.runBlocking
 
 class TimelineAdapter(private val context: Context, private val toots: ArrayList<Status>) :
     RecyclerView.Adapter<TimelineAdapter.ViewHolder>() {
+    private var authInfoDao: AuthInfoDao = NastodonDataBase.getInstance().authInfoDao()
+    private lateinit var auth: AuthInfo
+
+    init {
+        runBlocking(context = Dispatchers.IO) { auth = authInfoDao.getAll().first() }
+    }
 
     override fun getItemCount(): Int = toots.size
 
@@ -58,27 +65,25 @@ class TimelineAdapter(private val context: Context, private val toots: ArrayList
     }
 
     private fun doReblog(id: String, reblogged: Boolean): Status? {
-        val pref = AuthPreferenceManager(context)
-        val api = MastodonApiManager(pref.instanceUrl).statuses
+        val api = MastodonApiManager(auth.instanceUrl).statuses
         if (reblogged) // todo アイコンの色変える→失敗したら戻す
-            return runBlocking(Dispatchers.IO) { api.unReblog(pref.accessToken, id).body() }
+            return runBlocking(Dispatchers.IO) { api.unReblog(auth.accessToken, id).body() }
         else
-            return runBlocking(Dispatchers.IO) { api.reblog(pref.accessToken, id).body() }
+            return runBlocking(Dispatchers.IO) { api.reblog(auth.accessToken, id).body() }
     }
 
     private fun doFav(view: View, id: String, favourited: Boolean): Status? { // todo doReblogと抽象化
-        val pref = AuthPreferenceManager(context)
-        val api = MastodonApiManager(pref.instanceUrl).favourites
+        val api = MastodonApiManager(auth.instanceUrl).favourites
         if (favourited) {
 //            view.background.setTint(Color.GRAY)
             return runBlocking(Dispatchers.IO) {
-                val res = api.unFavourite(pref.accessToken, id)
+                val res = api.unFavourite(auth.accessToken, id)
                 res.body()
             }
         } else {
 //            view.background.setTint(context.getColor(R.color.colorPrimary))
             return runBlocking(Dispatchers.IO) {
-                val res = api.favourite(pref.accessToken, id)
+                val res = api.favourite(auth.accessToken, id)
                 res.body()
             }
         }

@@ -5,10 +5,14 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.nanoyatsu.nastodon.R
+import com.nanoyatsu.nastodon.data.NastodonDataBase
+import com.nanoyatsu.nastodon.data.dao.AuthInfoDao
+import com.nanoyatsu.nastodon.data.entity.AuthInfo
 import com.nanoyatsu.nastodon.model.Account
 import com.nanoyatsu.nastodon.model.AuthPreferenceManager
 import com.nanoyatsu.nastodon.presenter.MastodonApi
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
+import com.nanoyatsu.nastodon.viewModel.AuthViewModel
 import kotlinx.android.synthetic.main.activity_auth.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,63 +20,26 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 
+
 /**
  * 認証情報取得
  * インスタンスURL設定、アクセストークン取得
+ * todo 認証中の一時情報として SharedPreferenceを使っている。シンプルに出来ないか検討（少なくともaccount系はすぐ消せる）
  */
 class AuthActivity : AppCompatActivity() {
+
+    private lateinit var authInfoDao: AuthInfoDao
+    private lateinit var viewModel: AuthViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_auth)
 
+//        viewModel = ViewModelProvider(this@AuthActivity).get(AuthViewModel::class.java)
+
         sendButton.setOnClickListener { sendAuth() }
         if (intent.action == Intent.ACTION_VIEW)
             fromUri()
-    }
-
-    private fun fromUri() {
-        val uri = intent.data
-        val pref = AuthPreferenceManager(this)
-
-        CoroutineScope(context = Dispatchers.IO).launch {
-            val auth = MastodonApiManager(pref.instanceUrl).api
-            try {
-                val res = auth.getAccessToken(
-                    MastodonApi.TokenBody(
-                        client_id = pref.clientId,
-                        client_secret = pref.clientSecret,
-                        code = uri?.getQueryParameter("code") ?: ""
-                    )
-                )
-
-                pref.accessToken = res.body()?.accessToken ?: ""
-                pref.accessTokenCreatedAt = res.body()?.createdAt ?: 0
-                val account = getOwnAccount(pref)
-                setAccountToPref(pref, account)
-
-                finish()
-            } catch (e: HttpException) {
-                e.printStackTrace()
-                finish()
-            }
-        }
-    }
-
-    private fun getOwnAccount(pref: AuthPreferenceManager): Account? {
-        val verify = MastodonApiManager(pref.instanceUrl).accounts::verifyCredentials
-        return runBlocking { verify(pref.accessToken) }.body()
-    }
-
-    private fun setAccountToPref(pref: AuthPreferenceManager, account: Account?) {
-        if (account !is Account)
-            return
-
-        pref.accountId = account.id
-        pref.accountUsername = account.username
-        pref.accountDisplayName = account.displayName
-        pref.accountAvatar = account.avatar
-        pref.accountHeader = account.header
     }
 
     private fun sendAuth() {
@@ -102,5 +69,71 @@ class AuthActivity : AppCompatActivity() {
                 // TODO(call.toString()) // 失敗しました的なこと
             }
         }
+    }
+
+    private fun fromUri() {
+        val uri = intent.data
+        val pref = AuthPreferenceManager(this)
+        authInfoDao = NastodonDataBase.getInstance().authInfoDao()
+
+        CoroutineScope(context = Dispatchers.IO).launch {
+            val auth = MastodonApiManager(pref.instanceUrl).api
+            try {
+                val res = auth.getAccessToken(
+                    MastodonApi.TokenBody(
+                        client_id = pref.clientId,
+                        client_secret = pref.clientSecret,
+                        code = uri?.getQueryParameter("code") ?: ""
+                    )
+                )
+
+                pref.accessToken = res.body()?.accessToken ?: ""
+                pref.accessTokenCreatedAt = res.body()?.createdAt ?: 0
+                val account = getOwnAccount(pref)
+
+                setAccountToPref(pref, account)
+                insertDB(pref, authInfoDao)
+
+                startActivity(Intent(this@AuthActivity, MainActivity::class.java))
+                finish()
+            } catch (e: HttpException) {
+                e.printStackTrace()
+                finish()
+            }
+        }
+    }
+
+    private fun getOwnAccount(pref: AuthPreferenceManager): Account? {
+        val verify = MastodonApiManager(pref.instanceUrl).accounts::verifyCredentials
+        return runBlocking { verify(pref.accessToken) }.body()
+    }
+
+    private fun setAccountToPref(pref: AuthPreferenceManager, account: Account?) {
+        if (account !is Account)
+            return
+
+        pref.accountId = account.id
+        pref.accountUsername = account.username
+        pref.accountDisplayName = account.displayName
+        pref.accountAvatar = account.avatar
+        pref.accountHeader = account.header
+    }
+
+    private fun insertDB(pref: AuthPreferenceManager, dao: AuthInfoDao) {
+        // ViewModelではgetClientIdから戻ってきた時に情報を保持できていない ここだけsharedPreferenceが残る
+        dao.insert(
+            AuthInfo(
+                instanceUrl = pref.instanceUrl,
+                clientId = pref.clientId,
+                clientSecret = pref.clientSecret,
+                accessToken = pref.accessToken,
+                tokenCreatedAt = pref.accessTokenCreatedAt,
+                accountId = pref.accountId,
+                accountUsername = pref.accountUsername,
+                accountDisplayName = pref.accountDisplayName,
+                accountAvatar = pref.accountAvatar,
+                accountHeader = pref.accountHeader
+            )
+        )
     }
 }
