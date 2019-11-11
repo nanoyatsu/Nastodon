@@ -18,6 +18,7 @@ import retrofit2.HttpException
 class BootActivity : AppCompatActivity() {
 
     private lateinit var authInfoDao: AuthInfoDao
+    private lateinit var apiManager: MastodonApiManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +32,7 @@ class BootActivity : AppCompatActivity() {
 
             val transIntent =
                 if (auth is AuthInfo && hasAuthInfo(auth) && verifyCredentials(auth)) {
+                    apiManager = MastodonApiManager(auth.instanceUrl)
                     Intent(this@BootActivity, MainActivity::class.java)
                 } else {
                     Intent(this@BootActivity, AuthActivity::class.java)
@@ -49,7 +51,7 @@ class BootActivity : AppCompatActivity() {
     }
 
     private fun verifyCredentials(auth: AuthInfo): Boolean {
-        val api = MastodonApiManager(auth.instanceUrl).apps
+        val api = apiManager.apps
         var result = false
         runBlocking {
             result = try {

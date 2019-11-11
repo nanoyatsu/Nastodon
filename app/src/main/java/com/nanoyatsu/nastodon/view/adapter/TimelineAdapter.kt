@@ -24,9 +24,11 @@ class TimelineAdapter(private val context: Context, private val toots: ArrayList
     RecyclerView.Adapter<TimelineAdapter.ViewHolder>() {
     private var authInfoDao: AuthInfoDao = NastodonDataBase.getInstance().authInfoDao()
     private lateinit var auth: AuthInfo
+    private lateinit var apiManager: MastodonApiManager
 
     init {
         runBlocking(context = Dispatchers.IO) { auth = authInfoDao.getAll().first() }
+        apiManager = MastodonApiManager(auth.instanceUrl)
     }
 
     override fun getItemCount(): Int = toots.size
@@ -65,7 +67,7 @@ class TimelineAdapter(private val context: Context, private val toots: ArrayList
     }
 
     private fun doReblog(id: String, reblogged: Boolean): Status? {
-        val api = MastodonApiManager(auth.instanceUrl).statuses
+        val api = apiManager.statuses
         if (reblogged) // todo アイコンの色変える→失敗したら戻す
             return runBlocking(Dispatchers.IO) { api.unReblog(auth.accessToken, id).body() }
         else
@@ -73,7 +75,7 @@ class TimelineAdapter(private val context: Context, private val toots: ArrayList
     }
 
     private fun doFav(view: View, id: String, favourited: Boolean): Status? { // todo doReblogと抽象化
-        val api = MastodonApiManager(auth.instanceUrl).favourites
+        val api = apiManager.favourites
         if (favourited) {
 //            view.background.setTint(Color.GRAY)
             return runBlocking(Dispatchers.IO) {

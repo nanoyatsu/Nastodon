@@ -30,6 +30,7 @@ class AuthActivity : AppCompatActivity() {
 
     private lateinit var authInfoDao: AuthInfoDao
     private lateinit var viewModel: AuthViewModel
+    private lateinit var apiManager: MastodonApiManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +47,9 @@ class AuthActivity : AppCompatActivity() {
         val pref = AuthPreferenceManager(this@AuthActivity)
         val baseUrl = "https://${instanceUrl.text}/"
         pref.instanceUrl = baseUrl
+        apiManager = MastodonApiManager(baseUrl)
 
-        val api = MastodonApiManager(baseUrl).apps
+        val api = apiManager.apps
         CoroutineScope(context = Dispatchers.Main).launch {
             try {
                 val res = api.getClientId()
@@ -75,9 +77,10 @@ class AuthActivity : AppCompatActivity() {
         val uri = intent.data
         val pref = AuthPreferenceManager(this)
         authInfoDao = NastodonDataBase.getInstance().authInfoDao()
+        apiManager = MastodonApiManager(pref.instanceUrl)
 
         CoroutineScope(context = Dispatchers.IO).launch {
-            val auth = MastodonApiManager(pref.instanceUrl).api
+            val auth = apiManager.api
             try {
                 val res = auth.getAccessToken(
                     MastodonApi.TokenBody(
@@ -104,7 +107,7 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun getOwnAccount(pref: AuthPreferenceManager): Account? {
-        val verify = MastodonApiManager(pref.instanceUrl).accounts::verifyCredentials
+        val verify = apiManager.accounts::verifyCredentials
         return runBlocking { verify(pref.accessToken) }.body()
     }
 

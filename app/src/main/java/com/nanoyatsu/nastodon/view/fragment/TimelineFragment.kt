@@ -36,6 +36,7 @@ class TimelineFragment() : Fragment() {
     private lateinit var timelinesApi: MastodonApiTimelines
     private lateinit var authInfoDao: AuthInfoDao
     private lateinit var auth: AuthInfo
+    private lateinit var apiManager: MastodonApiManager
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -53,8 +54,9 @@ class TimelineFragment() : Fragment() {
         // todo マルチアカウント考慮
         runBlocking(context = Dispatchers.IO) { auth = authInfoDao.getAll().first() }
         if (auth.instanceUrl == "") return // todo 認証に行く
+        apiManager = MastodonApiManager(auth.instanceUrl)
 
-        timelinesApi = MastodonApiManager(auth.instanceUrl).timelines
+        timelinesApi = apiManager.timelines
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

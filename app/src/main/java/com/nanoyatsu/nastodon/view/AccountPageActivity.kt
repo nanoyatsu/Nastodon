@@ -23,6 +23,7 @@ class AccountPageActivity : AppCompatActivity() {
 
     private lateinit var authInfoDao: AuthInfoDao
     private lateinit var auth: AuthInfo
+    private lateinit var apiManager: MastodonApiManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,8 +42,9 @@ class AccountPageActivity : AppCompatActivity() {
         // todo マルチアカウント考慮
         runBlocking(context = Dispatchers.IO) { auth = authInfoDao.getAll().first() }
         if (auth.instanceUrl == "") return // todo 認証に行く
+        apiManager = MastodonApiManager(auth.instanceUrl)
 
-        val api = MastodonApiManager(auth.instanceUrl).api
+        val api = apiManager.api
         // fixme トークン必要があとから判明したりして書き方がひどめ
         followingCount.also {
             it.text = getString(R.string.accountFollowingCountFormat, account.followingCount)

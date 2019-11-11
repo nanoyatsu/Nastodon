@@ -21,6 +21,7 @@ class TootEditActivity : AppCompatActivity() {
 
     private lateinit var authInfoDao: AuthInfoDao
     private lateinit var auth: AuthInfo
+    private lateinit var apiManager: MastodonApiManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +31,7 @@ class TootEditActivity : AppCompatActivity() {
         // todo マルチアカウント考慮
         runBlocking(context = Dispatchers.IO) { auth = authInfoDao.getAll().first() }
         if (auth.instanceUrl == "") finish() // todo 認証に行く
+        apiManager = MastodonApiManager(auth.instanceUrl)
 
         val adapter = ArrayAdapter(
             this@TootEditActivity,
@@ -46,7 +48,7 @@ class TootEditActivity : AppCompatActivity() {
 
         CoroutineScope(context = Dispatchers.Main).launch {
             try {
-                val res = MastodonApiManager(auth.instanceUrl).statuses.postToot(
+                val res = apiManager.statuses.postToot(
                     authorization = auth.accessToken,
                     status = note.text.toString(),
                     visibility = paramVisibility.name.toLowerCase()
