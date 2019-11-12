@@ -5,7 +5,7 @@ import com.nanoyatsu.nastodon.view.MainActivity
 import dagger.BindsInstance
 import dagger.Component
 
-@Component
+@Component(modules = [AccountModule::class])
 interface AppComponent {
     @Component.Factory
     interface Factory {
