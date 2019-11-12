@@ -13,7 +13,7 @@ class AccountModule {
     @Provides // todo たぶんアプリケーションレベルの範囲のModuleに移動したほうがよい
     fun provideDB(): NastodonDataBase = NastodonDataBase.getInstance()
 
-    @Provides
+    @Provides // todo マルチアカウント考慮
     fun tryProvideAuthInfo(db: NastodonDataBase): AuthInfo? =
         runBlocking(context = Dispatchers.IO) { db.authInfoDao().getAll().firstOrNull() }
 

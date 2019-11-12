@@ -3,9 +3,9 @@ package com.nanoyatsu.nastodon.view
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.NastodonDataBase
-import com.nanoyatsu.nastodon.data.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.entity.AuthInfo
 import com.nanoyatsu.nastodon.model.Apps
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
@@ -14,25 +14,26 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
+import javax.inject.Inject
 
 class BootActivity : AppCompatActivity() {
 
-    private lateinit var authInfoDao: AuthInfoDao
-    private lateinit var apiManager: MastodonApiManager
+    @Inject
+    lateinit var db: NastodonDataBase
+    @Inject
+    lateinit var apiManager: MastodonApiManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        (application as NastodonApplication).appComponent.inject(this@BootActivity)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_boot)
 
         // 画面つくる→即抜けでいい
         CoroutineScope(context = Dispatchers.Default).launch {
-            authInfoDao = NastodonDataBase.getInstance().authInfoDao()
-            // todo マルチアカウント考慮
-            val auth = authInfoDao.getAll().firstOrNull()
+            val auth = db.authInfoDao().getAll().firstOrNull()
 
             val transIntent =
                 if (auth is AuthInfo && hasAuthInfo(auth) && verifyCredentials(auth)) {
-                    apiManager = MastodonApiManager(auth.instanceUrl)
                     Intent(this@BootActivity, MainActivity::class.java)
                 } else {
                     Intent(this@BootActivity, AuthActivity::class.java)
