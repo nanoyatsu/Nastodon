@@ -158,7 +158,7 @@ class TimelineFragment() : Fragment() {
     }
 
     fun focusTop() {
-        timelineView.scrollToPosition(0)
+        timelineView.smoothScrollToPosition(0)
     }
 
     interface EventListener {
