@@ -4,9 +4,8 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.R
-import com.nanoyatsu.nastodon.data.NastodonDataBase
-import com.nanoyatsu.nastodon.data.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.entity.AuthInfo
 import com.nanoyatsu.nastodon.model.Visibility
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
@@ -14,24 +13,25 @@ import kotlinx.android.synthetic.main.activity_toot_edit.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
+import javax.inject.Inject
 
 class TootEditActivity : AppCompatActivity() {
 
-    private lateinit var authInfoDao: AuthInfoDao
-    private lateinit var auth: AuthInfo
-    private lateinit var apiManager: MastodonApiManager
+    @Inject
+    lateinit var auth: AuthInfo
+    @Inject
+    lateinit var apiManager: MastodonApiManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        (application as NastodonApplication).appComponent.inject(this@TootEditActivity)
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_toot_edit)
-        authInfoDao = NastodonDataBase.getInstance().authInfoDao()
-        // todo マルチアカウント考慮
-        runBlocking(context = Dispatchers.IO) { auth = authInfoDao.getAll().first() }
-        if (auth.instanceUrl == "") finish() // todo 認証に行く
-        apiManager = MastodonApiManager(auth.instanceUrl)
+
+        if (auth.instanceUrl == "") {
+            finish() // todo 認証に行く
+            return
+        }
 
         val adapter = ArrayAdapter(
             this@TootEditActivity,

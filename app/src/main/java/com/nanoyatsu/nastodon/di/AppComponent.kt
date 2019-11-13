@@ -4,6 +4,7 @@ import android.content.Context
 import com.nanoyatsu.nastodon.data.NastodonDataBase
 import com.nanoyatsu.nastodon.view.BootActivity
 import com.nanoyatsu.nastodon.view.MainActivity
+import com.nanoyatsu.nastodon.view.TootEditActivity
 import dagger.BindsInstance
 import dagger.Component
 import dagger.Provides
@@ -17,4 +18,5 @@ interface AppComponent {
 
     fun inject(activity: BootActivity)
     fun inject(activity: MainActivity)
+    fun inject(activity: TootEditActivity)
 }

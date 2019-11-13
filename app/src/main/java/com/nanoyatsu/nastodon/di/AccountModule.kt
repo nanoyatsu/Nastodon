@@ -14,8 +14,8 @@ class AccountModule {
     fun provideDB(): NastodonDataBase = NastodonDataBase.getInstance()
 
     @Provides // todo マルチアカウント考慮
-    fun tryProvideAuthInfo(db: NastodonDataBase): AuthInfo? =
-        runBlocking(context = Dispatchers.IO) { db.authInfoDao().getAll().firstOrNull() }
+    fun tryProvideAuthInfo(db: NastodonDataBase): AuthInfo =
+        runBlocking(context = Dispatchers.IO) { db.authInfoDao().getAll().firstOrNull() ?: AuthInfo() }
 
     @Provides
     fun provideApiManager(authInfo: AuthInfo?): MastodonApiManager = MastodonApiManager(authInfo?.instanceUrl ?: "")
