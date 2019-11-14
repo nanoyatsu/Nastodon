@@ -17,8 +17,6 @@ import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.databinding.ActivityMainBinding
 import com.nanoyatsu.nastodon.view.fragment.TimelineFragment
 import com.nanoyatsu.nastodon.viewModel.MainViewModel
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.app_bar_main.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     TimelineFragment.EventListener {
@@ -33,36 +31,40 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         binding = DataBindingUtil.setContentView<ActivityMainBinding>(this@MainActivity, R.layout.activity_main)
 
         // 上部ToolBar
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.mainContainer.toolbar)
 
         // FloatingButton todo 関数化・処理分割
-        floating_edit.setOnClickListener {
+        binding.mainContainer.floatingEdit.setOnClickListener {
             val intent = Intent(this@MainActivity, TootEditActivity::class.java)
             startActivity(intent)
         }
 
         val toggle = ActionBarDrawerToggle(
-            this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+            this,
+            binding.drawerLayout,
+            binding.mainContainer.toolbar,
+            R.string.navigation_drawer_open,
+            R.string.navigation_drawer_close
         )
-        drawer_layout.addDrawerListener(toggle)
+        binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
         // 下部タブ
         setTabButton(supportFragmentManager)
         // 左部メニュー(Navigation Drawer)
-        setNavigationDrawer(nav_view)
+        setNavigationDrawer(binding.navView)
 
         // 初期化あるいは再構成
         restoreView(viewModel)
     }
 
     private fun restoreView(vm: MainViewModel) {
-        navigation.findViewById<View>(vm.selectedTabId).callOnClick()
+        binding.mainContainer.navigation.findViewById<View>(vm.selectedTabId).callOnClick()
     }
 
     override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawer(GravityCompat.START)
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
         }
@@ -110,7 +112,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             true
         }
 
-        navigation.setOnNavigationItemSelectedListener(selectedListener)
+        binding.mainContainer.navigation.setOnNavigationItemSelectedListener(selectedListener)
     }
 
     private fun setNavigationDrawer(view: NavigationView) {
@@ -118,37 +120,31 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
         when (item.itemId) {
             R.id.nav_home -> {
                 val intent = Intent(this@MainActivity, AuthActivity::class.java)
                 startActivity(intent)
             }
             R.id.nav_gallery -> {
-
             }
             R.id.nav_slideshow -> {
-
             }
             R.id.nav_tools -> {
-
             }
             R.id.nav_share -> {
-
             }
             R.id.nav_send -> {
-
             }
         }
-        drawer_layout.closeDrawer(GravityCompat.START)
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
 
     override fun progressStart() {
-        progress_view.visibility = View.VISIBLE
+        binding.progressView.visibility = View.VISIBLE
     }
 
     override fun progressEnd() {
-        progress_view.visibility = View.GONE
+        binding.progressView.visibility = View.GONE
     }
 }
