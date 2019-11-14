@@ -8,11 +8,13 @@ import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.nanoyatsu.nastodon.R
+import com.nanoyatsu.nastodon.databinding.ActivityMainBinding
 import com.nanoyatsu.nastodon.view.fragment.TimelineFragment
 import com.nanoyatsu.nastodon.viewModel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -22,10 +24,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     TimelineFragment.EventListener {
 
     lateinit var viewModel: MainViewModel
+    lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        viewModel = ViewModelProvider(this@MainActivity).get(MainViewModel::class.java) // todo bindingの中に入れる
+        binding = DataBindingUtil.setContentView<ActivityMainBinding>(this@MainActivity, R.layout.activity_main)
 
         // 上部ToolBar
         setSupportActionBar(toolbar)
@@ -48,7 +53,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setNavigationDrawer(nav_view)
 
         // 初期化あるいは再構成
-        viewModel = ViewModelProvider(this@MainActivity).get(MainViewModel::class.java)
         restoreView(viewModel)
     }
 
