@@ -21,14 +21,13 @@ import com.nanoyatsu.nastodon.viewModel.MainViewModel
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
     TimelineFragment.EventListener {
 
-    lateinit var viewModel: MainViewModel
     lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        viewModel = ViewModelProvider(this@MainActivity).get(MainViewModel::class.java) // todo bindingの中に入れる
-        binding = DataBindingUtil.setContentView<ActivityMainBinding>(this@MainActivity, R.layout.activity_main)
+        binding = DataBindingUtil.setContentView<ActivityMainBinding>(this@MainActivity, R.layout.activity_main).also {
+            it.vm = ViewModelProvider(this@MainActivity).get(MainViewModel::class.java) // todo bindingの中に入れる
+        }
 
         // 上部ToolBar
         setSupportActionBar(binding.mainContainer.toolbar)
@@ -50,16 +49,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         // 下部タブ
-        setTabButton(supportFragmentManager)
+        setTabButton(binding.vm!!, supportFragmentManager)
         // 左部メニュー(Navigation Drawer)
         setNavigationDrawer(binding.navView)
 
         // 初期化あるいは再構成
-        restoreView(viewModel)
+        restoreView(binding)
     }
 
-    private fun restoreView(vm: MainViewModel) {
-        binding.mainContainer.navigation.findViewById<View>(vm.selectedTabId).callOnClick()
+    private fun restoreView(binding: ActivityMainBinding) {
+        binding.mainContainer.navigation.findViewById<View>(binding.vm!!.selectedTabId).callOnClick()
     }
 
     override fun onBackPressed() {
@@ -86,9 +85,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         arrayOf(R.id.navigation_timeline, R.id.navigation_notice, R.id.navigation_global_timeline)
             .zip(TimelineFragment.GetMethod.values())
 
-    private fun setTabButton(fm: FragmentManager) {
+    private fun setTabButton(vm: MainViewModel, fm: FragmentManager) {
         fun fragmentTransition(selected: Pair<Int, TimelineFragment.GetMethod>, showing: TimelineFragment?) {
-            viewModel.selectedTabId = selected.first
+            vm.selectedTabId = selected.first
             fm.beginTransaction().also { trans ->
                 fm.fragments.forEach { trans.hide(it) }
 
@@ -105,7 +104,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 ?: return@OnNavigationItemSelectedListener false
             val showing = fm.findFragmentByTag(selected.second.name) as? TimelineFragment
 
-            if (showing != null && viewModel.selectedTabId == selected.first)
+            if (showing != null && vm.selectedTabId == selected.first)
                 showing.focusTop()
             else
                 fragmentTransition(selected, showing)
@@ -141,10 +140,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun progressStart() {
-        binding.progressView.visibility = View.VISIBLE
+        binding.vm!!.progressVisibility = true
     }
 
     override fun progressEnd() {
-        binding.progressView.visibility = View.GONE
+        binding.vm!!.progressVisibility = false
     }
 }
