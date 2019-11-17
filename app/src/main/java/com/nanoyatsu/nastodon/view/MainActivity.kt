@@ -25,8 +25,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
         binding = DataBindingUtil.setContentView<ActivityMainBinding>(this@MainActivity, R.layout.activity_main).also {
-            it.vm = ViewModelProvider(this@MainActivity).get(MainViewModel::class.java) // todo bindingの中に入れる
+            it.vm = ViewModelProvider(this@MainActivity).get(MainViewModel::class.java)
+            it.lifecycleOwner = this
         }
 
         // 上部ToolBar
@@ -49,7 +51,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         // 下部タブ
-        setTabButton(binding.vm!!, supportFragmentManager)
+        setTabButton(supportFragmentManager)
         // 左部メニュー(Navigation Drawer)
         setNavigationDrawer(binding.navView)
 
@@ -85,9 +87,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         arrayOf(R.id.navigation_timeline, R.id.navigation_notice, R.id.navigation_global_timeline)
             .zip(TimelineFragment.GetMethod.values())
 
-    private fun setTabButton(vm: MainViewModel, fm: FragmentManager) {
+    private fun setTabButton(fm: FragmentManager) {
         fun fragmentTransition(selected: Pair<Int, TimelineFragment.GetMethod>, showing: TimelineFragment?) {
-            vm.selectedTabId = selected.first
+            binding.vm?.selectedTabId = selected.first
             fm.beginTransaction().also { trans ->
                 fm.fragments.forEach { trans.hide(it) }
 
@@ -104,7 +106,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 ?: return@OnNavigationItemSelectedListener false
             val showing = fm.findFragmentByTag(selected.second.name) as? TimelineFragment
 
-            if (showing != null && vm.selectedTabId == selected.first)
+            if (showing != null && binding.vm?.selectedTabId == selected.first)
                 showing.focusTop()
             else
                 fragmentTransition(selected, showing)
@@ -140,10 +142,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun progressStart() {
-        binding.vm!!.progressVisibility = true
+        binding.vm?.progressStart()
     }
 
     override fun progressEnd() {
-        binding.vm!!.progressVisibility = false
+        binding.vm?.progressEnd()
     }
 }

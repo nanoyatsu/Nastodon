@@ -39,7 +39,7 @@
       layout="@layout/item_progress"
       android:layout_height="wrap_content"
       android:layout_width="wrap_content"
-      android:visibility="@{vm.progressVisibility ? View.VISIBLE : View.GONE}"
+      android:visibility="@{safeUnbox(vm.progressVisible) ? View.VISIBLE : View.GONE}"
       tools:visibility="visible" />
 
   </androidx.drawerlayout.widget.DrawerLayout>
