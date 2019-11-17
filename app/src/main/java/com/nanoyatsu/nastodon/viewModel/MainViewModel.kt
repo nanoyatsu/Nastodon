@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nanoyatsu.nastodon.R
 
-class MainViewModel : ViewModel() {
+class MainViewModel() : ViewModel() {
     var selectedTabId: Int = R.id.navigation_timeline
 
     private val _progressVisible = MutableLiveData<Boolean>()

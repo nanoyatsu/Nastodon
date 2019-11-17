@@ -14,7 +14,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 import com.nanoyatsu.nastodon.R
+import com.nanoyatsu.nastodon.data.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.ActivityMainBinding
+import com.nanoyatsu.nastodon.databinding.NavHeaderMainBinding
 import com.nanoyatsu.nastodon.view.fragment.TimelineFragment
 import com.nanoyatsu.nastodon.viewModel.MainViewModel
 
@@ -28,8 +30,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         binding = DataBindingUtil.setContentView<ActivityMainBinding>(this@MainActivity, R.layout.activity_main).also {
             it.vm = ViewModelProvider(this@MainActivity).get(MainViewModel::class.java)
-            it.lifecycleOwner = this
+            it.lifecycleOwner = this@MainActivity
         }
+        val navHeaderMainBinding = NavHeaderMainBinding.inflate(layoutInflater, binding.navView, false).also {
+            it.authInfo = AuthInfo(accountDisplayName = "test") // todo 取得方法、ViewModel化
+            it.lifecycleOwner = this@MainActivity
+        }
+        binding.navView.addHeaderView(navHeaderMainBinding.root)
 
         // 上部ToolBar
         setSupportActionBar(binding.mainContainer.toolbar)
