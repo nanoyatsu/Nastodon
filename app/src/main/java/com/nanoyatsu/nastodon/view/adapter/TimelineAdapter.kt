@@ -20,12 +20,13 @@ import com.nanoyatsu.nastodon.model.Status
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
 import com.nanoyatsu.nastodon.view.AccountPageActivity
 import com.nanoyatsu.nastodon.view.AccountsAdapter
+import com.nanoyatsu.nastodon.viewModel.CardTootViewModel
+import com.nanoyatsu.nastodon.viewModel.CardTootViewModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
 class TimelineAdapter(private val context: Context, private val toots: List<Status>) :
-    ListAdapter<Status, TimelineAdapter.ViewHolder>(DiffCallback())
-{
+    ListAdapter<Status, TimelineAdapter.ViewHolder>(DiffCallback()) {
     private var authInfoDao: AuthInfoDao = NastodonDataBase.getInstance().authInfoDao()
     private lateinit var auth: AuthInfo
     private lateinit var apiManager: MastodonApiManager
@@ -91,7 +92,7 @@ class TimelineAdapter(private val context: Context, private val toots: List<Stat
 
     class ViewHolder(val binding: CardTootBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(toot: Status) {
-            binding.toot = toot
+            binding.vm = CardTootViewModelFactory(toot).create(CardTootViewModel::class.java)
             Glide.with(binding.root.context).load(toot.account.avatarStatic).circleCrop()
                 .into(binding.accountAvatar)
 //            binding.accountAvatar.setOnClickListener { transAccountPage(it, toot.account) }

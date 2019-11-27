@@ -10,6 +10,10 @@
     <import type="android.graphics.Color" />
 
     <variable
+      name="vm"
+      type="com.nanoyatsu.nastodon.viewModel.CardTootViewModel" />
+
+    <variable
       name="toot"
       type="com.nanoyatsu.nastodon.model.Status" />
   </data>
@@ -21,62 +25,62 @@
     <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:padding="8dp"
-      android:layout_marginBottom="2dp">
+      android:layout_marginBottom="2dp"
+      android:padding="8dp">
 
       <ImageView
+        android:id="@+id/accountAvatar"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:id="@+id/accountAvatar"
-        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/account_avatar"
         app:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="@string/account_avatar" />
+        app:layout_constraintTop_toTopOf="parent" />
 
       <TextView
+        android:id="@+id/displayName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/displayName"
-        app:layout_constraintStart_toEndOf="@+id/accountAvatar"
         android:layout_marginStart="8dp"
-        android:text="@{toot.account.displayName}"
-        tools:text="tootUsername"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="4dp"
+        android:text="@{vm.toot.account.displayName}"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
-        android:layout_marginBottom="4dp" />
+        app:layout_constraintStart_toEndOf="@+id/accountAvatar"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="tootUsername" />
 
       <TextView
+        android:id="@+id/username"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:id="@+id/username"
-        app:layout_constraintStart_toEndOf="@+id/displayName"
         android:layout_marginStart="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="@{toot.account.username}"
-        tools:text="accountId"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="4dp"
+        android:text="@{vm.toot.account.username}"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
-        android:layout_marginBottom="4dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/displayName"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="accountId" />
 
       <androidx.constraintlayout.widget.Guideline
-        android:orientation="horizontal"
+        android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/guideline"
+        android:orientation="horizontal"
         app:layout_constraintGuide_begin="24dp" />
 
       <TextView
+        android:id="@+id/note"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:id="@+id/note"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:autoLink="all"
+        android:text="@{Html.fromHtml(vm.toot.content, Html.FROM_HTML_MODE_COMPACT)}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/accountAvatar"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="@{Html.fromHtml(toot.content, Html.FROM_HTML_MODE_COMPACT)}"
-        android:autoLink="all"
-        tools:text="statusContent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
-        android:layout_marginTop="4dp" />
+        tools:text="statusContent" />
 
       <ImageButton
         android:id="@+id/button_reply"
@@ -85,9 +89,9 @@
         android:layout_marginStart="16dp"
         android:background="@drawable/ic_reply_white"
         android:backgroundTint="@color/colorPrimaryDark"
+        android:contentDescription="@string/button_reply"
         app:layout_constraintStart_toEndOf="@+id/accountAvatar"
-        app:layout_constraintTop_toBottomOf="@id/note"
-        android:contentDescription="@string/button_reply" />
+        app:layout_constraintTop_toBottomOf="@id/note" />
 
       <ImageButton
         android:id="@+id/button_repeat"
@@ -95,10 +99,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:background="@drawable/ic_repeat_white"
-        android:backgroundTint="@{safeUnbox(toot.reblogged) == true ? @color/colorPrimaryDark : Color.GRAY}"
-        app:layout_constraintTop_toBottomOf="@id/note"
+        android:backgroundTint="@{vm.reblogged == true ? @color/colorPrimaryDark : Color.GRAY}"
+        android:contentDescription="@string/button_repeat"
         app:layout_constraintStart_toEndOf="@id/button_reply"
-        android:contentDescription="@string/button_repeat" />
+        app:layout_constraintTop_toBottomOf="@id/note" />
 
       <ImageButton
         android:id="@+id/button_star"
@@ -106,10 +110,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:background="@drawable/ic_star_white"
-        android:backgroundTint="@{safeUnbox(toot.favourited) == true ? @color/colorPrimaryDark : Color.GRAY}"
-        app:layout_constraintTop_toBottomOf="@id/note"
+        android:backgroundTint="@{vm.favourited == true ? @color/colorPrimaryDark : Color.GRAY}"
+        android:contentDescription="@string/button_star"
         app:layout_constraintStart_toEndOf="@id/button_repeat"
-        android:contentDescription="@string/button_star" />
+        app:layout_constraintTop_toBottomOf="@id/note" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -117,8 +121,8 @@
       android:layout_width="match_parent"
       android:layout_height="1dp"
       android:background="@drawable/shape_divider"
-      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintBottom_toBottomOf="parent" />
+      app:layout_constraintStart_toStartOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
