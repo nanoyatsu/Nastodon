@@ -19,13 +19,12 @@ import com.nanoyatsu.nastodon.model.Account
 import com.nanoyatsu.nastodon.model.Status
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
 import com.nanoyatsu.nastodon.view.AccountPageActivity
-import com.nanoyatsu.nastodon.view.AccountsAdapter
 import com.nanoyatsu.nastodon.viewModel.CardTootViewModel
 import com.nanoyatsu.nastodon.viewModel.CardTootViewModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
-class TimelineAdapter(private val context: Context, private val toots: List<Status>) :
+class TimelineAdapter(private val context: Context) :
     ListAdapter<Status, TimelineAdapter.ViewHolder>(DiffCallback()) {
     private var authInfoDao: AuthInfoDao = NastodonDataBase.getInstance().authInfoDao()
     private lateinit var auth: AuthInfo
@@ -35,8 +34,6 @@ class TimelineAdapter(private val context: Context, private val toots: List<Stat
         runBlocking(context = Dispatchers.IO) { auth = authInfoDao.getAll().first() }
         apiManager = MastodonApiManager(auth.instanceUrl)
     }
-
-    override fun getItemCount(): Int = toots.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =

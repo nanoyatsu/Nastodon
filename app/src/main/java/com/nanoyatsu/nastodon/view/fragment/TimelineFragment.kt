@@ -97,7 +97,7 @@ class TimelineFragment() : Fragment() {
         timelineView.layoutManager = layoutManager // fixme 画面回転を連続したりするとNPE
         val timeline = mutableListOf<Status>() // todo ViewModelに持つ
 
-        val adapter = TimelineAdapter(context, timeline)
+        val adapter = TimelineAdapter(context)
         timelineView.adapter = adapter
         adapter.submitList(timeline)
 
