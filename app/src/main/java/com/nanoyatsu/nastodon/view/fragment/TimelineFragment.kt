@@ -47,7 +47,8 @@ class TimelineFragment() : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let { bundle ->
             getMethod =
-                GetMethod.values().find { it.name == bundle.getString(BundleKey.GET_METHOD.name) } ?: GetMethod.HOME
+                GetMethod.values().find { it.name == bundle.getString(BundleKey.GET_METHOD.name) }
+                    ?: GetMethod.HOME
         }
 
         authInfoDao = NastodonDataBase.getInstance().authInfoDao()
@@ -59,7 +60,11 @@ class TimelineFragment() : Fragment() {
         timelinesApi = apiManager.timelines
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.content_main, container, false)
     }
@@ -90,8 +95,12 @@ class TimelineFragment() : Fragment() {
 
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         timelineView.layoutManager = layoutManager // fixme 画面回転を連続したりするとNPE
-        val timeline = ArrayList<Status>() // todo ViewModelに持つ
-        timelineView.adapter = TimelineAdapter(context, timeline)
+        val timeline = mutableListOf<Status>() // todo ViewModelに持つ
+
+        val adapter = TimelineAdapter(context, timeline)
+        timelineView.adapter = adapter
+        adapter.submitList(timeline)
+
 
         timelineView.clearOnScrollListeners()
         timelineView.addOnScrollListener(object : InfiniteScrollListener(layoutManager) {
@@ -135,14 +144,16 @@ class TimelineFragment() : Fragment() {
     }
 
     private suspend fun reloadTimeline(
-        timeline: ArrayList<Status>,
+        timeline: List<Status>,
         maxId: String? = null,
         sinceId: String? = null
     ) {
         val getter = suspend { returnTimelineGetter(getMethod)(maxId, sinceId) }
         val toots = getByApi(getter)
-        timeline.addAll(toots.toList())
-        timelineView.adapter?.notifyDataSetChanged()
+        // 仮記述 今のままだと1回しか増えない(timelineを更新していない) todo
+        val adapter = timelineView.adapter
+        if (adapter is TimelineAdapter)
+            adapter.submitList(timeline + toots.toList())
     }
 
     private suspend fun getByApi(getter: suspend () -> Response<Array<Status>>): Array<Status> {

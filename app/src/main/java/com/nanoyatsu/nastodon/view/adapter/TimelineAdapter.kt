@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nanoyatsu.nastodon.R
@@ -17,11 +19,13 @@ import com.nanoyatsu.nastodon.model.Account
 import com.nanoyatsu.nastodon.model.Status
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
 import com.nanoyatsu.nastodon.view.AccountPageActivity
+import com.nanoyatsu.nastodon.view.AccountsAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
-class TimelineAdapter(private val context: Context, private val toots: ArrayList<Status>) :
-    RecyclerView.Adapter<TimelineAdapter.ViewHolder>() {
+class TimelineAdapter(private val context: Context, private val toots: List<Status>) :
+    ListAdapter<Status, TimelineAdapter.ViewHolder>(DiffCallback())
+{
     private var authInfoDao: AuthInfoDao = NastodonDataBase.getInstance().authInfoDao()
     private lateinit var auth: AuthInfo
     private lateinit var apiManager: MastodonApiManager
@@ -35,29 +39,18 @@ class TimelineAdapter(private val context: Context, private val toots: ArrayList
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
-            DataBindingUtil.inflate<CardTootBinding>(LayoutInflater.from(context), R.layout.card_toot, parent, false)
+            DataBindingUtil.inflate<CardTootBinding>(
+                LayoutInflater.from(context),
+                R.layout.card_toot,
+                parent,
+                false
+            )
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(vh: ViewHolder, position: Int) {
-        vh.binding.toot = toots[position]
-        val toot = vh.binding.toot!! // fixme 書き方がかなり怪しい (対nullableとか実質aliasがほしいだけとか) 調べる
-        Glide.with(this.context).load(toot.account.avatarStatic).circleCrop().into(vh.binding.accountAvatar)
-        vh.binding.accountAvatar.setOnClickListener { transAccountPage(it, toot.account) }
-
-        vh.binding.buttonRepeat.setOnClickListener {
-            resetStatus(
-                position,
-                doReblog(toots[position].id, toots[position].reblogged ?: false)
-            )
-        }
-        vh.binding.buttonStar.setOnClickListener {
-            resetStatus(
-                position,
-                doFav(it, toots[position].id, toots[position].favourited ?: false)
-            )
-        }
-        vh.binding.executePendingBindings()
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val toot = getItem(position)
+        holder.bind(toot)
     }
 
     private fun transAccountPage(v: View, account: Account) {
@@ -93,10 +86,42 @@ class TimelineAdapter(private val context: Context, private val toots: ArrayList
 
     private fun resetStatus(position: Int, new: Status?) {
         if (new == null) return
-        toots[position] = new
         notifyDataSetChanged()
-//        notifyItemChanged(position) // todo payload // https://qiita.com/ralph/items/e56844976117d9883e34
     }
 
-    class ViewHolder(val binding: CardTootBinding) : RecyclerView.ViewHolder(binding.root) {}
+    class ViewHolder(val binding: CardTootBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(toot: Status) {
+            binding.toot = toot
+            Glide.with(binding.root.context).load(toot.account.avatarStatic).circleCrop()
+                .into(binding.accountAvatar)
+//            binding.accountAvatar.setOnClickListener { transAccountPage(it, toot.account) }
+
+//            binding.buttonRepeat.setOnClickListener {
+//                resetStatus(
+//                    position,
+//                    doReblog(toot.id, toot.reblogged ?: false)
+//                )
+//            }
+//            binding.buttonStar.setOnClickListener {
+//                resetStatus(
+//                    position,
+//                    doFav(it, toot.id, toot.favourited ?: false)
+//                )
+//            }
+            binding.executePendingBindings()
+        }
+    }
+
+    companion object {
+        class DiffCallback : DiffUtil.ItemCallback<Status>() {
+            override fun areItemsTheSame(oldItem: Status, newItem: Status): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: Status, newItem: Status): Boolean {
+                return oldItem == newItem
+            }
+
+        }
+    }
 }
