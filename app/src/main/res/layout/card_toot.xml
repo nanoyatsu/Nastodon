@@ -30,6 +30,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:contentDescription="@string/account_avatar"
+        app:imageUrl="@{vm.toot.account.avatar}"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

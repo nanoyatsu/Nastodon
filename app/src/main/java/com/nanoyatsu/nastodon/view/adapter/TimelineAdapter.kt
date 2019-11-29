@@ -107,8 +107,8 @@ class TimelineAdapter(private val context: Context) :
             binding.vm = vm
             binding.lifecycleOwner = context
 
-            Glide.with(binding.root.context).load(toot.account.avatarStatic).circleCrop()
-                .into(binding.accountAvatar)
+//            Glide.with(binding.root.context).load(toot.account.avatarStatic).circleCrop()
+//                .into(binding.accountAvatar)
 //            binding.accountAvatar.setOnClickListener { transAccountPage(it, toot.account) }
 
 //            binding.buttonRepeat.setOnClickListener {
