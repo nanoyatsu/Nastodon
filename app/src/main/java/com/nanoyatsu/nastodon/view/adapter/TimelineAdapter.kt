@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +22,6 @@ import com.nanoyatsu.nastodon.model.Status
 import com.nanoyatsu.nastodon.presenter.MastodonApiManager
 import com.nanoyatsu.nastodon.view.AccountPageActivity
 import com.nanoyatsu.nastodon.viewModel.CardTootViewModel
-import com.nanoyatsu.nastodon.viewModel.CardTootViewModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
@@ -36,19 +37,12 @@ class TimelineAdapter(private val context: Context) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding =
-            DataBindingUtil.inflate<CardTootBinding>(
-                LayoutInflater.from(context),
-                R.layout.card_toot,
-                parent,
-                false
-            )
-        return ViewHolder(binding)
+        return ViewHolder.from(parent)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val toot = getItem(position)
-        holder.bind(toot)
+        holder.bind(toot, context)
     }
 
     private fun transAccountPage(v: View, account: Account) {
@@ -88,8 +82,31 @@ class TimelineAdapter(private val context: Context) :
     }
 
     class ViewHolder(val binding: CardTootBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(toot: Status) {
-            binding.vm = CardTootViewModelFactory(toot).create(CardTootViewModel::class.java)
+        companion object {
+            fun from(parent: ViewGroup): ViewHolder {
+                val binding =
+                    DataBindingUtil.inflate<CardTootBinding>(
+                        LayoutInflater.from(parent.context), R.layout.card_toot, parent, false
+                    )
+                return ViewHolder(binding)
+            }
+        }
+
+        fun bind(toot: Status, context: Context) {
+            val vm = CardTootViewModel(toot)
+            require(context is FragmentActivity)
+            vm.favouriteEvent.observe(context, Observer {
+                if (it == true)
+                    vm.onFavouriteFinished()
+            })
+            vm.reblogEvent.observe(context, Observer {
+                if (it == true)
+                    vm.onReblogFinished()
+            })
+
+            binding.vm = vm
+            binding.lifecycleOwner = context
+
             Glide.with(binding.root.context).load(toot.account.avatarStatic).circleCrop()
                 .into(binding.accountAvatar)
 //            binding.accountAvatar.setOnClickListener { transAccountPage(it, toot.account) }

@@ -13,9 +13,6 @@
       name="vm"
       type="com.nanoyatsu.nastodon.viewModel.CardTootViewModel" />
 
-    <variable
-      name="toot"
-      type="com.nanoyatsu.nastodon.model.Status" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -101,6 +98,7 @@
         android:background="@drawable/ic_repeat_white"
         android:backgroundTint="@{vm.reblogged == true ? @color/colorPrimaryDark : Color.GRAY}"
         android:contentDescription="@string/button_repeat"
+        android:onClick="@{() -> vm.onReblogClicked()}"
         app:layout_constraintStart_toEndOf="@id/button_reply"
         app:layout_constraintTop_toBottomOf="@id/note" />
 
@@ -112,6 +110,7 @@
         android:background="@drawable/ic_star_white"
         android:backgroundTint="@{vm.favourited == true ? @color/colorPrimaryDark : Color.GRAY}"
         android:contentDescription="@string/button_star"
+        android:onClick="@{() -> vm.onFavouriteClicked()}"
         app:layout_constraintStart_toEndOf="@id/button_repeat"
         app:layout_constraintTop_toBottomOf="@id/note" />
 
