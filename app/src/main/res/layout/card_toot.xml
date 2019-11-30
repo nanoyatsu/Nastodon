@@ -36,28 +36,43 @@
 
       <TextView
         android:id="@+id/displayName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginBottom="4dp"
+        android:singleLine="true"
         android:text="@{vm.toot.account.displayName}"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintStart_toEndOf="@+id/accountAvatar"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="tootUsername" />
+        tools:text="displayName" />
 
       <TextView
         android:id="@+id/username"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:layout_marginBottom="4dp"
-        android:text="@{vm.toot.account.username}"
+        android:singleLine="true"
+        android:text="@{'@'+vm.toot.account.username}"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/created_at"
         app:layout_constraintStart_toEndOf="@+id/displayName"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="accountId" />
+        tools:text="\@username" />
+
+      <TextView
+        android:id="@+id/created_at"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="4dp"
+        app:createdAt="@{vm.toot.createdAt}"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/username"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="createdAt" />
 
       <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
@@ -67,7 +82,7 @@
         app:layout_constraintGuide_begin="24dp" />
 
       <TextView
-        android:id="@+id/spoilerText"
+        android:id="@+id/spoiler_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -91,7 +106,7 @@
         android:autoLink="all"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/accountAvatar"
-        app:layout_constraintTop_toBottomOf="@+id/spoilerText"
+        app:layout_constraintTop_toBottomOf="@+id/spoiler_text"
         app:tootText="@{vm.toot.content}"
         tools:text="statusContent" />
 
