@@ -74,11 +74,12 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:autoLink="all"
-        android:text="@{Html.fromHtml(vm.toot.content, Html.FROM_HTML_MODE_COMPACT)}"
+        android:text="@{vm.toot.content}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/accountAvatar"
         app:layout_constraintTop_toTopOf="@+id/guideline"
         tools:text="statusContent" />
+      <!--      android:text="@{Html.fromHtml(vm.toot.content, Html.FROM_HTML_MODE_COMPACT)}"-->
 
       <ImageButton
         android:id="@+id/button_reply"

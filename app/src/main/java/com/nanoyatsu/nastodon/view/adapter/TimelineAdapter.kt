@@ -11,7 +11,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.NastodonDataBase
 import com.nanoyatsu.nastodon.data.dao.AuthInfoDao
@@ -42,7 +41,12 @@ class TimelineAdapter(private val context: Context) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val toot = getItem(position)
-        holder.bind(toot, context)
+        holder.bind(context, toot, apiManager, auth)
+    }
+
+    override fun onViewDetachedFromWindow(holder: ViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        holder.binding.vm!!.vmJob.cancel()
     }
 
     private fun transAccountPage(v: View, account: Account) {
@@ -51,78 +55,25 @@ class TimelineAdapter(private val context: Context) :
         v.context.startActivity(intent)
     }
 
-    private fun doReblog(id: String, reblogged: Boolean): Status? {
-        val api = apiManager.statuses
-        if (reblogged) // todo アイコンの色変える→失敗したら戻す
-            return runBlocking(Dispatchers.IO) { api.unReblog(auth.accessToken, id).body() }
-        else
-            return runBlocking(Dispatchers.IO) { api.reblog(auth.accessToken, id).body() }
-    }
-
-    private fun doFav(view: View, id: String, favourited: Boolean): Status? { // todo doReblogと抽象化
-        val api = apiManager.favourites
-        if (favourited) {
-//            view.background.setTint(Color.GRAY)
-            return runBlocking(Dispatchers.IO) {
-                val res = api.unFavourite(auth.accessToken, id)
-                res.body()
-            }
-        } else {
-//            view.background.setTint(context.getColor(R.color.colorPrimary))
-            return runBlocking(Dispatchers.IO) {
-                val res = api.favourite(auth.accessToken, id)
-                res.body()
-            }
-        }
-    }
-
-    private fun resetStatus(position: Int, new: Status?) {
-        if (new == null) return
-        notifyDataSetChanged()
-    }
-
     class ViewHolder(val binding: CardTootBinding) : RecyclerView.ViewHolder(binding.root) {
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
-                val binding =
-                    DataBindingUtil.inflate<CardTootBinding>(
-                        LayoutInflater.from(parent.context), R.layout.card_toot, parent, false
-                    )
+                val binding = DataBindingUtil.inflate<CardTootBinding>(
+                    LayoutInflater.from(parent.context), R.layout.card_toot, parent, false
+                )
                 return ViewHolder(binding)
             }
         }
 
-        fun bind(toot: Status, context: Context) {
-            val vm = CardTootViewModel(toot)
+        fun bind(context: Context, toot: Status, apiManager: MastodonApiManager, auth: AuthInfo) {
+            val vm = CardTootViewModel(toot, auth, apiManager)
             require(context is FragmentActivity)
-            vm.favouriteEvent.observe(context, Observer {
-                if (it == true)
-                    vm.onFavouriteFinished()
-            })
-            vm.reblogEvent.observe(context, Observer {
-                if (it == true)
-                    vm.onReblogFinished()
-            })
-
-            binding.vm = vm
+            vm.reblogEvent.observe(context, Observer { if (it == true) vm.doReblog() })
+            vm.favouriteEvent.observe(context, Observer { if (it == true) vm.doFav() })
             binding.lifecycleOwner = context
 
-//            Glide.with(binding.root.context).load(toot.account.avatarStatic).circleCrop()
-//                .into(binding.accountAvatar)
-//            binding.accountAvatar.setOnClickListener { transAccountPage(it, toot.account) }
+            binding.vm = vm
 
-//            binding.buttonRepeat.setOnClickListener {
-//                resetStatus(
-//                    position,
-//                    doReblog(toot.id, toot.reblogged ?: false)
-//                )
-//            }
-//            binding.buttonStar.setOnClickListener {
-//                resetStatus(
-//                    position,
-//                    doFav(it, toot.id, toot.favourited ?: false)
-//                )
-//            }
             binding.executePendingBindings()
         }
     }
