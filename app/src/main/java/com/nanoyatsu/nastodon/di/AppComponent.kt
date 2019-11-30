@@ -1,13 +1,11 @@
 package com.nanoyatsu.nastodon.di
 
 import android.content.Context
-import com.nanoyatsu.nastodon.data.NastodonDataBase
-import com.nanoyatsu.nastodon.view.BootActivity
-import com.nanoyatsu.nastodon.view.MainActivity
-import com.nanoyatsu.nastodon.view.TootEditActivity
+import com.nanoyatsu.nastodon.view.splash.BootActivity
+import com.nanoyatsu.nastodon.view.timeline.MainActivity
+import com.nanoyatsu.nastodon.view.tootEdit.TootEditActivity
 import dagger.BindsInstance
 import dagger.Component
-import dagger.Provides
 
 @Component(modules = [AccountModule::class])
 interface AppComponent {

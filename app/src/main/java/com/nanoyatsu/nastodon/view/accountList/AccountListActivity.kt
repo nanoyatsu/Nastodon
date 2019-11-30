@@ -1,0 +1,34 @@
+package com.nanoyatsu.nastodon.view.accountList
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.nanoyatsu.nastodon.R
+import com.nanoyatsu.nastodon.data.api.entity.Account
+import com.nanoyatsu.nastodon.data.api.endpoint.AccountListGetter
+import kotlinx.android.synthetic.main.content_main.*
+
+class AccountListActivity : AppCompatActivity() {
+    enum class IntentKey { TITLE, GETTER }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.content_main)
+//        setSupportActionBar(toolBar) // todo そのうち
+
+        val listGetter = intent.getSerializableExtra(IntentKey.GETTER.name)
+        if (listGetter is AccountListGetter) {
+            val layoutManager = LinearLayoutManager(this@AccountListActivity, RecyclerView.VERTICAL, false)
+            timelineView.layoutManager = layoutManager
+
+            val accounts = listGetter()
+            val adapter =
+                AccountsAdapter(
+                    baseContext,
+                    arrayListOf<Account>().also { it.addAll(accounts) })
+            timelineView.adapter = adapter
+            adapter.notifyDataSetChanged()
+        }
+    }
+}

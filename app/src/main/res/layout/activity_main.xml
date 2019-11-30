@@ -9,7 +9,7 @@
 
     <variable
       name="vm"
-      type="com.nanoyatsu.nastodon.viewModel.MainViewModel" />
+      type="com.nanoyatsu.nastodon.view.timeline.MainViewModel" />
   </data>
 
   <androidx.drawerlayout.widget.DrawerLayout
@@ -37,8 +37,8 @@
     <include
       android:id="@+id/progress_view"
       layout="@layout/item_progress"
-      android:layout_height="wrap_content"
       android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
       android:visibility="@{safeUnbox(vm.progressVisible) ? View.VISIBLE : View.GONE}"
       tools:visibility="visible" />
 
