@@ -7,6 +7,8 @@
 
     <import type="android.graphics.Color" />
 
+    <import type="android.view.View" />
+
     <variable
       name="vm"
       type="com.nanoyatsu.nastodon.viewModel.CardTootViewModel" />
@@ -65,6 +67,21 @@
         app:layout_constraintGuide_begin="24dp" />
 
       <TextView
+        android:id="@+id/spoilerText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:autoLink="all"
+        android:visibility="@{vm.toot.spoilerText.empty ? View.GONE : View.VISIBLE}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/accountAvatar"
+        app:layout_constraintTop_toTopOf="@+id/guideline"
+        app:tootText="@{vm.toot.spoilerText}"
+        tools:text="spoilerText" />
+
+      <TextView
         android:id="@+id/content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -74,7 +91,7 @@
         android:autoLink="all"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/accountAvatar"
-        app:layout_constraintTop_toTopOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/spoilerText"
         app:tootText="@{vm.toot.content}"
         tools:text="statusContent" />
 
