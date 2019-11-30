@@ -46,7 +46,7 @@ class AccountsAdapter(private val context: Context, private val accounts: ArrayL
     class ViewHolder(account: ConstraintLayout) : RecyclerView.ViewHolder(account) {
         val displayName: TextView = account.findViewById(R.id.displayName)
         val username: TextView = account.findViewById(R.id.username)
-        val note: TextView = account.findViewById(R.id.note)
+        val note: TextView = account.findViewById(R.id.content)
         val accountAvatar: ImageView = account.findViewById(R.id.accountAvatar)
     }
 }

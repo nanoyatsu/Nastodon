@@ -36,7 +36,7 @@ class AccountPageActivity : AppCompatActivity() {
         statusesCount.text = getString(R.string.accountStatusesCountFormat, account.statusesCount)
         displayName.text = account.displayName
         username.text = account.username
-        note.text = Html.fromHtml(account.note, Html.FROM_HTML_MODE_COMPACT)
+        content.text = Html.fromHtml(account.note, Html.FROM_HTML_MODE_COMPACT)
 
         authInfoDao = NastodonDataBase.getInstance().authInfoDao()
         // todo マルチアカウント考慮

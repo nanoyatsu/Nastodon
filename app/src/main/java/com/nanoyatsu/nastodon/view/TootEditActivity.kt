@@ -50,7 +50,7 @@ class TootEditActivity : AppCompatActivity() {
             try {
                 val res = apiManager.statuses.postToot(
                     authorization = auth.accessToken,
-                    status = note.text.toString(),
+                    status = content.text.toString(),
                     visibility = paramVisibility.name.toLowerCase()
                 )
                 Log.d(

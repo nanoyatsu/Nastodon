@@ -44,6 +44,11 @@ class TimelineAdapter(private val context: Context) :
         holder.bind(context, toot, apiManager, auth)
     }
 
+    override fun onViewAttachedToWindow(holder: ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        holder.binding.vm!!.vmJob.start()
+    }
+
     override fun onViewDetachedFromWindow(holder: ViewHolder) {
         super.onViewDetachedFromWindow(holder)
         holder.binding.vm!!.vmJob.cancel()
@@ -66,8 +71,8 @@ class TimelineAdapter(private val context: Context) :
         }
 
         fun bind(context: Context, toot: Status, apiManager: MastodonApiManager, auth: AuthInfo) {
-            val vm = CardTootViewModel(toot, auth, apiManager)
             require(context is FragmentActivity)
+            val vm = CardTootViewModel(toot, auth, apiManager)
             vm.reblogEvent.observe(context, Observer { if (it == true) vm.doReblog() })
             vm.favouriteEvent.observe(context, Observer { if (it == true) vm.doFav() })
             binding.lifecycleOwner = context

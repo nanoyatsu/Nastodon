@@ -5,8 +5,6 @@
 
   <data>
 
-    <import type="android.text.Html" />
-
     <import type="android.graphics.Color" />
 
     <variable
@@ -67,7 +65,7 @@
         app:layout_constraintGuide_begin="24dp" />
 
       <TextView
-        android:id="@+id/note"
+        android:id="@+id/content"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -89,7 +87,7 @@
         android:backgroundTint="@color/colorPrimaryDark"
         android:contentDescription="@string/button_reply"
         app:layout_constraintStart_toEndOf="@+id/accountAvatar"
-        app:layout_constraintTop_toBottomOf="@id/note" />
+        app:layout_constraintTop_toBottomOf="@id/content" />
 
       <ImageButton
         android:id="@+id/button_repeat"
@@ -101,7 +99,7 @@
         android:contentDescription="@string/button_repeat"
         android:onClick="@{() -> vm.onReblogClicked()}"
         app:layout_constraintStart_toEndOf="@id/button_reply"
-        app:layout_constraintTop_toBottomOf="@id/note" />
+        app:layout_constraintTop_toBottomOf="@id/content" />
 
       <ImageButton
         android:id="@+id/button_star"
@@ -113,7 +111,7 @@
         android:contentDescription="@string/button_star"
         android:onClick="@{() -> vm.onFavouriteClicked()}"
         app:layout_constraintStart_toEndOf="@id/button_repeat"
-        app:layout_constraintTop_toBottomOf="@id/note" />
+        app:layout_constraintTop_toBottomOf="@id/content" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

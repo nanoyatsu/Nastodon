@@ -41,7 +41,7 @@
     <TextView
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-      android:id="@+id/note"
+      android:id="@+id/content"
       app:layout_constraintEnd_toEndOf="@+id/barrier"
       app:layout_constraintStart_toEndOf="@+id/accountAvatar"
       android:layout_marginStart="8dp"
