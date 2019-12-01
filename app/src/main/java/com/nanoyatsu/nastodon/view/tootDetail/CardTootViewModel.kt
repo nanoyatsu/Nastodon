@@ -23,21 +23,15 @@ class CardTootViewModel(
     private val apiStatuses = apiManager.statuses
     private val apiFavourites = apiManager.favourites
 
-    private val _toot = MutableLiveData<Status>()
+    private val _toot = MutableLiveData<Status>().apply { value = initToot }
     val toot: LiveData<Status>
         get() = _toot
-    private val _reblogEvent = MutableLiveData<Boolean>()
+    private val _reblogEvent = MutableLiveData<Boolean>().apply { value = false }
     val reblogEvent: LiveData<Boolean>
         get() = _reblogEvent
     private val _favouriteEvent = MutableLiveData<Boolean>().apply { value = false }
     val favouriteEvent: LiveData<Boolean>
         get() = _favouriteEvent
-
-    init {
-        _toot.value = initToot
-        _reblogEvent.value = false
-        _favouriteEvent.value = false
-    }
     private val _timeClickEvent = MutableLiveData<Boolean>().apply { value = false }
     val timeClickEvent: LiveData<Boolean>
         get() = _timeClickEvent
