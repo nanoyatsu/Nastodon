@@ -18,9 +18,9 @@ import com.nanoyatsu.nastodon.data.api.entity.Status
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
 import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
-import com.nanoyatsu.nastodon.databinding.CardTootBinding
+import com.nanoyatsu.nastodon.databinding.ItemTootBinding
 import com.nanoyatsu.nastodon.view.accountDetail.AccountPageActivity
-import com.nanoyatsu.nastodon.view.tootDetail.CardTootViewModel
+import com.nanoyatsu.nastodon.view.tootDetail.TootViewModel
 import com.nanoyatsu.nastodon.view.tootDetail.TootDetailActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -65,11 +65,11 @@ class TimelineAdapter(private val context: Context) :
         v.context.startActivity(intent)
     }
 
-    class ViewHolder(val binding: CardTootBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(val binding: ItemTootBinding) : RecyclerView.ViewHolder(binding.root) {
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
-                val binding = DataBindingUtil.inflate<CardTootBinding>(
-                    LayoutInflater.from(parent.context), R.layout.card_toot, parent, false
+                val binding = DataBindingUtil.inflate<ItemTootBinding>(
+                    LayoutInflater.from(parent.context), R.layout.item_toot, parent, false
                 )
                 return ViewHolder(
                     binding
@@ -79,7 +79,7 @@ class TimelineAdapter(private val context: Context) :
 
         fun bind(context: Context, toot: Status, apiManager: MastodonApiManager, auth: AuthInfo) {
             require(context is FragmentActivity)
-            val vm = CardTootViewModel(
+            val vm = TootViewModel(
                 toot,
                 auth,
                 apiManager
@@ -94,7 +94,7 @@ class TimelineAdapter(private val context: Context) :
             binding.executePendingBindings()
         }
 
-        fun transTootDetail(context: Context, vm: CardTootViewModel) {
+        fun transTootDetail(context: Context, vm: TootViewModel) {
             val intent = Intent(context, TootDetailActivity::class.java)
                 .also { it.putExtra(TootDetailActivity.IntentKey.TOOT.name, vm.toot.value) }
             context.startActivity(intent)

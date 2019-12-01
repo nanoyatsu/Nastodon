@@ -33,9 +33,9 @@ class TootDetailActivity : AppCompatActivity() {
                 R.layout.activity_toot_detail
             )
                 .also {
-                    val factory = CardTootViewModelFactory(toot, auth, apiManager)
+                    val factory = TootViewModelFactory(toot, auth, apiManager)
                     it.vm = ViewModelProvider(this@TootDetailActivity, factory)
-                        .get(CardTootViewModel::class.java)
+                        .get(TootViewModel::class.java)
                     it.lifecycleOwner = this@TootDetailActivity
                 }
     }

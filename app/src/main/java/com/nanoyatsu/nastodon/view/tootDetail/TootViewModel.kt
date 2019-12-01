@@ -13,7 +13,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
-class CardTootViewModel(
+class TootViewModel(
     initToot: Status,
     private val auth: AuthInfo,
     apiManager: MastodonApiManager
