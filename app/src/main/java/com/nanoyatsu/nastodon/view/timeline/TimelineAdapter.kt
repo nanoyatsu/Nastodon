@@ -12,14 +12,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.R
+import com.nanoyatsu.nastodon.data.api.MastodonApiManager
+import com.nanoyatsu.nastodon.data.api.entity.Account
+import com.nanoyatsu.nastodon.data.api.entity.Status
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
 import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.CardTootBinding
-import com.nanoyatsu.nastodon.data.api.entity.Account
-import com.nanoyatsu.nastodon.data.api.entity.Status
-import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.view.accountDetail.AccountPageActivity
+import com.nanoyatsu.nastodon.view.tootDetail.CardTootViewModel
+import com.nanoyatsu.nastodon.view.tootDetail.TootDetailActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
@@ -82,13 +84,21 @@ class TimelineAdapter(private val context: Context) :
                 auth,
                 apiManager
             )
-            vm.reblogEvent.observe(context, Observer { if (it == true) vm.doReblog() })
-            vm.favouriteEvent.observe(context, Observer { if (it == true) vm.doFav() })
+            vm.reblogEvent.observe(context, Observer { if (it) vm.doReblog() })
+            vm.favouriteEvent.observe(context, Observer { if (it) vm.doFav() })
+            vm.timeClickEvent.observe(context, Observer { if (it) transTootDetail(context, vm) })
             binding.lifecycleOwner = context
 
             binding.vm = vm
 
             binding.executePendingBindings()
+        }
+
+        fun transTootDetail(context: Context, vm: CardTootViewModel) {
+            val intent = Intent(context, TootDetailActivity::class.java)
+                .also { it.putExtra(TootDetailActivity.IntentKey.TOOT.name, vm.toot.value) }
+            context.startActivity(intent)
+            vm.onTimeClickFinished()
         }
     }
 

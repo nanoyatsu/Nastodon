@@ -11,7 +11,7 @@
 
     <variable
       name="vm"
-      type="com.nanoyatsu.nastodon.view.timeline.CardTootViewModel" />
+      type="com.nanoyatsu.nastodon.view.tootDetail.CardTootViewModel" />
 
   </data>
 
@@ -67,6 +67,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginBottom="4dp"
+        android:onClick="@{() -> vm.onTimeClicked()}"
         app:createdAt="@{vm.toot.createdAt}"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"

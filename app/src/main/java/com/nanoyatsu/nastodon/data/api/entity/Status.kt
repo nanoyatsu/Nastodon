@@ -1,5 +1,9 @@
 package com.nanoyatsu.nastodon.data.api.entity
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class Status(
     val id: String,
     val uri: String,
@@ -28,7 +32,7 @@ data class Status(
 //    val application: Application,
     val language: String?,
     val pinned: Boolean?
-)
+) : Parcelable
 
 enum class Visibility(val label: String) {
     PUBLIC("公開"),
