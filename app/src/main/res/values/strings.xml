@@ -27,4 +27,7 @@
   <string name="accountStatusesCountFormat">%d トゥート</string>
   <string name="accountFollowingCountFormat">フォロー %d</string>
   <string name="accountFollowersCountFormat">フォロワー %d</string>
+
+  <!-- TODO: Remove or change this placeholder text -->
+  <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
