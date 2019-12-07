@@ -13,7 +13,7 @@
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/AppTheme">
-    <activity android:name=".view.tootDetail.TootDetailActivity"></activity>
+    <activity android:name=".view.NavHostActivity" />
     <activity
       android:name=".view.splash.BootActivity"
       android:theme="@style/AppTheme.NoActionBar">
@@ -42,6 +42,7 @@
     <activity android:name=".view.tootEdit.TootEditActivity" />
     <activity android:name=".view.accountDetail.AccountPageActivity" />
     <activity android:name=".view.accountList.AccountListActivity" />
+    <activity android:name=".view.tootDetail.TootDetailActivity" />
   </application>
 
 </manifest>
