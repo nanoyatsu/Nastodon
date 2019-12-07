@@ -9,5 +9,18 @@
     android:id="@+id/splashFragment"
     android:name="com.nanoyatsu.nastodon.view.splash.SplashFragment"
     android:label="fragment_splash"
-    tools:layout="@layout/fragment_splash" />
+    tools:layout="@layout/fragment_splash">
+    <action
+      android:id="@+id/action_splashFragment_to_timelineFragment"
+      app:destination="@id/timelineFragment" />
+  </fragment>
+  <fragment
+    android:id="@+id/timelineFragment"
+    android:name="com.nanoyatsu.nastodon.view.timeline.TimelineFragment"
+    android:label="TimelineFragment"
+    tools:layout="@layout/content_main">
+    <argument
+      android:name="getMethod"
+      app:argType="string" />
+  </fragment>
 </navigation>

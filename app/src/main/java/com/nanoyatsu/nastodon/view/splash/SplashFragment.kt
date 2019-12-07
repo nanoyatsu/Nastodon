@@ -1,33 +1,59 @@
 package com.nanoyatsu.nastodon.view.splash
 
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.R
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import com.nanoyatsu.nastodon.data.api.MastodonApiManager
+import com.nanoyatsu.nastodon.data.api.entity.Apps
+import com.nanoyatsu.nastodon.data.database.NastodonDataBase
+import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.view.timeline.TimelineFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import retrofit2.HttpException
+import javax.inject.Inject
 
 /**
- * A simple [Fragment] subclass.
- * Use the [SplashFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * 認証情報の有無を確認して移動先を判定
+ * （Timeline or Auth）
  */
 class SplashFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    @Inject
+    lateinit var db: NastodonDataBase
+    @Inject
+    lateinit var apiManager: MastodonApiManager
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (activity!!.application as NastodonApplication).appComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
+        // 画面つくる→即抜けでいい
+        CoroutineScope(context = Dispatchers.Default).launch {
+            val auth = db.authInfoDao().getAll().firstOrNull()
+
+            if (auth is AuthInfo && hasAuthInfo(auth) && verifyCredentials(auth)) {
+                findNavController().navigate(
+                    SplashFragmentDirections.actionSplashFragmentToTimelineFragment(
+                        TimelineFragment.GetMethod.HOME.name
+                    )
+                )
+            } else {
+                // 認証に行く
+            }
         }
     }
 
@@ -39,24 +65,28 @@ class SplashFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_splash, container, false)
     }
 
+    private fun hasAuthInfo(auth: AuthInfo): Boolean {
+        if (auth.instanceUrl.isEmpty())
+            return false
+        if (auth.accessToken.isEmpty())
+            return false
+        return true
+    }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SplashFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SplashFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    private fun verifyCredentials(auth: AuthInfo): Boolean {
+        val api = apiManager.apps
+        var result = false
+        runBlocking {
+            result = try {
+                val res = api.verifyCredentials(auth.accessToken)
+                val apps = res.body()
+                // nameも一致するか確認
+                apps is Apps && apps.name == getString(R.string.app_name)
+            } catch (e: HttpException) {
+                e.printStackTrace()
+                false
             }
+        }
+        return result
     }
 }

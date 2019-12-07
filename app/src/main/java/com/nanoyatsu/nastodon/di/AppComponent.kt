@@ -2,6 +2,7 @@ package com.nanoyatsu.nastodon.di
 
 import android.content.Context
 import com.nanoyatsu.nastodon.view.splash.BootActivity
+import com.nanoyatsu.nastodon.view.splash.SplashFragment
 import com.nanoyatsu.nastodon.view.timeline.MainActivity
 import com.nanoyatsu.nastodon.view.tootDetail.TootDetailActivity
 import com.nanoyatsu.nastodon.view.tootEdit.TootEditActivity
@@ -19,4 +20,5 @@ interface AppComponent {
     fun inject(activity: MainActivity)
     fun inject(activity: TootEditActivity)
     fun inject(activity: TootDetailActivity)
+    fun inject(fragment: SplashFragment)
 }
