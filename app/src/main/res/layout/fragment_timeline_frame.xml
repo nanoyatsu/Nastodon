@@ -10,7 +10,7 @@
 
     <variable
       name="vm"
-      type="com.nanoyatsu.nastodon.view.timeline.MainViewModel" />
+      type="com.nanoyatsu.nastodon.view.timeline.TimelineFrameViewModel" />
 
   </data>
 

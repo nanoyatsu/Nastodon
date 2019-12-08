@@ -4,7 +4,6 @@ import android.content.Context
 import com.nanoyatsu.nastodon.view.splash.SplashFragment
 import com.nanoyatsu.nastodon.view.tootDetail.TootDetailActivity
 import com.nanoyatsu.nastodon.view.tootDetail.TootDetailFragment
-import com.nanoyatsu.nastodon.view.tootEdit.TootEditActivity
 import com.nanoyatsu.nastodon.view.tootEdit.TootEditFragment
 import dagger.BindsInstance
 import dagger.Component
@@ -16,7 +15,6 @@ interface AppComponent {
         fun create(@BindsInstance context: Context): AppComponent
     }
 
-    fun inject(activity: TootEditActivity)
     fun inject(activity: TootDetailActivity)
     fun inject(fragment: SplashFragment)
     fun inject(fragment: TootEditFragment)

@@ -28,7 +28,8 @@ class TimelineFrameFragment : Fragment(), TimelineFragment.EventListener {
         binding = DataBindingUtil.setContentView<FragmentTimelineFrameBinding>(
             activity!!, R.layout.fragment_timeline_frame
         ).also {
-            it.vm = ViewModelProvider(this@TimelineFrameFragment).get(MainViewModel::class.java)
+            it.vm =
+                ViewModelProvider(this@TimelineFrameFragment).get(TimelineFrameViewModel::class.java)
             it.lifecycleOwner = this@TimelineFrameFragment
         }
 
