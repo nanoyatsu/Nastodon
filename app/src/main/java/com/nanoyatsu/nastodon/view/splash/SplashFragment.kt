@@ -46,11 +46,7 @@ class SplashFragment : Fragment() {
             val auth = db.authInfoDao().getAll().firstOrNull()
 
             if (auth is AuthInfo && hasAuthInfo(auth) && verifyCredentials(auth)) {
-                findNavController().navigate(
-                    SplashFragmentDirections.actionSplashFragmentToTimelineFragment(
-                        TimelineFragment.GetMethod.HOME.name
-                    )
-                )
+                findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToTimelineFrameFragment())
             } else {
                 // 認証に行く
             }
