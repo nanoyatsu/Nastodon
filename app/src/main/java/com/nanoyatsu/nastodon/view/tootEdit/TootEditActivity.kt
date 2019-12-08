@@ -9,7 +9,7 @@ import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.data.api.entity.Visibility
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import kotlinx.android.synthetic.main.activity_toot_edit.*
+import kotlinx.android.synthetic.main.fragment_toot_edit.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,7 +26,7 @@ class TootEditActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as NastodonApplication).appComponent.inject(this@TootEditActivity)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_toot_edit)
+        setContentView(R.layout.fragment_toot_edit)
 
         if (auth.instanceUrl == "") {
             finish() // todo 認証に行く
