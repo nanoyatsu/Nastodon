@@ -5,14 +5,14 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.nanoyatsu.nastodon.R
+import com.nanoyatsu.nastodon.data.api.MastodonApiManager
+import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApi
+import com.nanoyatsu.nastodon.data.api.entity.Account
+import com.nanoyatsu.nastodon.data.api.entity.AuthPreferenceManager
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
 import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
-import com.nanoyatsu.nastodon.data.api.entity.Account
-import com.nanoyatsu.nastodon.data.api.entity.AuthPreferenceManager
-import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApi
-import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.view.timeline.MainActivity
+import com.nanoyatsu.nastodon.view.NavHostActivity
 import kotlinx.android.synthetic.main.activity_auth.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -97,7 +97,7 @@ class AuthActivity : AppCompatActivity() {
                 setAccountToPref(pref, account)
                 insertDB(pref, authInfoDao)
 
-                startActivity(Intent(this@AuthActivity, MainActivity::class.java))
+                startActivity(Intent(this@AuthActivity, NavHostActivity::class.java))
                 finish()
             } catch (e: HttpException) {
                 e.printStackTrace()
