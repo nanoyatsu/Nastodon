@@ -14,7 +14,6 @@ import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.entity.Apps
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
-import com.nanoyatsu.nastodon.view.timeline.TimelineFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,11 +41,13 @@ class SplashFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         // 画面つくる→即抜けでいい
-        CoroutineScope(context = Dispatchers.Default).launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val auth = db.authInfoDao().getAll().firstOrNull()
 
             if (auth is AuthInfo && hasAuthInfo(auth) && verifyCredentials(auth)) {
-                findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToTimelineFrameFragment())
+                runBlocking(Dispatchers.Main) {
+                    findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToTimelineFrameFragment())
+                }
             } else {
                 // 認証に行く
             }
