@@ -21,7 +21,6 @@ import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.ItemTootBinding
 import com.nanoyatsu.nastodon.view.accountDetail.AccountPageActivity
-import com.nanoyatsu.nastodon.view.tootDetail.TootDetailActivity
 import com.nanoyatsu.nastodon.view.tootDetail.TootViewModel
 import kotlinx.android.synthetic.main.activity_nav_host.*
 import kotlinx.coroutines.Dispatchers
@@ -103,9 +102,6 @@ class TimelineAdapter(private val context: Context) :
                         .actionTimelineFrameFragmentToTootDetailFragment(vm.toot.value!!)
                 )
 
-//            val intent = Intent(context, TootDetailActivity::class.java)
-//                .also { it.putExtra(TootDetailActivity.IntentKey.TOOT.name, vm.toot.value) }
-//            context.startActivity(intent)
             vm.onTimeClickFinished()
         }
     }

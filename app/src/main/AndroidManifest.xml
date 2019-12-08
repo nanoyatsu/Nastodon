@@ -36,7 +36,6 @@
     </activity>
     <activity android:name=".view.accountDetail.AccountPageActivity" />
     <activity android:name=".view.accountList.AccountListActivity" />
-    <activity android:name=".view.tootDetail.TootDetailActivity" />
   </application>
 
 </manifest>
