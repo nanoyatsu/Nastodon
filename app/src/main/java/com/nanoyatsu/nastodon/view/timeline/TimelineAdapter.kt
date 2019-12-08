@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -20,8 +21,9 @@ import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.ItemTootBinding
 import com.nanoyatsu.nastodon.view.accountDetail.AccountPageActivity
-import com.nanoyatsu.nastodon.view.tootDetail.TootViewModel
 import com.nanoyatsu.nastodon.view.tootDetail.TootDetailActivity
+import com.nanoyatsu.nastodon.view.tootDetail.TootViewModel
+import kotlinx.android.synthetic.main.activity_nav_host.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
@@ -95,9 +97,15 @@ class TimelineAdapter(private val context: Context) :
         }
 
         fun transTootDetail(context: Context, vm: TootViewModel) {
-            val intent = Intent(context, TootDetailActivity::class.java)
-                .also { it.putExtra(TootDetailActivity.IntentKey.TOOT.name, vm.toot.value) }
-            context.startActivity(intent)
+            if (context is FragmentActivity)
+                context.main_fragment_container.findNavController().navigate(
+                    TimelineFrameFragmentDirections
+                        .actionTimelineFrameFragmentToTootDetailFragment(vm.toot.value!!)
+                )
+
+//            val intent = Intent(context, TootDetailActivity::class.java)
+//                .also { it.putExtra(TootDetailActivity.IntentKey.TOOT.name, vm.toot.value) }
+//            context.startActivity(intent)
             vm.onTimeClickFinished()
         }
     }

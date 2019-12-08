@@ -9,13 +9,13 @@ import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.entity.Status
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
-import com.nanoyatsu.nastodon.databinding.ActivityTootDetailBinding
+import com.nanoyatsu.nastodon.databinding.FragmentTootDetailBinding
 import javax.inject.Inject
 
 class TootDetailActivity : AppCompatActivity() {
     enum class IntentKey { TOOT }
 
-    lateinit var binding: ActivityTootDetailBinding
+    lateinit var binding: FragmentTootDetailBinding
     @Inject
     lateinit var auth: AuthInfo
     @Inject
@@ -28,9 +28,9 @@ class TootDetailActivity : AppCompatActivity() {
         val toot = intent.getParcelableExtra<Status>(IntentKey.TOOT.name)
 
         binding =
-            DataBindingUtil.setContentView<ActivityTootDetailBinding>(
+            DataBindingUtil.setContentView<FragmentTootDetailBinding>(
                 this,
-                R.layout.activity_toot_detail
+                R.layout.fragment_toot_detail
             )
                 .also {
                     val factory = TootViewModelFactory(toot, auth, apiManager)

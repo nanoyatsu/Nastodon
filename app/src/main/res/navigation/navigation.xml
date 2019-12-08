@@ -18,5 +18,18 @@
     android:id="@+id/timelineFrameFragment"
     android:name="com.nanoyatsu.nastodon.view.timeline.TimelineFrameFragment"
     android:label="TimelineFrameFragment"
-    tools:layout="@layout/fragment_timeline_frame" />
+    tools:layout="@layout/fragment_timeline_frame" >
+    <action
+      android:id="@+id/action_timelineFrameFragment_to_tootDetailFragment"
+      app:destination="@id/tootDetailFragment" />
+  </fragment>
+  <fragment
+    android:id="@+id/tootDetailFragment"
+    android:name="com.nanoyatsu.nastodon.view.tootDetail.TootDetailFragment"
+    android:label="fragment_toot_detail"
+    tools:layout="@layout/fragment_toot_detail" >
+    <argument
+      android:name="toot"
+      app:argType="com.nanoyatsu.nastodon.data.api.entity.Status" />
+  </fragment>
 </navigation>
