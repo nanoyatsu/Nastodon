@@ -1,17 +1,15 @@
 package com.nanoyatsu.nastodon.view.timeline
 
+import android.view.MenuItem
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nanoyatsu.nastodon.R
 
 class TimelineFrameViewModel() : ViewModel() {
-    val timelineTabs =
-        arrayOf(R.id.navigation_timeline, R.id.navigation_notice, R.id.navigation_global_timeline)
-            .zip(TimelineFragment.GetMethod.values())
-
-
-    var selectedTabId: Int = R.id.navigation_timeline
+    private val _selectedTabId = MutableLiveData<Int>().apply { value = R.id.navigation_timeline }
+    val selectedTabId: LiveData<Int>
+        get() = _selectedTabId
 
     private val _progressVisible = MutableLiveData<Boolean>().apply { value = false }
     val progressVisible: LiveData<Boolean>
@@ -21,8 +19,14 @@ class TimelineFrameViewModel() : ViewModel() {
     val tootEvent: LiveData<Boolean>
         get() = _tootEvent
 
-    fun progressStart() = run { _progressVisible.value = true }
-    fun progressEnd() = run { _progressVisible.value = false }
+    fun onSelectedMenuItem(item: MenuItem): Boolean {
+        _selectedTabId.value = item.itemId
+        return true
+    }
+
     fun onTootClicked() = run { _tootEvent.value = true }
     fun onTootClickFinished() = run { _tootEvent.value = false }
+
+    fun progressStart() = run { _progressVisible.value = true }
+    fun progressEnd() = run { _progressVisible.value = false }
 }
