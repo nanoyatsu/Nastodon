@@ -45,9 +45,8 @@ class AuthActivity : AppCompatActivity() {
 
     private fun sendAuth() {
         val pref = AuthPreferenceManager(this@AuthActivity)
-        val baseUrl = "https://${instanceUrl.text}/"
-        pref.instanceUrl = baseUrl
-        apiManager = MastodonApiManager(baseUrl)
+        pref.instanceUrl = instanceUrl.text.toString()
+        apiManager = MastodonApiManager(instanceUrl.text.toString())
 
         val api = apiManager.apps
         CoroutineScope(context = Dispatchers.Main).launch {
@@ -57,6 +56,7 @@ class AuthActivity : AppCompatActivity() {
                 pref.clientId = res.body()?.client_id ?: ""
                 pref.clientSecret = res.body()?.client_secret ?: ""
 
+                val baseUrl = "https://${instanceUrl.text}/"
                 val authPath = baseUrl + "oauth/authorize" +
                         "?client_id=${res.body()?.client_id}" +
                         "&redirect_uri=${res.body()?.redirect_uri}" +

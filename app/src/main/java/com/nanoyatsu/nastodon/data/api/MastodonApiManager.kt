@@ -26,7 +26,8 @@ class MastodonApiManager(baseUrl: String) {
             it.create()
         }
         retrofit = Retrofit.Builder().let {
-            it.baseUrl(baseUrl)
+            val fullUrl = "https://${if (baseUrl.isEmpty()) "a" else baseUrl}/" // "a"よりも妥当な退避文字あるいは方法
+            it.baseUrl(fullUrl)
 //            it.baseUrl(baseUrl + basePathV1)
             it.client(httpClient.build())
             it.addConverterFactory(GsonConverterFactory.create(gson))
@@ -53,9 +54,9 @@ class MastodonApiManager(baseUrl: String) {
 //    get() = retrofit.create(MastodonApidomain_blocks::class.java)
 // val endorsements: MastodonApiendorsements
 //    get() = retrofit.create(MastodonApiendorsements::class.java)
- val favourites: MastodonApiFavourites
-    get() = retrofit.create(MastodonApiFavourites::class.java)
-// val filters: MastodonApifilters
+    val favourites: MastodonApiFavourites
+        get() = retrofit.create(MastodonApiFavourites::class.java)
+    // val filters: MastodonApifilters
 //    get() = retrofit.create(MastodonApifilters::class.java)
 // val follow_requests: MastodonApifollow_requests
 //    get() = retrofit.create(MastodonApifollow_requests::class.java)

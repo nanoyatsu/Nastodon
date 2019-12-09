@@ -2,6 +2,7 @@ package com.nanoyatsu.nastodon.view.splash
 
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.entity.Apps
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.view.auth.AuthActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,7 +52,10 @@ class SplashFragment : Fragment() {
                 }
             } else {
                 // 認証に行く
-            }
+                // いまのところ別Activity
+                val intent = Intent(activity, AuthActivity::class.java)
+                startActivity(intent)
+                }
         }
     }
 

@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.nanoyatsu.nastodon.R
@@ -21,6 +23,10 @@ class NavHostActivity : AppCompatActivity() {
         val navController = findNavController(R.id.main_fragment_container)
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
         NavigationUI.setupWithNavController(binding.navView, navController)
+
+        navController.addOnDestinationChangedListener{ navController: NavController, navDestination: NavDestination, bundle: Bundle? ->
+            // ここに認証確認して戻す処理？ 調べる
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
