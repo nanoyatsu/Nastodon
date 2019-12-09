@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -33,10 +34,8 @@ class TimelineFrameFragment : Fragment(), TimelineFragment.EventListener {
             it.lifecycleOwner = this@TimelineFrameFragment
         }
 
-        // FloatingButton todo 関数化・処理分割
-        binding.floatingEdit.setOnClickListener {
-            findNavController().navigate(TimelineFrameFragmentDirections.actionTimelineFrameFragmentToTootEditFragment())
-        }
+        // FloatingButton
+        binding.vm!!.tootEvent.observe(this, Observer { if (it) transTootEdit() })
 
         // 下部タブ
         setTabButton(activity!!.supportFragmentManager)
@@ -46,10 +45,8 @@ class TimelineFrameFragment : Fragment(), TimelineFragment.EventListener {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_timeline_frame, container, false)
     }
 
@@ -57,16 +54,12 @@ class TimelineFrameFragment : Fragment(), TimelineFragment.EventListener {
         binding.navigation.findViewById<View>(binding.vm!!.selectedTabId).callOnClick()
     }
 
-    private val timelineTabs =
-        arrayOf(R.id.navigation_timeline, R.id.navigation_notice, R.id.navigation_global_timeline)
-            .zip(TimelineFragment.GetMethod.values())
-
     private fun setTabButton(fm: FragmentManager) {
         fun fragmentTransition(
             selected: Pair<Int, TimelineFragment.GetMethod>,
             showing: TimelineFragment?
         ) {
-            binding.vm?.selectedTabId = selected.first
+            binding.vm!!.selectedTabId = selected.first
             fm.beginTransaction().also { trans ->
                 fm.fragments.forEach { trans.hide(it) }
 
@@ -83,11 +76,11 @@ class TimelineFrameFragment : Fragment(), TimelineFragment.EventListener {
         }
 
         val selectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-            val selected = timelineTabs.find { it.first == item.itemId }
+            val selected = binding.vm!!.timelineTabs.find { it.first == item.itemId }
                 ?: return@OnNavigationItemSelectedListener false
             val showing = fm.findFragmentByTag(selected.second.name) as? TimelineFragment
 
-            if (showing != null && binding.vm?.selectedTabId == selected.first)
+            if (showing != null && binding.vm!!.selectedTabId == selected.first)
                 showing.focusTop()
             else
                 fragmentTransition(selected, showing)
@@ -95,6 +88,11 @@ class TimelineFrameFragment : Fragment(), TimelineFragment.EventListener {
         }
 
         binding.navigation.setOnNavigationItemSelectedListener(selectedListener)
+    }
+
+    private fun transTootEdit() {
+        findNavController().navigate(TimelineFrameFragmentDirections.actionTimelineFrameFragmentToTootEditFragment())
+        binding.vm!!.onTootClickFinished()
     }
 
     override fun progressStart() {

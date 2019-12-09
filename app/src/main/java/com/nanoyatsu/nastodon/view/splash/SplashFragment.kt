@@ -55,7 +55,7 @@ class SplashFragment : Fragment() {
                 // いまのところ別Activity
                 val intent = Intent(activity, AuthActivity::class.java)
                 startActivity(intent)
-                }
+            }
         }
     }
 

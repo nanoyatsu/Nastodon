@@ -6,18 +6,23 @@ import androidx.lifecycle.ViewModel
 import com.nanoyatsu.nastodon.R
 
 class TimelineFrameViewModel() : ViewModel() {
+    val timelineTabs =
+        arrayOf(R.id.navigation_timeline, R.id.navigation_notice, R.id.navigation_global_timeline)
+            .zip(TimelineFragment.GetMethod.values())
+
+
     var selectedTabId: Int = R.id.navigation_timeline
 
-    private val _progressVisible = MutableLiveData<Boolean>()
+    private val _progressVisible = MutableLiveData<Boolean>().apply { value = false }
     val progressVisible: LiveData<Boolean>
         get() = _progressVisible
 
-    fun progressStart() {
-        _progressVisible.value = true
-    }
+    private val _tootEvent = MutableLiveData<Boolean>().apply { value = false }
+    val tootEvent: LiveData<Boolean>
+        get() = _tootEvent
 
-    fun progressEnd() {
-        _progressVisible.value = false
-    }
-
+    fun progressStart() = run { _progressVisible.value = true }
+    fun progressEnd() = run { _progressVisible.value = false }
+    fun onTootClicked() = run { _tootEvent.value = true }
+    fun onTootClickFinished() = run { _tootEvent.value = false }
 }
