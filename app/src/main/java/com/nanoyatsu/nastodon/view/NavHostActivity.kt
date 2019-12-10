@@ -15,6 +15,7 @@ class NavHostActivity : AppCompatActivity() {
     lateinit var drawerLayout: DrawerLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         val binding =
             DataBindingUtil.setContentView<ActivityNavHostBinding>(this, R.layout.activity_nav_host)
@@ -24,7 +25,7 @@ class NavHostActivity : AppCompatActivity() {
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
         NavigationUI.setupWithNavController(binding.navView, navController)
 
-        navController.addOnDestinationChangedListener{ navController: NavController, navDestination: NavDestination, bundle: Bundle? ->
+        navController.addOnDestinationChangedListener { navController: NavController, navDestination: NavDestination, bundle: Bundle? ->
             // ここに認証確認して戻す処理？ 調べる
         }
     }
