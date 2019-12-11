@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.view.timeline
+package com.nanoyatsu.nastodon.view.timelineFrame
 
 import android.content.Context
 import android.content.Intent

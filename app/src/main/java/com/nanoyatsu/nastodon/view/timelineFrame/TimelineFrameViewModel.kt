@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.view.timeline
+package com.nanoyatsu.nastodon.view.timelineFrame
 
 import android.view.MenuItem
 import androidx.lifecycle.LiveData
@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.nanoyatsu.nastodon.R
 
 class TimelineFrameViewModel() : ViewModel() {
-    private val _selectedTabId = MutableLiveData<Int>().apply { value = R.id.navigation_timeline }
+    private val _selectedTabId = MutableLiveData<Int>().apply { value = R.id.frame_tab_timeline }
     val selectedTabId: LiveData<Int>
         get() = _selectedTabId
 

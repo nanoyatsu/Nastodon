@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.view.timeline
+package com.nanoyatsu.nastodon.view.timelineFrame
 
 import android.content.Context
 import android.os.Bundle
@@ -10,12 +10,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.layoutComponent.InfiniteScrollListener
 import com.nanoyatsu.nastodon.R
+import com.nanoyatsu.nastodon.data.api.MastodonApiManager
+import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiTimelines
+import com.nanoyatsu.nastodon.data.api.entity.Status
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
 import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
-import com.nanoyatsu.nastodon.data.api.entity.Status
-import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiTimelines
 import kotlinx.android.synthetic.main.content_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +26,7 @@ import retrofit2.Response
 
 class TimelineFragment() : Fragment() {
     enum class BundleKey { GET_METHOD }
-    enum class GetMethod { HOME, LOCAL, GLOBAL, SEARCH }
+    enum class GetMethod { HOME, LOCAL, GLOBAL }
 
     private var eventListener: EventListener? = null
     private lateinit var getMethod: GetMethod
@@ -46,8 +46,11 @@ class TimelineFragment() : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let { bundle ->
             getMethod =
-                GetMethod.values().find { it.name == bundle.getString(
-                    BundleKey.GET_METHOD.name) }
+                GetMethod.values().find {
+                    it.name == bundle.getString(
+                        BundleKey.GET_METHOD.name
+                    )
+                }
                     ?: GetMethod.HOME
         }
 
@@ -139,7 +142,6 @@ class TimelineFragment() : Fragment() {
             GetMethod.HOME -> ::callHomeTimeline
             GetMethod.LOCAL -> ::callLocalPublicTimeline
             GetMethod.GLOBAL -> ::callGlobalPublicTimeline
-            GetMethod.SEARCH -> ::callHomeTimeline
         }
         return { maxId: String?, sinceId: String? -> callApi(maxId, sinceId) }
     }

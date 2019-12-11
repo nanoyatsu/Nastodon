@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.view.timeline
+package com.nanoyatsu.nastodon.view.timelineFrame
 
 
 import android.content.Context
@@ -22,7 +22,7 @@ class TimelineFrameFragment : Fragment(), TimelineFragment.EventListener {
         // review enumに組み込むべきか
         private val timelineTabs =
             arrayOf(
-                R.id.navigation_timeline, R.id.navigation_notice, R.id.navigation_global_timeline
+                R.id.frame_tab_timeline, R.id.frame_tab_notice, R.id.frame_tab_search
             ).zip(TimelineFragment.GetMethod.values())
     }
 
