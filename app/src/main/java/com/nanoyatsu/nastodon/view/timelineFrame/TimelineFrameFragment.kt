@@ -13,17 +13,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.databinding.FragmentTimelineFrameBinding
+import com.nanoyatsu.nastodon.view.timelineFrame.notice.NoticeFragment
+import com.nanoyatsu.nastodon.view.timelineFrame.search.SearchFragment
+import com.nanoyatsu.nastodon.view.timelineFrame.timeline.TimelineFragment
 
 class TimelineFrameFragment : Fragment(), TimelineFragment.EventListener {
 
     lateinit var binding: FragmentTimelineFrameBinding
 
-    companion object {
-        // review enumに組み込むべきか
-        private val timelineTabs =
-            arrayOf(
-                R.id.frame_tab_timeline, R.id.frame_tab_notice, R.id.frame_tab_search
-            ).zip(TimelineFragment.GetMethod.values())
+    enum class Tab(val id: Int, val fragmentClass: Class<out Fragment>) {
+        TIMELINE(R.id.frame_tab_timeline, TimelineFragment::class.java),
+        NOTICE(R.id.frame_tab_notice, NoticeFragment::class.java),
+        SEARCH(R.id.frame_tab_search, SearchFragment::class.java)
     }
 
     override fun onAttach(context: Context) {
@@ -56,16 +57,14 @@ class TimelineFrameFragment : Fragment(), TimelineFragment.EventListener {
 
     private fun onChangeTabId(id: Int) {
         val fm = activity!!.supportFragmentManager
-        fun fragmentTransition(
-            selected: Pair<Int, TimelineFragment.GetMethod>, showing: TimelineFragment?
-        ) {
+        fun fragmentTransition(selected: Tab, showing: Fragment?) {
             val trans = fm.beginTransaction()
             // 一旦全部隠す
             fm.fragments.forEach { trans.hide(it) }
 
             if (showing == null) {
-                val fragment = TimelineFragment.newInstance(selected.second)
-                trans.add(R.id.content_main, fragment, selected.second.name)
+                val fragment = selected.fragmentClass.newInstance()
+                trans.add(R.id.content_main, fragment, selected.fragmentClass.simpleName)
             } else
                 trans.show(showing)
             trans.commit()
@@ -73,15 +72,15 @@ class TimelineFrameFragment : Fragment(), TimelineFragment.EventListener {
 
         // showingがnull : 初めて選ばれた
         // showingがnot-null OR 非表示：そこだけshow()する
-        // showingがnot-null OR 表示：Timelineの先頭に飛ぶ（LiveDataにした関係で）
-        val selected = timelineTabs.find { it.first == id }
+        // showingがnot-null OR 表示：Timelineの先頭に飛ぶ
+        val selected = Tab.values().find { it.id == id }
             ?: return
-        val showing = fm.findFragmentByTag(selected.second.name) as? TimelineFragment
+        val showing = fm.findFragmentByTag(selected.fragmentClass.simpleName)
 
         if (showing == null || showing.isHidden)
             fragmentTransition(selected, showing)
         else
-            showing.focusTop()
+            (showing as? TimelineFragment)?.focusTop()
     }
 
     private fun transTootEdit() {

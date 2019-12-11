@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.view.timelineFrame
+package com.nanoyatsu.nastodon.view.timelineFrame.timeline
 
 import androidx.lifecycle.ViewModel
 

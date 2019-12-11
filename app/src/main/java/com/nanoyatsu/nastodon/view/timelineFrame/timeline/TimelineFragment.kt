@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.view.timelineFrame
+package com.nanoyatsu.nastodon.view.timelineFrame.timeline
 
 import android.content.Context
 import android.os.Bundle
@@ -44,15 +44,7 @@ class TimelineFragment() : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let { bundle ->
-            getMethod =
-                GetMethod.values().find {
-                    it.name == bundle.getString(
-                        BundleKey.GET_METHOD.name
-                    )
-                }
-                    ?: GetMethod.HOME
-        }
+        getMethod = GetMethod.HOME // todo viewModelで持つ 初期値は設定可能にしたい
 
         authInfoDao = NastodonDataBase.getInstance().authInfoDao()
         // todo マルチアカウント考慮
@@ -101,7 +93,9 @@ class TimelineFragment() : Fragment() {
         val timeline = mutableListOf<Status>() // todo ViewModelに持つ
 
         val adapter =
-            TimelineAdapter(context)
+            TimelineAdapter(
+                context
+            )
         timelineView.adapter = adapter
         adapter.submitList(timeline)
 
@@ -179,14 +173,4 @@ class TimelineFragment() : Fragment() {
         fun progressStart()
         fun progressEnd()
     }
-
-    companion object {
-        fun newInstance(method: GetMethod) =
-            TimelineFragment().apply {
-                arguments = Bundle().apply {
-                    putString(BundleKey.GET_METHOD.name, method.name)
-                }
-            }
-    }
-
 }
