@@ -57,9 +57,7 @@ class NavHostActivity : AppCompatActivity() {
     private fun checkAuth() {
         val auth = runBlocking(Dispatchers.IO) { db.authInfoDao().getAll().firstOrNull() }
 
-        if (auth is AuthInfo && hasAuthInfo(auth) && verifyCredentials(auth)) {
-            // いったん何もすることはない
-        } else {
+        if (auth !is AuthInfo || !hasAuthInfo(auth) || !verifyCredentials(auth)) {
             // 認証に行く
             // いまのところ別Activity
             val intent = Intent(this, AuthActivity::class.java)
