@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.nanoyatsu.layoutComponent.InfiniteScrollListener
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiTimelines
@@ -25,7 +24,6 @@ import retrofit2.HttpException
 import retrofit2.Response
 
 class TimelineFragment() : Fragment() {
-    enum class BundleKey { GET_METHOD }
     enum class GetMethod { HOME, LOCAL, GLOBAL }
 
     private var eventListener: EventListener? = null
@@ -56,9 +54,7 @@ class TimelineFragment() : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         return inflater.inflate(R.layout.content_main, container, false)
@@ -92,24 +88,9 @@ class TimelineFragment() : Fragment() {
         timelineView.layoutManager = layoutManager // fixme 画面回転を連続したりするとNPE
         val timeline = mutableListOf<Status>() // todo ViewModelに持つ
 
-        val adapter =
-            TimelineAdapter(
-                context
-            )
+        val adapter = TimelineAdapter(context)
         timelineView.adapter = adapter
         adapter.submitList(timeline)
-
-
-        timelineView.clearOnScrollListeners()
-        timelineView.addOnScrollListener(object : InfiniteScrollListener(layoutManager) {
-            override fun onLoadMore(current_page: Int) {
-                eventListener?.progressStart()
-                CoroutineScope(context = Dispatchers.Main).launch {
-                    reloadTimeline(timeline, timeline.last().id, null)
-                    eventListener?.progressEnd()
-                }
-            }
-        })
 
         reloadTimeline(timeline)
     }
@@ -120,10 +101,7 @@ class TimelineFragment() : Fragment() {
 
     private suspend fun callLocalPublicTimeline(maxId: String?, sinceId: String?) =
         timelinesApi.getPublicTimeline(
-            authorization = auth.accessToken,
-            local = true,
-            maxId = maxId,
-            sinceId = sinceId
+            authorization = auth.accessToken, local = true, maxId = maxId, sinceId = sinceId
         )
 
     private suspend fun callGlobalPublicTimeline(maxId: String?, sinceId: String?) =
@@ -141,9 +119,7 @@ class TimelineFragment() : Fragment() {
     }
 
     private suspend fun reloadTimeline(
-        timeline: List<Status>,
-        maxId: String? = null,
-        sinceId: String? = null
+        timeline: List<Status>, maxId: String? = null, sinceId: String? = null
     ) {
         val getter = suspend { returnTimelineGetter(getMethod)(maxId, sinceId) }
         val toots = getByApi(getter)
@@ -156,8 +132,7 @@ class TimelineFragment() : Fragment() {
     private suspend fun getByApi(getter: suspend () -> Response<Array<Status>>): Array<Status> {
         return try {
             val res = getter()
-            res.body()
-                ?: arrayOf() // todo レスポンスが期待通りじゃないときの処理 res.errorBody()
+            res.body() ?: arrayOf() // todo レスポンスが期待通りじゃないときの処理 res.errorBody()
         } catch (e: HttpException) {
             e.printStackTrace()
             // todo 通信失敗のときの処理
