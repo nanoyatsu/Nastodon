@@ -64,7 +64,7 @@ class TimelineFrameFragment : Fragment(), TimelineFragment.EventListener {
 
             if (showing == null) {
                 val fragment = selected.fragmentClass.newInstance()
-                trans.add(R.id.content_main, fragment, selected.fragmentClass.simpleName)
+                trans.add(R.id.timeline_container, fragment, selected.fragmentClass.simpleName)
             } else
                 trans.show(showing)
             trans.commit()

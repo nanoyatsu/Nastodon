@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.R
@@ -15,7 +17,7 @@ import com.nanoyatsu.nastodon.data.api.entity.Status
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
 import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
-import kotlinx.android.synthetic.main.content_main.*
+import com.nanoyatsu.nastodon.databinding.ContentMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,10 +26,9 @@ import retrofit2.HttpException
 import retrofit2.Response
 
 class TimelineFragment() : Fragment() {
-    enum class GetMethod { HOME, LOCAL, GLOBAL }
 
     private var eventListener: EventListener? = null
-    private lateinit var getMethod: GetMethod
+    private lateinit var binding: ContentMainBinding
 
     // todo 外から入れるようにする
     private lateinit var timelinesApi: MastodonApiTimelines
@@ -42,8 +43,6 @@ class TimelineFragment() : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getMethod = GetMethod.HOME // todo viewModelで持つ 初期値は設定可能にしたい
-
         authInfoDao = NastodonDataBase.getInstance().authInfoDao()
         // todo マルチアカウント考慮
         runBlocking(context = Dispatchers.IO) { auth = authInfoDao.getAll().first() }
@@ -57,16 +56,24 @@ class TimelineFragment() : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
+        binding =
+            DataBindingUtil.setContentView<ContentMainBinding>(activity!!, R.layout.content_main)
+                .also {
+                    val factory = TimelineViewModelFactory(TimelineViewModel.GetMethod.HOME)
+                    it.vm = ViewModelProvider(this, factory).get(TimelineViewModel::class.java)
+                    it.lifecycleOwner = this
+                }
+
         return inflater.inflate(R.layout.content_main, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         // SwipeRefreshLayout 引っ張って更新するやつ
-        swipe_refresh.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
             CoroutineScope(context = Dispatchers.Main).launch {
                 initTimeline()
-                swipe_refresh.isRefreshing = false
+                binding.swipeRefresh.isRefreshing = false
             }
         }
 
@@ -85,11 +92,11 @@ class TimelineFragment() : Fragment() {
         val context = this.context ?: return
 
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        timelineView.layoutManager = layoutManager // fixme 画面回転を連続したりするとNPE
+        binding.timelineView.layoutManager = layoutManager // fixme 画面回転を連続したりするとNPE
         val timeline = mutableListOf<Status>() // todo ViewModelに持つ
 
         val adapter = TimelineAdapter(context)
-        timelineView.adapter = adapter
+        binding.timelineView.adapter = adapter
         adapter.submitList(timeline)
 
         reloadTimeline(timeline)
@@ -109,11 +116,11 @@ class TimelineFragment() : Fragment() {
             authorization = auth.accessToken, local = false, maxId = maxId, sinceId = sinceId
         )
 
-    private fun returnTimelineGetter(getMethod: GetMethod): suspend ((String?, String?) -> Response<Array<Status>>) {
+    private fun returnTimelineGetter(getMethod: TimelineViewModel.GetMethod): suspend ((String?, String?) -> Response<Array<Status>>) {
         val callApi = when (getMethod) {
-            GetMethod.HOME -> ::callHomeTimeline
-            GetMethod.LOCAL -> ::callLocalPublicTimeline
-            GetMethod.GLOBAL -> ::callGlobalPublicTimeline
+            TimelineViewModel.GetMethod.HOME -> ::callHomeTimeline
+            TimelineViewModel.GetMethod.LOCAL -> ::callLocalPublicTimeline
+            TimelineViewModel.GetMethod.GLOBAL -> ::callGlobalPublicTimeline
         }
         return { maxId: String?, sinceId: String? -> callApi(maxId, sinceId) }
     }
@@ -121,10 +128,10 @@ class TimelineFragment() : Fragment() {
     private suspend fun reloadTimeline(
         timeline: List<Status>, maxId: String? = null, sinceId: String? = null
     ) {
-        val getter = suspend { returnTimelineGetter(getMethod)(maxId, sinceId) }
+        val getter = suspend { returnTimelineGetter(binding.vm!!.getMethod)(maxId, sinceId) }
         val toots = getByApi(getter)
         // 仮記述 今のままだと1回しか増えない(timelineを更新していない) todo
-        val adapter = timelineView.adapter
+        val adapter = binding.timelineView.adapter
         if (adapter is TimelineAdapter)
             adapter.submitList(timeline + toots.toList())
     }
@@ -141,7 +148,7 @@ class TimelineFragment() : Fragment() {
     }
 
     fun focusTop() {
-        timelineView.smoothScrollToPosition(0)
+        binding.timelineView.smoothScrollToPosition(0)
     }
 
     interface EventListener {
