@@ -10,46 +10,36 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiTimelines
 import com.nanoyatsu.nastodon.data.api.entity.Status
-import com.nanoyatsu.nastodon.data.database.NastodonDataBase
-import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.ContentMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import retrofit2.HttpException
-import retrofit2.Response
+import javax.inject.Inject
 
 class TimelineFragment() : Fragment() {
 
     private var eventListener: EventListener? = null
     private lateinit var binding: ContentMainBinding
 
-    // todo 外から入れるようにする
-    private lateinit var timelinesApi: MastodonApiTimelines
-    private lateinit var authInfoDao: AuthInfoDao
-    private lateinit var auth: AuthInfo
-    private lateinit var apiManager: MastodonApiManager
+    @Inject
+    lateinit var auth: AuthInfo
+    @Inject
+    lateinit var apiManager: MastodonApiManager
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        (activity!!.application as NastodonApplication).appComponent.inject(this)
         eventListener = context as? EventListener
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        authInfoDao = NastodonDataBase.getInstance().authInfoDao()
-        // todo マルチアカウント考慮
-        runBlocking(context = Dispatchers.IO) { auth = authInfoDao.getAll().first() }
         if (auth.instanceUrl == "") return // todo 認証に行く
-        apiManager = MastodonApiManager(auth.instanceUrl)
-
-        timelinesApi = apiManager.timelines
     }
 
     override fun onCreateView(
@@ -59,7 +49,8 @@ class TimelineFragment() : Fragment() {
         binding =
             DataBindingUtil.setContentView<ContentMainBinding>(activity!!, R.layout.content_main)
                 .also {
-                    val factory = TimelineViewModelFactory(TimelineViewModel.GetMethod.HOME)
+                    val factory =
+                        TimelineViewModelFactory(TimelineViewModel.GetMethod.HOME, auth, apiManager)
                     it.vm = ViewModelProvider(this, factory).get(TimelineViewModel::class.java)
                     it.lifecycleOwner = this
                 }
@@ -102,49 +93,17 @@ class TimelineFragment() : Fragment() {
         reloadTimeline(timeline)
     }
 
-    // todo 同じ型シグネチャで取得関数を用意する enumに紐付けたいが、staticとの絡みで案が必要
-    private suspend fun callHomeTimeline(maxId: String?, sinceId: String?) =
-        timelinesApi.getHomeTimeline(auth.accessToken, maxId, sinceId)
-
-    private suspend fun callLocalPublicTimeline(maxId: String?, sinceId: String?) =
-        timelinesApi.getPublicTimeline(
-            authorization = auth.accessToken, local = true, maxId = maxId, sinceId = sinceId
-        )
-
-    private suspend fun callGlobalPublicTimeline(maxId: String?, sinceId: String?) =
-        timelinesApi.getPublicTimeline(
-            authorization = auth.accessToken, local = false, maxId = maxId, sinceId = sinceId
-        )
-
-    private fun returnTimelineGetter(getMethod: TimelineViewModel.GetMethod): suspend ((String?, String?) -> Response<Array<Status>>) {
-        val callApi = when (getMethod) {
-            TimelineViewModel.GetMethod.HOME -> ::callHomeTimeline
-            TimelineViewModel.GetMethod.LOCAL -> ::callLocalPublicTimeline
-            TimelineViewModel.GetMethod.GLOBAL -> ::callGlobalPublicTimeline
-        }
-        return { maxId: String?, sinceId: String? -> callApi(maxId, sinceId) }
-    }
 
     private suspend fun reloadTimeline(
         timeline: List<Status>, maxId: String? = null, sinceId: String? = null
     ) {
-        val getter = suspend { returnTimelineGetter(binding.vm!!.getMethod)(maxId, sinceId) }
-        val toots = getByApi(getter)
+        val getter =
+            suspend { binding.vm!!.returnTimelineGetter(binding.vm!!.getMethod)(maxId, sinceId) }
+        val toots = binding.vm!!.getByApi(getter)
         // 仮記述 今のままだと1回しか増えない(timelineを更新していない) todo
         val adapter = binding.timelineView.adapter
         if (adapter is TimelineAdapter)
             adapter.submitList(timeline + toots.toList())
-    }
-
-    private suspend fun getByApi(getter: suspend () -> Response<Array<Status>>): Array<Status> {
-        return try {
-            val res = getter()
-            res.body() ?: arrayOf() // todo レスポンスが期待通りじゃないときの処理 res.errorBody()
-        } catch (e: HttpException) {
-            e.printStackTrace()
-            // todo 通信失敗のときの処理
-            arrayOf()
-        }
     }
 
     fun focusTop() {
