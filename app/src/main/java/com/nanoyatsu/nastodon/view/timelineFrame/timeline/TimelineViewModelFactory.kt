@@ -6,7 +6,7 @@ import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 
 class TimelineViewModelFactory(
-    private val getMethod: TimelineViewModel.GetMethod,
+    private val kind: TimelineViewModel.Kind,
     private val auth: AuthInfo,
     private val apiManager: MastodonApiManager
 ) :
@@ -14,7 +14,7 @@ class TimelineViewModelFactory(
     @Suppress("unchecked_cast")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TimelineViewModel::class.java)) {
-            return TimelineViewModel(getMethod, auth, apiManager) as T
+            return TimelineViewModel(kind, auth, apiManager) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

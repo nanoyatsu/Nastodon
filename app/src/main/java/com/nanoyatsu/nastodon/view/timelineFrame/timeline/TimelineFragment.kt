@@ -55,7 +55,7 @@ class TimelineFragment() : Fragment() {
 
     private fun initBinding(binding: ContentMainBinding) {
         val factory =
-            TimelineViewModelFactory(TimelineViewModel.GetMethod.HOME, auth, apiManager)
+            TimelineViewModelFactory(TimelineViewModel.Kind.HOME, auth, apiManager)
         binding.vm = ViewModelProvider(this, factory).get(TimelineViewModel::class.java)
         binding.lifecycleOwner = this
 

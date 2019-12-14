@@ -13,14 +13,14 @@ import retrofit2.Response
 typealias TimelineGetter = (suspend (MastodonApiTimelines, String, String?, String?) -> Response<List<Status>>)
 
 class TimelineViewModel(
-    private val getMethod: GetMethod,
+    private val kind: Kind,
     private val auth: AuthInfo,
     private val apiManager: MastodonApiManager
 ) : ViewModel() {
-    enum class GetMethod(val getter: TimelineGetter) {
-        HOME(::callHomeTimeline),
-        LOCAL(::callLocalPublicTimeline),
-        FEDERATED(::callFederatedPublicTimeline)
+    enum class Kind(val getter: TimelineGetter) {
+        HOME(::homeTimelineApiProvider),
+        LOCAL(::localTimelineApiProvider),
+        FEDERATED(::federatedTimelineApiProvider)
     }
 
     private val _timeline = MutableLiveData<List<Status>>().apply { value = mutableListOf() }
@@ -30,7 +30,7 @@ class TimelineViewModel(
     suspend fun reloadTimeline(maxId: String? = null, sinceId: String? = null) {
         val apiDir = apiManager.timelines
         val token = auth.accessToken
-        val getter = suspend { getMethod.getter(apiDir, token, maxId, sinceId) }
+        val getter = suspend { kind.getter(apiDir, token, maxId, sinceId) }
         val toots = getByApi(getter)
         _timeline.value = _timeline.value?.plus(toots)
     }
@@ -51,17 +51,17 @@ class TimelineViewModel(
     }
 
     companion object {
-        suspend fun callHomeTimeline(
+        suspend fun homeTimelineApiProvider(
             apiDir: MastodonApiTimelines, token: String, maxId: String?, sinceId: String?
         ) = apiDir.getHomeTimeline(token, maxId, sinceId)
 
-        suspend fun callLocalPublicTimeline(
+        suspend fun localTimelineApiProvider(
             apiDir: MastodonApiTimelines, token: String, maxId: String?, sinceId: String?
         ) = apiDir.getPublicTimeline(
             authorization = token, local = true, maxId = maxId, sinceId = sinceId
         )
 
-        suspend fun callFederatedPublicTimeline(
+        suspend fun federatedTimelineApiProvider(
             apiDir: MastodonApiTimelines, token: String, maxId: String?, sinceId: String?
         ) = apiDir.getPublicTimeline(
             authorization = token, local = false, maxId = maxId, sinceId = sinceId
