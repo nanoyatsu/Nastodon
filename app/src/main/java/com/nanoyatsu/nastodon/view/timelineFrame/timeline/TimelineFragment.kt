@@ -97,8 +97,9 @@ class TimelineFragment() : Fragment() {
     private suspend fun reloadTimeline(
         timeline: List<Status>, maxId: String? = null, sinceId: String? = null
     ) {
-        val getter =
-            suspend { binding.vm!!.returnTimelineGetter(binding.vm!!.getMethod)(maxId, sinceId) }
+        val apiDir = apiManager.timelines
+        val token = auth.accessToken
+        val getter = suspend { binding.vm!!.getMethod.getter(apiDir, token, maxId, sinceId) }
         val toots = binding.vm!!.getByApi(getter)
         // 仮記述 今のままだと1回しか増えない(timelineを更新していない) todo
         val adapter = binding.timelineView.adapter
