@@ -15,7 +15,7 @@ interface MastodonApiTimelines {
         @Query("since_id") sinceId: String? = null, // returns are newer than ID
         @Query("min_id") minId: String? = null, // returns are immediately newer than ID (?? todo 試す)
         @Query("limit") limit: Int? = null // default 20
-    ): Response<Array<Status>>
+    ): Response<List<Status>>
 
     // todo GET /api/v1/conversations
 
@@ -29,7 +29,7 @@ interface MastodonApiTimelines {
         @Query("since_id") sinceId: String? = null,
         @Query("min_id") minId: String? = null,
         @Query("limit") limit: Int? = null // default 20
-    ): Response<Array<Status>>
+    ): Response<List<Status>>
 
     // todo GET /api/v1/timelines/tag/:hashtag
     // todo GET /api/v1/timelines/list/:list_id

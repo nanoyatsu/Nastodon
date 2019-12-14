@@ -7,13 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.data.api.entity.Status
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.ContentMainBinding
 import kotlinx.coroutines.CoroutineScope
@@ -48,26 +48,39 @@ class TimelineFragment() : Fragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         binding =
             DataBindingUtil.setContentView<ContentMainBinding>(activity!!, R.layout.content_main)
-                .also {
-                    val factory =
-                        TimelineViewModelFactory(TimelineViewModel.GetMethod.HOME, auth, apiManager)
-                    it.vm = ViewModelProvider(this, factory).get(TimelineViewModel::class.java)
-                    it.lifecycleOwner = this
-                }
+                .also { initBinding(it) }
 
         return inflater.inflate(R.layout.content_main, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        // SwipeRefreshLayout 引っ張って更新するやつ
+    private fun initBinding(binding: ContentMainBinding) {
+        val factory =
+            TimelineViewModelFactory(TimelineViewModel.GetMethod.HOME, auth, apiManager)
+        binding.vm = ViewModelProvider(this, factory).get(TimelineViewModel::class.java)
+        binding.lifecycleOwner = this
+
+        val context = this.context ?: return
+        val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        binding.timelineView.layoutManager = layoutManager // fixme 画面回転を連続したりするとNPE
+        val adapter = TimelineAdapter(context)
+        binding.timelineView.adapter = adapter
+
+        // Timelineの常時更新
+        binding.vm!!.timeline.observe(viewLifecycleOwner, Observer {
+            (binding.timelineView.adapter as? TimelineAdapter)?.submitList(it)
+        })
+
+        // SwipeRefreshLayout 引っ張って初期化する部品
         binding.swipeRefresh.setOnRefreshListener {
             CoroutineScope(context = Dispatchers.Main).launch {
                 initTimeline()
                 binding.swipeRefresh.isRefreshing = false
             }
         }
+    }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         eventListener?.progressStart()
         CoroutineScope(context = Dispatchers.Main).launch {
             initTimeline()
@@ -75,37 +88,11 @@ class TimelineFragment() : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     private suspend fun initTimeline() {
-        val context = this.context ?: return
-
-        val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        binding.timelineView.layoutManager = layoutManager // fixme 画面回転を連続したりするとNPE
-        val timeline = mutableListOf<Status>() // todo ViewModelに持つ
-
-        val adapter = TimelineAdapter(context)
-        binding.timelineView.adapter = adapter
-        adapter.submitList(timeline)
-
-        reloadTimeline(timeline)
+        binding.vm!!.clearTimeline()
+        binding.vm!!.reloadTimeline()
     }
 
-
-    private suspend fun reloadTimeline(
-        timeline: List<Status>, maxId: String? = null, sinceId: String? = null
-    ) {
-        val apiDir = apiManager.timelines
-        val token = auth.accessToken
-        val getter = suspend { binding.vm!!.getMethod.getter(apiDir, token, maxId, sinceId) }
-        val toots = binding.vm!!.getByApi(getter)
-        // 仮記述 今のままだと1回しか増えない(timelineを更新していない) todo
-        val adapter = binding.timelineView.adapter
-        if (adapter is TimelineAdapter)
-            adapter.submitList(timeline + toots.toList())
-    }
 
     fun focusTop() {
         binding.timelineView.smoothScrollToPosition(0)
