@@ -1,13 +1,13 @@
 package com.nanoyatsu.nastodon.view.timelineFrame.timeline
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiTimelines
 import com.nanoyatsu.nastodon.data.api.entity.Status
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
-import retrofit2.HttpException
 import retrofit2.Response
 
 typealias TimelineGetter = (suspend (MastodonApiTimelines, String, String?, String?) -> Response<List<Status>>)
@@ -23,34 +23,20 @@ class TimelineViewModel(
         FEDERATED(::federatedTimelineApiProvider)
     }
 
-    private val _timeline = MutableLiveData<List<Status>>().apply { value = mutableListOf() }
-    val timeline: LiveData<List<Status>>
-        get() = _timeline
-
-    suspend fun reloadTimeline(maxId: String? = null, sinceId: String? = null) {
-        val apiDir = apiManager.timelines
-        val token = auth.accessToken
-        val getter = suspend { kind.getter(apiDir, token, maxId, sinceId) }
-        val toots = getByApi(getter)
-        _timeline.value = _timeline.value?.plus(toots)
+    val timeline: LiveData<PagedList<Status>> = run {
+        val factory = TimelineDataSourceFactory(kind, apiManager.timelines, auth.accessToken)
+        LivePagedListBuilder<String, Status>(factory, TIMELINE_PAGE_SIZE).build()
     }
 
     fun clearTimeline() {
-        _timeline.value = mutableListOf()
-    }
-
-    private suspend fun getByApi(getter: suspend () -> Response<List<Status>>): List<Status> {
-        return try {
-            val res = getter()
-            res.body() ?: listOf() // todo レスポンスが期待通りじゃないときの処理 res.errorBody()
-        } catch (e: HttpException) {
-            e.printStackTrace()
-            // todo 通信失敗のときの処理
-            listOf()
-        }
+        val factory = TimelineDataSourceFactory(kind, apiManager.timelines, auth.accessToken)
+        // todo 再生成
+        val dummy = LivePagedListBuilder<String, Status>(factory, 20).build()
     }
 
     companion object {
+        const val TIMELINE_PAGE_SIZE = 20
+
         suspend fun homeTimelineApiProvider(
             apiDir: MastodonApiTimelines, token: String, maxId: String?, sinceId: String?
         ) = apiDir.getHomeTimeline(token, maxId, sinceId)

@@ -66,16 +66,12 @@ class TimelineFragment() : Fragment() {
         binding.timelineView.adapter = adapter
 
         // Timelineの常時更新
-        binding.vm!!.timeline.observe(viewLifecycleOwner, Observer {
-            (binding.timelineView.adapter as? TimelineAdapter)?.submitList(it)
-        })
+        binding.vm!!.timeline.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
 
         // SwipeRefreshLayout 引っ張って初期化する部品
         binding.swipeRefresh.setOnRefreshListener {
-            CoroutineScope(context = Dispatchers.Main).launch {
-                initTimeline()
-                binding.swipeRefresh.isRefreshing = false
-            }
+            initTimeline()
+            binding.swipeRefresh.isRefreshing = false
         }
     }
 
@@ -83,14 +79,14 @@ class TimelineFragment() : Fragment() {
         super.onActivityCreated(savedInstanceState)
         eventListener?.progressStart()
         CoroutineScope(context = Dispatchers.Main).launch {
+            // fixme paging化の関係で特に意味がないスコープ
             initTimeline()
             eventListener?.progressEnd()
         }
     }
 
-    private suspend fun initTimeline() {
+    private fun initTimeline() {
         binding.vm!!.clearTimeline()
-        binding.vm!!.reloadTimeline()
     }
 
 

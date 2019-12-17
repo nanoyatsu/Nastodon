@@ -9,8 +9,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
@@ -28,12 +28,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
 class TimelineAdapter(private val context: Context) :
-    ListAdapter<Status, TimelineAdapter.ViewHolder>(
+    PagedListAdapter<Status, TimelineAdapter.ViewHolder>(
         DiffCallback()
     ) {
     private var authInfoDao: AuthInfoDao = NastodonDataBase.getInstance().authInfoDao()
     private lateinit var auth: AuthInfo
-    private lateinit var apiManager: MastodonApiManager
+    private var apiManager: MastodonApiManager
 
     init {
         runBlocking(context = Dispatchers.IO) { auth = authInfoDao.getAll().first() }
@@ -48,7 +48,7 @@ class TimelineAdapter(private val context: Context) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val toot = getItem(position)
-        holder.bind(context, toot, apiManager, auth)
+        holder.bind(context, toot!!, apiManager, auth)
     }
 
     override fun onViewAttachedToWindow(holder: ViewHolder) {

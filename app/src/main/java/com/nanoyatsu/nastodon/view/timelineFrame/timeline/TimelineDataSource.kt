@@ -8,14 +8,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
 class TimelineDataSource(
+    private val timelineKind: TimelineViewModel.Kind,
     private val apiDir: MastodonApiTimelines,
-    private val token: String,
-    private val timelineKind: TimelineViewModel.Kind
+    private val token: String
 ) : ItemKeyedDataSource<String, Status>() {
 
-    fun fetchData() {
-
-    }
+    // todo エラー処理 https://github.com/android/architecture-components-samples/tree/master/PagingWithNetworkSample も参考になる
+//    private suspend fun getByApi(getter: suspend () -> Response<List<Status>>): List<Status> {
+//        return try {
+//            val res = getter()
+//            res.body() ?: listOf() // todo レスポンスが期待通りじゃないときの処理 res.errorBody()
+//        } catch (e: HttpException) {
+//            e.printStackTrace()
+//            // todo 通信失敗のときの処理
+//            listOf()
+//        }
+//    }
 
     override fun loadInitial(
         params: LoadInitialParams<String>,
