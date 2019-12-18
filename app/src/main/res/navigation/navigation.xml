@@ -7,9 +7,9 @@
 
   <fragment
     android:id="@+id/timelineFrameFragment"
-    android:name="com.nanoyatsu.nastodon.view.timelineFrame.TimelineFrameFragment"
+    android:name="com.nanoyatsu.nastodon.view.mainBottomNavigation.MainBottomNavigationFragment"
     android:label="TimelineFrameFragment"
-    tools:layout="@layout/fragment_timeline_frame">
+    tools:layout="@layout/fragment_main_bottom_navigation">
     <action
       android:id="@+id/action_timelineFrameFragment_to_tootDetailFragment"
       app:destination="@id/tootDetailFragment" />

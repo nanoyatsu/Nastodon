@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.view.timelineFrame
+package com.nanoyatsu.nastodon.view.mainBottomNavigation
 
 
 import android.content.Context
@@ -12,14 +12,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.nanoyatsu.nastodon.R
-import com.nanoyatsu.nastodon.databinding.FragmentTimelineFrameBinding
-import com.nanoyatsu.nastodon.view.timelineFrame.notice.NoticeFragment
-import com.nanoyatsu.nastodon.view.timelineFrame.search.SearchFragment
-import com.nanoyatsu.nastodon.view.timelineFrame.timeline.TimelineFragment
+import com.nanoyatsu.nastodon.databinding.FragmentMainBottomNavigationBinding
+import com.nanoyatsu.nastodon.view.mainBottomNavigation.notice.NoticeFragment
+import com.nanoyatsu.nastodon.view.mainBottomNavigation.search.SearchFragment
+import com.nanoyatsu.nastodon.view.mainBottomNavigation.timeline.TimelineFragment
 
-class TimelineFrameFragment : Fragment(), TimelineFragment.EventListener {
+class MainBottomNavigationFragment : Fragment(), TimelineFragment.EventListener {
 
-    lateinit var binding: FragmentTimelineFrameBinding
+    lateinit var binding: FragmentMainBottomNavigationBinding
 
     enum class Tab(val id: Int, val fragmentClass: Class<out Fragment>) {
         TIMELINE(R.id.frame_tab_timeline, TimelineFragment::class.java),
@@ -33,12 +33,14 @@ class TimelineFrameFragment : Fragment(), TimelineFragment.EventListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView<FragmentTimelineFrameBinding>(
-            activity!!, R.layout.fragment_timeline_frame
+        binding = DataBindingUtil.setContentView<FragmentMainBottomNavigationBinding>(
+            activity!!, R.layout.fragment_main_bottom_navigation
         ).also {
             it.vm =
-                ViewModelProvider(this@TimelineFrameFragment).get(TimelineFrameViewModel::class.java)
-            it.lifecycleOwner = this@TimelineFrameFragment
+                ViewModelProvider(this@MainBottomNavigationFragment).get(
+                    MainBottomNavigationViewModel::class.java
+                )
+            it.lifecycleOwner = this@MainBottomNavigationFragment
         }
 
         // FloatingButton
@@ -52,7 +54,7 @@ class TimelineFrameFragment : Fragment(), TimelineFragment.EventListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_timeline_frame, container, false)
+        return inflater.inflate(R.layout.fragment_main_bottom_navigation, container, false)
     }
 
     private fun onChangeTabId(id: Int) {
@@ -84,7 +86,7 @@ class TimelineFrameFragment : Fragment(), TimelineFragment.EventListener {
     }
 
     private fun transTootEdit() {
-        findNavController().navigate(TimelineFrameFragmentDirections.actionTimelineFrameFragmentToTootEditFragment())
+        findNavController().navigate(MainBottomNavigationFragmentDirections.actionTimelineFrameFragmentToTootEditFragment())
         binding.vm!!.onTootClickFinished()
     }
 

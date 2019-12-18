@@ -10,14 +10,14 @@
 
     <variable
       name="vm"
-      type="com.nanoyatsu.nastodon.view.timelineFrame.TimelineFrameViewModel" />
+      type="com.nanoyatsu.nastodon.view.mainBottomNavigation.MainBottomNavigationViewModel" />
 
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.timelineFrame.TimelineFrameFragment">
+    tools:context=".view.mainBottomNavigation.MainBottomNavigationFragment">
 
     <androidx.fragment.app.FragmentContainerView
       android:id="@+id/timeline_container"

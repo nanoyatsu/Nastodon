@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.view.timelineFrame.timeline
+package com.nanoyatsu.nastodon.view.mainBottomNavigation.timeline
 
 import androidx.paging.DataSource
 import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiTimelines

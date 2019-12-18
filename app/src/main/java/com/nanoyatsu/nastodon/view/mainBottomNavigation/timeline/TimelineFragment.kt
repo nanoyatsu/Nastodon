@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.view.timelineFrame.timeline
+package com.nanoyatsu.nastodon.view.mainBottomNavigation.timeline
 
 import android.content.Context
 import android.os.Bundle

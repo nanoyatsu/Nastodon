@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.view.timelineFrame.timeline
+package com.nanoyatsu.nastodon.view.mainBottomNavigation.timeline
 
 import android.content.Context
 import android.content.Intent
@@ -21,7 +21,7 @@ import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.ItemTootBinding
 import com.nanoyatsu.nastodon.view.accountDetail.AccountPageActivity
-import com.nanoyatsu.nastodon.view.timelineFrame.TimelineFrameFragmentDirections
+import com.nanoyatsu.nastodon.view.mainBottomNavigation.MainBottomNavigationFragmentDirections
 import com.nanoyatsu.nastodon.view.tootDetail.TootViewModel
 import kotlinx.android.synthetic.main.activity_nav_host.*
 import kotlinx.coroutines.Dispatchers
@@ -99,7 +99,7 @@ class TimelineAdapter(private val context: Context) :
         fun transTootDetail(context: Context, vm: TootViewModel) {
             if (context is FragmentActivity)
                 context.main_fragment_container.findNavController().navigate(
-                    TimelineFrameFragmentDirections.actionTimelineFrameFragmentToTootDetailFragment(
+                    MainBottomNavigationFragmentDirections.actionTimelineFrameFragmentToTootDetailFragment(
                         vm.toot.value!!
                     )
                 )

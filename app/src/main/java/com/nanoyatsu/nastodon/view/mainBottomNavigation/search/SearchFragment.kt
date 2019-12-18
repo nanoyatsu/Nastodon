@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.view.timelineFrame.notice
+package com.nanoyatsu.nastodon.view.mainBottomNavigation.search
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,24 +8,24 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.nanoyatsu.nastodon.R
 
-class NoticeFragment : Fragment() {
+class SearchFragment : Fragment() {
 
     companion object {
-        fun newInstance() = NoticeFragment()
+        fun newInstance() = SearchFragment()
     }
 
-    private lateinit var viewModel: NoticeViewModel
+    private lateinit var viewModel: SearchViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.notice_fragment, container, false)
+        return inflater.inflate(R.layout.search_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(NoticeViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
         // TODO: Use the ViewModel
     }
 
