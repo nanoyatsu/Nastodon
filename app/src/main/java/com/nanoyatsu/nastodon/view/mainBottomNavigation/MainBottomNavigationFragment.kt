@@ -86,7 +86,7 @@ class MainBottomNavigationFragment : Fragment(), TimelineFragment.EventListener 
     }
 
     private fun transTootEdit() {
-        findNavController().navigate(MainBottomNavigationFragmentDirections.actionTimelineFrameFragmentToTootEditFragment())
+        findNavController().navigate(MainBottomNavigationFragmentDirections.actionMainBottomNavigationFragmentToTootEditFragment())
         binding.vm!!.onTootClickFinished()
     }
 

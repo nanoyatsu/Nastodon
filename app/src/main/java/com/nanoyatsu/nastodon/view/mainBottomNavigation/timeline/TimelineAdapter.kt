@@ -99,7 +99,7 @@ class TimelineAdapter(private val context: Context) :
         fun transTootDetail(context: Context, vm: TootViewModel) {
             if (context is FragmentActivity)
                 context.main_fragment_container.findNavController().navigate(
-                    MainBottomNavigationFragmentDirections.actionTimelineFrameFragmentToTootDetailFragment(
+                    MainBottomNavigationFragmentDirections.actionMainBottomNavigationFragmentToTootDetailFragment(
                         vm.toot.value!!
                     )
                 )

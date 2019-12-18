@@ -3,18 +3,18 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/navigation"
-  app:startDestination="@id/timelineFrameFragment">
+  app:startDestination="@id/mainBottomNavigationFragment">
 
   <fragment
-    android:id="@+id/timelineFrameFragment"
+    android:id="@+id/mainBottomNavigationFragment"
     android:name="com.nanoyatsu.nastodon.view.mainBottomNavigation.MainBottomNavigationFragment"
-    android:label="TimelineFrameFragment"
+    android:label="MainBottomNavigationFragment"
     tools:layout="@layout/fragment_main_bottom_navigation">
     <action
-      android:id="@+id/action_timelineFrameFragment_to_tootDetailFragment"
+      android:id="@+id/action_mainBottomNavigationFragment_to_tootDetailFragment"
       app:destination="@id/tootDetailFragment" />
     <action
-      android:id="@+id/action_timelineFrameFragment_to_tootEditFragment"
+      android:id="@+id/action_mainBottomNavigationFragment_to_tootEditFragment"
       app:destination="@id/tootEditFragment" />
   </fragment>
   <fragment
