@@ -5,14 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
-import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.ContentMainBinding
@@ -51,11 +49,9 @@ class TimelineFragment() : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        binding =
-            DataBindingUtil.setContentView<ContentMainBinding>(activity!!, R.layout.content_main)
-                .also { initBinding(it) }
-
-        return inflater.inflate(R.layout.content_main, container, false)
+        binding = ContentMainBinding.inflate(inflater, container, false)
+            .also { initBinding(it) }
+        return binding.root
     }
 
     private fun initBinding(binding: ContentMainBinding) {

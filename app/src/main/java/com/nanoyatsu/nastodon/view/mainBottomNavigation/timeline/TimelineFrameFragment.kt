@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.nanoyatsu.nastodon.R
+import com.google.android.material.tabs.TabLayoutMediator
+import com.nanoyatsu.nastodon.components.ZoomOutPageTransformer
+import com.nanoyatsu.nastodon.databinding.FragmentTimelineFrameBinding
 import kotlinx.android.synthetic.main.fragment_timeline_frame.*
 
 /**
@@ -16,10 +18,12 @@ import kotlinx.android.synthetic.main.fragment_timeline_frame.*
  */
 class TimelineFrameFragment : Fragment() {
 
+    lateinit var binding: FragmentTimelineFrameBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_timeline_frame, container, false)
+        binding = FragmentTimelineFrameBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -27,6 +31,9 @@ class TimelineFrameFragment : Fragment() {
 
         val pagerAdapter = TimelinePagerAdapter(activity!!)
         pager.adapter = pagerAdapter
+        TabLayoutMediator(pager_tab, pager, TabLayoutMediator.TabConfigurationStrategy { _, _ -> })
+            .attach()
+        pager.setPageTransformer(ZoomOutPageTransformer())
     }
 
     private inner class TimelinePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
