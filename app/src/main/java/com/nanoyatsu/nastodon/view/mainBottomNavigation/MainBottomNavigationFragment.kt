@@ -16,13 +16,14 @@ import com.nanoyatsu.nastodon.databinding.FragmentMainBottomNavigationBinding
 import com.nanoyatsu.nastodon.view.mainBottomNavigation.notice.NoticeFragment
 import com.nanoyatsu.nastodon.view.mainBottomNavigation.search.SearchFragment
 import com.nanoyatsu.nastodon.view.mainBottomNavigation.timeline.TimelineFragment
+import com.nanoyatsu.nastodon.view.mainBottomNavigation.timeline.TimelineFrameFragment
 
 class MainBottomNavigationFragment : Fragment(), TimelineFragment.EventListener {
 
     lateinit var binding: FragmentMainBottomNavigationBinding
 
     enum class Tab(val id: Int, val fragmentClass: Class<out Fragment>) {
-        TIMELINE(R.id.frame_tab_timeline, TimelineFragment::class.java),
+        TIMELINE(R.id.frame_tab_timeline, TimelineFrameFragment::class.java),
         NOTICE(R.id.frame_tab_notice, NoticeFragment::class.java),
         SEARCH(R.id.frame_tab_search, SearchFragment::class.java)
     }

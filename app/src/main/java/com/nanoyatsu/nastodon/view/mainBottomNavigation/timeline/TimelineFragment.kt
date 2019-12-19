@@ -30,6 +30,7 @@ class TimelineFragment() : Fragment() {
     lateinit var auth: AuthInfo
     @Inject
     lateinit var apiManager: MastodonApiManager
+    lateinit var kind: TimelineViewModel.Kind
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -40,6 +41,10 @@ class TimelineFragment() : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (auth.instanceUrl == "") return // todo 認証に行く
+        arguments?.let {
+            kind = TimelineViewModel.Kind.values().getOrNull(it.getInt(ARG_KEY_KIND))
+                ?: TimelineViewModel.Kind.HOME
+        }
     }
 
     override fun onCreateView(
@@ -54,8 +59,7 @@ class TimelineFragment() : Fragment() {
     }
 
     private fun initBinding(binding: ContentMainBinding) {
-        val factory =
-            TimelineViewModelFactory(TimelineViewModel.Kind.HOME, auth, apiManager)
+        val factory = TimelineViewModelFactory(kind, auth, apiManager)
         binding.vm = ViewModelProvider(this, factory).get(TimelineViewModel::class.java)
         binding.lifecycleOwner = this
 
@@ -97,5 +101,15 @@ class TimelineFragment() : Fragment() {
     interface EventListener {
         fun progressStart()
         fun progressEnd()
+    }
+
+    companion object {
+        const val ARG_KEY_KIND = "KIND"
+        fun newInstance(kind: TimelineViewModel.Kind) =
+            TimelineFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(ARG_KEY_KIND, kind.ordinal)
+                }
+            }
     }
 }

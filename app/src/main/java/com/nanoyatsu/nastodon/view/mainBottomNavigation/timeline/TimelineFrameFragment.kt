@@ -27,7 +27,6 @@ class TimelineFrameFragment : Fragment() {
 
         val pagerAdapter = TimelinePagerAdapter(activity!!)
         pager.adapter = pagerAdapter
-
     }
 
     private inner class TimelinePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
@@ -35,7 +34,7 @@ class TimelineFrameFragment : Fragment() {
 
         override fun createFragment(position: Int): Fragment {
             val kind = TimelineViewModel.Kind.values()[position]
-            return TimelineFragment() // todo newInstance(kind)
+            return TimelineFragment.newInstance(kind)
         }
     }
 }
