@@ -31,7 +31,9 @@ class TimelineFrameFragment : Fragment() {
 
         val pagerAdapter = TimelinePagerAdapter(activity!!)
         pager.adapter = pagerAdapter
-        TabLayoutMediator(pager_tab, pager, TabLayoutMediator.TabConfigurationStrategy { _, _ -> })
+        TabLayoutMediator(pager_tab, pager, TabLayoutMediator.TabConfigurationStrategy { tab, pos ->
+            tab.text = TimelineViewModel.Kind.values()[pos].name
+        })
             .attach()
         pager.setPageTransformer(ZoomOutPageTransformer())
     }
