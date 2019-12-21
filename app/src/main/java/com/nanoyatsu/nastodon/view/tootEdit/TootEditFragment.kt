@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.R
@@ -36,31 +35,29 @@ class TootEditFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView<FragmentTootEditBinding>(
-            activity!!, R.layout.fragment_toot_edit
-        ).also {
-            // todo ViewModel
-        }
-
 //        if (auth.instanceUrl == "") {
 //            finish() // todo 認証に行く
 //            return
 //        }
-
-        val adapter = ArrayAdapter(
-            activity!!,
-            R.layout.support_simple_spinner_dropdown_item,
-            Visibility.values().map { it.label }
-        )
-        binding.visibilitySpinner.adapter = adapter
-
-        binding.buttonSend.setOnClickListener { sendToot() }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_toot_detail, container, false)
+        binding = FragmentTootEditBinding.inflate(inflater, container, false)
+            .also { initBinding(it) }
+        return binding.root
+    }
+
+    private fun initBinding(binding: FragmentTootEditBinding) {
+        // todo ViewModel
+        val adapter = ArrayAdapter(
+            activity!!,
+            R.layout.support_simple_spinner_dropdown_item,
+            Visibility.values().map { it.label })
+
+        binding.visibilitySpinner.adapter = adapter
+        binding.buttonSend.setOnClickListener { sendToot() }
     }
 
     private fun sendToot() {

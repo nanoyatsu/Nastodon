@@ -5,14 +5,12 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.entity.Account
 import com.nanoyatsu.nastodon.data.api.entity.Status
@@ -70,9 +68,8 @@ class TimelineAdapter(private val context: Context) :
     class ViewHolder(val binding: ItemTootBinding) : RecyclerView.ViewHolder(binding.root) {
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
-                val binding = DataBindingUtil.inflate<ItemTootBinding>(
-                    LayoutInflater.from(parent.context), R.layout.item_toot, parent, false
-                )
+                val binding =
+                    ItemTootBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 return ViewHolder(
                     binding
                 )

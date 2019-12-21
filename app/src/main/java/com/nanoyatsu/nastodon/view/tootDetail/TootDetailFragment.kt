@@ -6,11 +6,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.nanoyatsu.nastodon.NastodonApplication
-import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.FragmentTootDetailBinding
@@ -37,17 +35,16 @@ class TootDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        binding = FragmentTootDetailBinding.inflate(inflater, container, false)
+            .also { initBinding(it) }
+        return binding.root
+    }
+
+
+    private fun initBinding(binding: FragmentTootDetailBinding) {
         val args = TootDetailFragmentArgs.fromBundle(arguments!!)
-
-        binding = DataBindingUtil.setContentView<FragmentTootDetailBinding>(
-            activity!!, R.layout.fragment_toot_detail
-        ).also {
-            val factory = TootViewModelFactory(args.toot, auth, apiManager)
-            it.vm = ViewModelProvider(this@TootDetailFragment, factory)
-                .get(TootViewModel::class.java)
-            it.lifecycleOwner = this@TootDetailFragment
-        }
-
-        return inflater.inflate(R.layout.fragment_toot_detail, container, false)
+        val factory = TootViewModelFactory(args.toot, auth, apiManager)
+        binding.vm = ViewModelProvider(this, factory).get(TootViewModel::class.java)
+        binding.lifecycleOwner = this
     }
 }

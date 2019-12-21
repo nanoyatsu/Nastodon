@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -34,15 +33,38 @@ class MainBottomNavigationFragment : Fragment(), TimelineFragment.EventListener 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView<FragmentMainBottomNavigationBinding>(
-            activity!!, R.layout.fragment_main_bottom_navigation
-        ).also {
-            it.vm =
-                ViewModelProvider(this@MainBottomNavigationFragment).get(
-                    MainBottomNavigationViewModel::class.java
-                )
-            it.lifecycleOwner = this@MainBottomNavigationFragment
-        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+//        binding = DataBindingUtil.setContentView<FragmentMainBottomNavigationBinding>(
+//            activity!!, R.layout.fragment_main_bottom_navigation
+//        ).also {
+//            it.vm =
+//                ViewModelProvider(this@MainBottomNavigationFragment).get(
+//                    MainBottomNavigationViewModel::class.java
+//                )
+//            it.lifecycleOwner = this@MainBottomNavigationFragment
+//        }
+//
+//        // FloatingButton
+//        binding.vm!!.tootEvent.observe(this, Observer { if (it) transTootEdit() })
+//
+//        // 下部タブ
+//        binding.navigation.setOnNavigationItemSelectedListener { binding.vm!!.onSelectedMenuItem(it) }
+//        binding.vm!!.selectedTabId.observe(this, Observer { onChangeTabId(it) })
+//        return inflater.inflate(R.layout.fragment_main_bottom_navigation, container, false)
+
+        binding = FragmentMainBottomNavigationBinding.inflate(inflater, container, false)
+            .also { initBinding(it) }
+        return binding.root
+    }
+
+    private fun initBinding(binding: FragmentMainBottomNavigationBinding) {
+        binding.vm = ViewModelProvider(this)
+            .get(MainBottomNavigationViewModel::class.java)
+        binding.lifecycleOwner = this
 
         // FloatingButton
         binding.vm!!.tootEvent.observe(this, Observer { if (it) transTootEdit() })
@@ -50,12 +72,6 @@ class MainBottomNavigationFragment : Fragment(), TimelineFragment.EventListener 
         // 下部タブ
         binding.navigation.setOnNavigationItemSelectedListener { binding.vm!!.onSelectedMenuItem(it) }
         binding.vm!!.selectedTabId.observe(this, Observer { onChangeTabId(it) })
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_main_bottom_navigation, container, false)
     }
 
     private fun onChangeTabId(id: Int) {
