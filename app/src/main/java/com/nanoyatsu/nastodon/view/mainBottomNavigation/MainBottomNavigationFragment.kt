@@ -67,11 +67,11 @@ class MainBottomNavigationFragment : Fragment(), TimelineFragment.EventListener 
         binding.lifecycleOwner = this
 
         // FloatingButton
-        binding.vm!!.tootEvent.observe(this, Observer { if (it) transTootEdit() })
+        binding.vm!!.tootEvent.observe(viewLifecycleOwner, Observer { if (it) transTootEdit() })
 
         // 下部タブ
         binding.navigation.setOnNavigationItemSelectedListener { binding.vm!!.onSelectedMenuItem(it) }
-        binding.vm!!.selectedTabId.observe(this, Observer { onChangeTabId(it) })
+        binding.vm!!.selectedTabId.observe(viewLifecycleOwner, Observer { onChangeTabId(it) })
     }
 
     private fun onChangeTabId(id: Int) {
