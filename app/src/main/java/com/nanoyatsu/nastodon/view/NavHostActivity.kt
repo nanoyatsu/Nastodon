@@ -41,6 +41,7 @@ class NavHostActivity : AppCompatActivity() {
         drawerLayout = binding.drawerLayout
 
         val navController = findNavController(R.id.main_fragment_container)
+//        val navController = Navigation.findNavController(binding.mainFragmentContainer) // navigationを2.2.0にしてFragmentContainerViewに変える時に使う
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
         NavigationUI.setupWithNavController(binding.navView, navController)
 
