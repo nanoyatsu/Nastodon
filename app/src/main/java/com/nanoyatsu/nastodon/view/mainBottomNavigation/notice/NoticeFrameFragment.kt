@@ -8,10 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import com.nanoyatsu.nastodon.R
 
-class NoticeFragment : Fragment() {
+class NoticeFrameFragment : Fragment() {
 
     companion object {
-        fun newInstance() = NoticeFragment()
+        fun newInstance() = NoticeFrameFragment()
     }
 
     private lateinit var viewModel: NoticeViewModel
@@ -20,7 +20,7 @@ class NoticeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.notice_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_notice_frame, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

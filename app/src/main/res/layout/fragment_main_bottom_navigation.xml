@@ -19,14 +19,16 @@
     android:layout_height="match_parent"
     tools:context=".view.mainBottomNavigation.MainBottomNavigationFragment">
 
-    <androidx.fragment.app.FragmentContainerView
+    <fragment
       android:id="@+id/timeline_container"
+      android:name="androidx.navigation.fragment.NavHostFragment"
       android:layout_width="match_parent"
       android:layout_height="0dp"
       app:layout_constraintBottom_toTopOf="@id/navigation"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
+      app:navGraph="@navigation/navigation_main_bottom"
       tools:layout="@layout/content_main" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
