@@ -8,18 +8,20 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.ContentMainBinding
+import com.nanoyatsu.nastodon.view.mainBottomNavigation.BottomNavigatedFragmentInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class TimelineFragment() : Fragment() {
+class TimelineFragment() : Fragment(), BottomNavigatedFragmentInterface {
 
     private var eventListener: EventListener? = null
     private lateinit var binding: ContentMainBinding
@@ -108,4 +110,13 @@ class TimelineFragment() : Fragment() {
                 }
             }
     }
+
+    override fun toTimeline() =
+        focusTop()
+
+    override fun toNotice() =
+        findNavController().navigate(TimelineFrameFragmentDirections.actionTimelineFrameFragmentToNoticeFrameFragment())
+
+    override fun toSearch() =
+        findNavController().navigate(TimelineFrameFragmentDirections.actionTimelineFrameFragmentToSearchFragment())
 }

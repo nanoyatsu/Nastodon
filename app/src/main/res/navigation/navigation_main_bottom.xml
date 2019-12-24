@@ -11,7 +11,7 @@
     tools:layout="@layout/fragment_timeline_frame">
     <action
       android:id="@+id/action_timelineFrameFragment_to_searchFragment"
-      app:destination="@id/searchFragment" />
+      app:destination="@+id/searchFragment" />
     <action
       android:id="@+id/action_timelineFrameFragment_to_noticeFrameFragment"
       app:destination="@id/noticeFrameFragment" />
