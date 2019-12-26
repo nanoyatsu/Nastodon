@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
@@ -19,6 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import java.util.*
 import javax.inject.Inject
 
 class TootEditFragment : Fragment() {
@@ -50,7 +52,9 @@ class TootEditFragment : Fragment() {
     }
 
     private fun initBinding(binding: FragmentTootEditBinding) {
-        // todo ViewModel
+        val factory = TootEditViewModelFactory(auth, apiManager)
+        binding.vm = ViewModelProvider(this, factory).get(TootEditViewModel::class.java)
+
         val adapter = ArrayAdapter(
             activity!!,
             R.layout.support_simple_spinner_dropdown_item,
@@ -68,7 +72,7 @@ class TootEditFragment : Fragment() {
                 val res = apiManager.statuses.postToot(
                     authorization = auth.accessToken,
                     status = binding.content.text.toString(),
-                    visibility = paramVisibility.name.toLowerCase()
+                    visibility = paramVisibility.name.toLowerCase(Locale.ROOT)
                 )
                 Log.d(
                     this@TootEditFragment.javaClass.simpleName,
