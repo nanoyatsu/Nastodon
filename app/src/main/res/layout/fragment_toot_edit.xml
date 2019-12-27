@@ -26,7 +26,7 @@
       android:inputType="textMultiLine"
       android:maxLines="10"
       android:minLines="4"
-      android:text=""
+      android:text="@={vm.sendContent}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
@@ -36,6 +36,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_margin="8dp"
+      android:onClick="@{() -> vm.onTootSendClicked()}"
       android:text="Button"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/content" />

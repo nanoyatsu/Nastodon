@@ -3,11 +3,11 @@ package com.nanoyatsu.nastodon.view.tootEdit
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.nanoyatsu.nastodon.NastodonApplication
@@ -16,11 +16,6 @@ import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.entity.Visibility
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.FragmentTootEditBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import retrofit2.HttpException
-import java.util.*
 import javax.inject.Inject
 
 class TootEditFragment : Fragment() {
@@ -53,7 +48,8 @@ class TootEditFragment : Fragment() {
 
     private fun initBinding(binding: FragmentTootEditBinding) {
         val factory = TootEditViewModelFactory(auth, apiManager)
-        binding.vm = ViewModelProvider(this, factory).get(TootEditViewModel::class.java)
+        val vm = ViewModelProvider(this, factory).get(TootEditViewModel::class.java)
+        binding.vm = vm
 
         val adapter = ArrayAdapter(
             activity!!,
@@ -61,29 +57,19 @@ class TootEditFragment : Fragment() {
             Visibility.values().map { it.label })
 
         binding.visibilitySpinner.adapter = adapter
-        binding.buttonSend.setOnClickListener { sendToot() }
+        vm.tootSendEvent.observe(
+            viewLifecycleOwner,
+            androidx.lifecycle.Observer { if (it) sendToot() })
+//        binding.buttonSend.setOnClickListener { sendToot() }
     }
 
-    private fun sendToot() {
-        val paramVisibility = Visibility.values()[binding.visibilitySpinner.selectedItemPosition]
 
-        CoroutineScope(context = Dispatchers.Main).launch {
-            try {
-                val res = apiManager.statuses.postToot(
-                    authorization = auth.accessToken,
-                    status = binding.content.text.toString(),
-                    visibility = paramVisibility.name.toLowerCase(Locale.ROOT)
-                )
-                Log.d(
-                    this@TootEditFragment.javaClass.simpleName,
-                    res.body()?.toString() ?: res.errorBody().toString()
-                )
-                // {"error": "アクセストークンは取り消されています"} 消してたらこうなる
-                activity?.onBackPressed()
-            } catch (e: HttpException) {
-                e.printStackTrace()
-            }
-        }
+    private fun sendToot() {
+        // todo キーボードをしまう
+        val applicationContext = activity?.applicationContext
+        binding.vm?.sendToot(Visibility.values()[binding.visibilitySpinner.selectedItemPosition])
+        { Toast.makeText(applicationContext, it, Toast.LENGTH_LONG).show() }
+        activity?.onBackPressed() // todo ナビゲーションで遷移
     }
 
 }
