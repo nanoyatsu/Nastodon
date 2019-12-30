@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:tool="http://schemas.android.com/tools">
 
   <data>
+
+    <import type="android.view.View" />
 
     <variable
       name="vm"
       type="com.nanoyatsu.nastodon.view.tootEdit.TootEditViewModel" />
+
+    <variable
+      name="isCW"
+      type="boolean" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -13,14 +19,42 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <androidx.appcompat.widget.SwitchCompat
+      android:id="@+id/switch_cw"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_margin="8dp"
+      android:checked="@={isCW}"
+      android:text="CW "
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+    <!--      android:checked="@={vm.contentWarning}"-->
+
+    <com.google.android.material.textfield.TextInputEditText
+      android:id="@+id/cw_content"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:ems="10"
+      android:hint="@string/inputContentWarningTextHint"
+      android:inputType="textMultiLine"
+      android:maxLines="10"
+      android:minLines="1"
+      android:text="@={vm.cwContent}"
+      android:visibility="@{isCW ? View.VISIBLE : View.GONE}"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/switch_cw"
+      tool:text="警告文"
+      tool:visibility="visible" />
+    <!--      android:visibility="@{safeUnbox(vm.contentWarning) ? View.VISIBLE : View.GONE}"-->
 
     <com.google.android.material.textfield.TextInputEditText
       android:id="@+id/content"
       android:layout_width="0dp"
-      android:layout_height="120dp"
-      android:layout_marginStart="8dp"
-      android:layout_marginEnd="8dp"
+      android:layout_height="wrap_content"
       android:ems="10"
       android:hint="@string/inputMainTextHint"
       android:inputType="textMultiLine"
@@ -29,13 +63,16 @@
       android:text="@={vm.sendContent}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+      app:layout_constraintTop_toBottomOf="@id/cw_content"
+      tool:text="\@nastodon いろはにほへとちりぬるをわかよたれそぬねならむういのおくやまけふこへてあさきゆめみしえひもせす\nいろはにほへと" />
 
     <Button
       android:id="@+id/buttonSend"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_margin="8dp"
+      android:layout_marginStart="8dp"
+      android:layout_marginTop="8dp"
+      android:layout_marginBottom="8dp"
       android:onClick="@{() -> vm.onTootSendClicked()}"
       android:text="Button"
       app:layout_constraintEnd_toEndOf="parent"

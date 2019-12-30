@@ -17,8 +17,11 @@ class TootEditViewModel(
     private val auth: AuthInfo,
     private val apiManager: MastodonApiManager
 ) : ViewModel() {
+    // 双方向binding対象
+    var isContentWarning = false//MutableLiveData<Boolean>().apply { value = false }
+    val cwContent = MutableLiveData<String>().apply { value = "" }
+    val sendContent = MutableLiveData<String>().apply { value = "" }
 
-    var sendContent = "" // 双方向binding対象
     private val _tootSendEvent = MutableLiveData<Boolean>().apply { value = false }
     val tootSendEvent: LiveData<Boolean>
         get() = _tootSendEvent
@@ -31,7 +34,7 @@ class TootEditViewModel(
             try {
                 val res = apiManager.statuses.postToot(
                     authorization = auth.accessToken,
-                    status = sendContent,
+                    status = sendContent.value!!,
                     visibility = visibility.name.toLowerCase(Locale.ROOT)
                 )
                 Log.d(
