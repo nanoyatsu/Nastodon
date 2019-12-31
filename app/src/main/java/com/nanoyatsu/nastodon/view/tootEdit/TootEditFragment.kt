@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.R
@@ -51,16 +52,19 @@ class TootEditFragment : Fragment() {
         val vm = ViewModelProvider(this, factory).get(TootEditViewModel::class.java)
         binding.vm = vm
 
+        // 警告投稿 review : Switch値のVisibilityへの反映がXML側だけで対応出来ない？
+        vm.isContentWarning.observe(viewLifecycleOwner, Observer
+        { binding.cwContent.visibility = if (it) View.VISIBLE else View.GONE })
+
+        // 可視範囲指定
         val adapter = ArrayAdapter(
             activity!!,
             R.layout.support_simple_spinner_dropdown_item,
             Visibility.values().map { it.label })
-
         binding.visibilitySpinner.adapter = adapter
-        vm.tootSendEvent.observe(
-            viewLifecycleOwner,
-            androidx.lifecycle.Observer { if (it) sendToot() })
-//        binding.buttonSend.setOnClickListener { sendToot() }
+
+        // トゥート送信
+        vm.tootSendEvent.observe(viewLifecycleOwner, Observer { if (it) sendToot() })
     }
 
 
