@@ -5,12 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
+import com.nanoyatsu.nastodon.data.api.entity.Status
 import com.nanoyatsu.nastodon.data.api.entity.Visibility
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import retrofit2.Response
 import java.util.*
 
 class TootEditViewModel(
@@ -32,11 +34,7 @@ class TootEditViewModel(
     fun sendToot(visibility: Visibility, messenger: (String) -> Unit) {
         CoroutineScope(context = Dispatchers.Main).launch {
             try {
-                val res = apiManager.statuses.postToot(
-                    authorization = auth.accessToken,
-                    status = sendContent.value!!,
-                    visibility = visibility.name.toLowerCase(Locale.ROOT)
-                )
+                val res = returnArgSetPostToot(visibility).invoke()
                 Log.d(
                     this.javaClass.simpleName,
                     res.body()?.toString() ?: res.errorBody().toString()
@@ -49,6 +47,17 @@ class TootEditViewModel(
                 messenger("トゥートの送信に失敗しました")
 //                false
             }
+        }
+    }
+
+    private fun returnArgSetPostToot(visibility: Visibility): suspend () -> Response<Status> {
+        return suspend {
+            apiManager.statuses.postToot(
+                authorization = auth.accessToken,
+                status = sendContent.value!!,
+                spoilerText = if (cwContent.value == "") null else cwContent.value,
+                visibility = visibility.name.toLowerCase(Locale.ROOT)
+            )
         }
     }
 
