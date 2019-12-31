@@ -54,7 +54,7 @@ fun bindTimeText(view: TextView, text: String?) {
                 else -> createdAt.format(DateTimeFormatter.ofPattern("MM/dd"))
             }
         } else {
-            val createdAt = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.JAPAN).parse(text)
+            val createdAt = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.JAPAN).parse(text)!!
             val now = Date()
             val betweenSec = (now.time - createdAt.time) / TimeUnit.SECONDS.toMillis(1)
             when {

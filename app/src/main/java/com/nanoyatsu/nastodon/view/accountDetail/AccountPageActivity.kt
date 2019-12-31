@@ -19,6 +19,7 @@ import retrofit2.HttpException
 import retrofit2.Response
 import kotlin.reflect.KSuspendFunction3
 
+// fixme Navigationへの作り変え未対応 ノーメンテ状態
 class AccountPageActivity : AppCompatActivity() {
     enum class IntentKey { ACCOUNT }
 

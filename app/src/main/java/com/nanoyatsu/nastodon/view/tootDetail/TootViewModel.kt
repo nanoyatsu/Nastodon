@@ -18,6 +18,9 @@ class TootViewModel(
     private val auth: AuthInfo,
     apiManager: MastodonApiManager
 ) : ViewModel() {
+    // 双方向binding対象
+    val isFolding = MutableLiveData<Boolean>().apply { value = false }
+
     val vmJob = Job()
     private val ioScope = CoroutineScope(Dispatchers.Main + vmJob)
     private val apiStatuses = apiManager.statuses

@@ -34,6 +34,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+      <ImageButton
+        style="@style/NonPaddingButton"
+        android:layout_width="54dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp"
+        android:contentDescription="本文を開く"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:textSize="12sp"
+        android:tint="#555555"
+        android:visibility="@{vm.toot.spoilerText.empty ? View.GONE : View.VISIBLE}"
+        app:layout_constraintEnd_toEndOf="@id/accountAvatar"
+        app:layout_constraintStart_toStartOf="@id/accountAvatar"
+        app:layout_constraintTop_toBottomOf="@id/spoiler_text"
+        app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp" />
+      <!--   todo 閉じるとき上向き   -->
+
       <TextView
         android:id="@+id/displayName"
         android:layout_width="0dp"
