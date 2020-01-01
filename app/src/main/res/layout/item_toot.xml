@@ -34,23 +34,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-      <ImageButton
-        style="@style/NonPaddingButton"
-        android:layout_width="54dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="0dp"
-        android:contentDescription="本文を開く"
-        android:paddingStart="0dp"
-        android:paddingEnd="0dp"
-        android:textSize="12sp"
-        android:tint="#555555"
-        android:visibility="@{vm.toot.spoilerText.empty ? View.GONE : View.VISIBLE}"
-        app:layout_constraintEnd_toEndOf="@id/accountAvatar"
-        app:layout_constraintStart_toStartOf="@id/accountAvatar"
-        app:layout_constraintTop_toBottomOf="@id/spoiler_text"
-        app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp" />
-      <!--   todo 閉じるとき上向き   -->
-
       <TextView
         android:id="@+id/displayName"
         android:layout_width="0dp"
@@ -114,6 +97,24 @@
         app:tootText="@{vm.toot.spoilerText}"
         tools:text="spoilerText" />
 
+      <ImageButton
+        style="@style/NonPaddingButton"
+        android:layout_width="54dp"
+        android:layout_height="32dp"
+        android:layout_margin="0dp"
+        android:contentDescription="@string/tootUnFoldButtonDescription"
+        android:onClick="@{() -> vm.toggleFolding()}"
+        android:paddingStart="0dp"
+        android:paddingEnd="0dp"
+        android:textSize="12sp"
+        android:tint="#555555"
+        android:visibility="@{vm.toot.spoilerText.empty ? View.GONE : View.VISIBLE}"
+        app:layout_constraintEnd_toEndOf="@id/accountAvatar"
+        app:layout_constraintStart_toStartOf="@id/accountAvatar"
+        app:layout_constraintTop_toBottomOf="@id/accountAvatar"
+        app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp" />
+      <!--   todo 閉じるとき上向き、開閉アニメーション   -->
+
       <TextView
         android:id="@+id/content"
         android:layout_width="0dp"
@@ -122,6 +123,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:autoLink="all"
+        android:visibility="@{(vm.toot.spoilerText.empty || !vm.isFolding()) ? View.VISIBLE : View.GONE }"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/accountAvatar"
         app:layout_constraintTop_toBottomOf="@+id/spoiler_text"

@@ -18,13 +18,13 @@ class TootViewModel(
     private val auth: AuthInfo,
     apiManager: MastodonApiManager
 ) : ViewModel() {
-    // 双方向binding対象
-    val isFolding = MutableLiveData<Boolean>().apply { value = false }
-
     val vmJob = Job()
     private val ioScope = CoroutineScope(Dispatchers.Main + vmJob)
     private val apiStatuses = apiManager.statuses
     private val apiFavourites = apiManager.favourites
+
+    // 双方向binding対象
+    val isFolding = MutableLiveData<Boolean>().apply { value = true }
 
     private val _toot = MutableLiveData<Status>().apply { value = initToot }
     val toot: LiveData<Status>
@@ -45,6 +45,8 @@ class TootViewModel(
     val favouritesCount = Transformations.map(toot) { it.favouritesCount }
     val reblogged = Transformations.map(toot) { it.reblogged }
     val favourited = Transformations.map(toot) { it.favourited }
+
+    fun toggleFolding() = run { isFolding.value = isFolding.value?.not() }
 
     fun onReblogClicked() = run { _reblogEvent.value = true }
     private fun onReblogFinished() = run { _reblogEvent.value = false }
