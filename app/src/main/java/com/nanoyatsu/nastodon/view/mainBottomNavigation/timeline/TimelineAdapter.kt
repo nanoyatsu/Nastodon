@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -19,9 +18,7 @@ import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.ItemTootBinding
 import com.nanoyatsu.nastodon.view.accountDetail.AccountPageActivity
-import com.nanoyatsu.nastodon.view.mainBottomNavigation.MainBottomNavigationFragmentDirections
 import com.nanoyatsu.nastodon.view.tootDetail.TootViewModel
-import kotlinx.android.synthetic.main.activity_nav_host.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
@@ -94,12 +91,12 @@ class TimelineAdapter(private val context: Context) :
         }
 
         fun transTootDetail(context: Context, vm: TootViewModel) {
-            if (context is FragmentActivity)
-                context.main_fragment_container.findNavController().navigate(
-                    MainBottomNavigationFragmentDirections.actionMainBottomNavigationFragmentToTootDetailFragment(
-                        vm.toot.value!!
-                    )
-                )
+//            if (context is FragmentActivity)
+//                context.main_fragment_container.findNavController().navigate(
+//                    MainBottomNavigationFragmentDirections.actionMainBottomNavigationFragmentToTootDetailFragment(
+//                        vm.toot.value!!
+//                    )
+//                )
 
             vm.onTimeClickFinished()
         }

@@ -48,6 +48,9 @@ class NavHostActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { navController: NavController, navDestination: NavDestination, bundle: Bundle? ->
             // ここに認証確認して戻す処理？ 調べる
         }
+
+        // 下部ナビゲーションメニューのIDとナビゲーショングラフのIDの紐付け
+        NavigationUI.setupWithNavController(binding.bottomNavView, navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {

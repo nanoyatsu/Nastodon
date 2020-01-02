@@ -2,15 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
   <!--todo アイコンとか-->
   <item
-    android:id="@+id/frame_tab_timeline"
+    android:id="@id/timelineFrameFragment"
     android:title="@string/frame_tab_timeline" />
 
   <item
-    android:id="@+id/frame_tab_notice"
+    android:id="@id/noticeFrameFragment"
     android:title="@string/frame_tab_notice" />
 
   <item
-    android:id="@+id/frame_tab_search"
+    android:id="@id/searchFragment"
     android:title="@string/frame_tab_search" />
 
 </menu>

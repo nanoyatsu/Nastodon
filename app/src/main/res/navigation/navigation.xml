@@ -3,20 +3,8 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/navigation"
-  app:startDestination="@id/mainBottomNavigationFragment">
+  app:startDestination="@id/timelineFrameFragment">
 
-  <fragment
-    android:id="@+id/mainBottomNavigationFragment"
-    android:name="com.nanoyatsu.nastodon.view.mainBottomNavigation.MainBottomNavigationFragment"
-    android:label="MainBottomNavigationFragment"
-    tools:layout="@layout/fragment_main_bottom_navigation">
-    <action
-      android:id="@+id/action_mainBottomNavigationFragment_to_tootDetailFragment"
-      app:destination="@id/tootDetailFragment" />
-    <action
-      android:id="@+id/action_mainBottomNavigationFragment_to_tootEditFragment"
-      app:destination="@id/tootEditFragment" />
-  </fragment>
   <fragment
     android:id="@+id/tootDetailFragment"
     android:name="com.nanoyatsu.nastodon.view.tootDetail.TootDetailFragment"
@@ -31,4 +19,20 @@
     android:name="com.nanoyatsu.nastodon.view.tootEdit.TootEditFragment"
     android:label="TootEditFragment"
     tools:layout="@layout/fragment_toot_edit" />
+  <fragment
+    android:id="@+id/timelineFrameFragment"
+    android:name="com.nanoyatsu.nastodon.view.mainBottomNavigation.timeline.TimelineFrameFragment"
+    android:label="TimelineFrameFragment"
+    tools:layout="@layout/fragment_timeline_frame" />
+  <fragment
+    android:id="@+id/noticeFrameFragment"
+    android:name="com.nanoyatsu.nastodon.view.mainBottomNavigation.notice.NoticeFrameFragment"
+    android:label="fragment_notice_frame"
+    tools:layout="@layout/fragment_notice_frame" />
+  <fragment
+    android:id="@+id/searchFragment"
+    android:name="com.nanoyatsu.nastodon.view.mainBottomNavigation.search.SearchFragment"
+    android:label="fragment_search"
+    tools:layout="@layout/fagment_search" />
+
 </navigation>

@@ -13,7 +13,7 @@ import com.nanoyatsu.nastodon.components.ZoomOutPageTransformer
 import com.nanoyatsu.nastodon.databinding.FragmentTimelineFrameBinding
 
 /**
- * MainBottomNavigationFragment -> this -> TimelineFragment
+ * this -> TimelineFragment
  */
 class TimelineFrameFragment : Fragment() {
 
@@ -35,6 +35,9 @@ class TimelineFrameFragment : Fragment() {
             tab.text = TimelineViewModel.Kind.values()[pos].name
         }
             .attach()
+
+//        // FloatingButton
+//        binding.vm!!.tootEvent.observe(viewLifecycleOwner, Observer { if (it) transTootEdit() })
     }
 
     private inner class TimelinePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
@@ -45,4 +48,16 @@ class TimelineFrameFragment : Fragment() {
             return TimelineFragment.newInstance(kind)
         }
     }
+
+//    private fun transTootEdit() {
+////        findNavController().navigate(MainBottomNavigationFragmentDirections.actionMainBottomNavigationFragmentToTootEditFragment())
+//        binding.vm!!.onTootClickFinished()
+//    }
 }
+
+//// vm
+//private val _tootEvent = MutableLiveData<Boolean>().apply { value = false }
+//val tootEvent: LiveData<Boolean>
+//    get() = _tootEvent
+//fun onTootClicked() = run { _tootEvent.value = true }
+//fun onTootClickFinished() = run { _tootEvent.value = false }

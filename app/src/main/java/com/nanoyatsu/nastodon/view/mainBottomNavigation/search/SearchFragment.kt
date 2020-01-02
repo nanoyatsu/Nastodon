@@ -6,11 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.findNavController
 import com.nanoyatsu.nastodon.R
-import com.nanoyatsu.nastodon.view.mainBottomNavigation.BottomNavigatedFragmentInterface
 
-class SearchFragment : Fragment(), BottomNavigatedFragmentInterface {
+class SearchFragment : Fragment() {
 
     companion object {
         fun newInstance() = SearchFragment()
@@ -30,13 +28,5 @@ class SearchFragment : Fragment(), BottomNavigatedFragmentInterface {
         viewModel = ViewModelProviders.of(this).get(SearchViewModel::class.java)
         // TODO: Use the ViewModel
     }
-
-    override fun toTimeline() =
-        findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToTimelineFrameFragment())
-
-    override fun toNotice() =
-        findNavController().navigate(SearchFragmentDirections.actionSearchFragmentToNoticeFrameFragment())
-
-    override fun toSearch() {}
 
 }
