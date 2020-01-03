@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.view.mainBottomNavigation.notice
+package com.nanoyatsu.nastodon.view.notice
 
 import androidx.lifecycle.ViewModel
 

@@ -2,7 +2,7 @@ package com.nanoyatsu.nastodon.di
 
 import android.content.Context
 import com.nanoyatsu.nastodon.view.NavHostActivity
-import com.nanoyatsu.nastodon.view.mainBottomNavigation.timeline.TimelineFragment
+import com.nanoyatsu.nastodon.view.timeline.TimelineFragment
 import com.nanoyatsu.nastodon.view.tootDetail.TootDetailFragment
 import com.nanoyatsu.nastodon.view.tootEdit.TootEditFragment
 import dagger.BindsInstance

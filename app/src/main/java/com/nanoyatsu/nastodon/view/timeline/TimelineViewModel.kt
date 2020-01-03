@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.view.mainBottomNavigation.timeline
+package com.nanoyatsu.nastodon.view.timeline
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

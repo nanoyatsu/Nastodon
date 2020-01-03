@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.view.mainBottomNavigation.search
+package com.nanoyatsu.nastodon.view.search
 
 import android.os.Bundle
 import android.view.LayoutInflater

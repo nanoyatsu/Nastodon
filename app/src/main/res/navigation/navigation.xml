@@ -21,17 +21,17 @@
     tools:layout="@layout/fragment_toot_edit" />
   <fragment
     android:id="@+id/timelineFrameFragment"
-    android:name="com.nanoyatsu.nastodon.view.mainBottomNavigation.timeline.TimelineFrameFragment"
+    android:name="com.nanoyatsu.nastodon.view.timeline.TimelineFrameFragment"
     android:label="TimelineFrameFragment"
     tools:layout="@layout/fragment_timeline_frame" />
   <fragment
     android:id="@+id/noticeFrameFragment"
-    android:name="com.nanoyatsu.nastodon.view.mainBottomNavigation.notice.NoticeFrameFragment"
+    android:name="com.nanoyatsu.nastodon.view.notice.NoticeFrameFragment"
     android:label="fragment_notice_frame"
     tools:layout="@layout/fragment_notice_frame" />
   <fragment
     android:id="@+id/searchFragment"
-    android:name="com.nanoyatsu.nastodon.view.mainBottomNavigation.search.SearchFragment"
+    android:name="com.nanoyatsu.nastodon.view.search.SearchFragment"
     android:label="fragment_search"
     tools:layout="@layout/fagment_search" />
 

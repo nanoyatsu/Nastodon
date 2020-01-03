@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.view.mainBottomNavigation.timeline
+package com.nanoyatsu.nastodon.view.timeline
 
 import android.content.Context
 import android.os.Bundle
@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
-import com.nanoyatsu.nastodon.databinding.ContentMainBinding
+import com.nanoyatsu.nastodon.databinding.FragmentTimelineBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class TimelineFragment : Fragment() {
 
     private var eventListener: EventListener? = null
-    private lateinit var binding: ContentMainBinding
+    private lateinit var binding: FragmentTimelineBinding
 
     @Inject
     lateinit var auth: AuthInfo
@@ -49,12 +49,12 @@ class TimelineFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        binding = ContentMainBinding.inflate(inflater, container, false)
+        binding = FragmentTimelineBinding.inflate(inflater, container, false)
             .also { initBinding(it) }
         return binding.root
     }
 
-    private fun initBinding(binding: ContentMainBinding) {
+    private fun initBinding(binding: FragmentTimelineBinding) {
         val factory = TimelineViewModelFactory(kind, auth, apiManager)
         binding.vm = ViewModelProvider(this, factory).get(TimelineViewModel::class.java)
         binding.lifecycleOwner = this

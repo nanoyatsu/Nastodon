@@ -6,7 +6,7 @@
 
     <variable
       name="vm"
-      type="com.nanoyatsu.nastodon.view.mainBottomNavigation.timeline.TimelineViewModel" />
+      type="com.nanoyatsu.nastodon.view.timeline.TimelineViewModel" />
   </data>
 
   <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

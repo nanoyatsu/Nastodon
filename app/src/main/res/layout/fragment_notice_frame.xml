@@ -3,7 +3,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".view.mainBottomNavigation.notice.NoticeFrameFragment">
+  tools:context=".view.notice.NoticeFrameFragment">
 
   <TextView
     android:layout_width="match_parent"

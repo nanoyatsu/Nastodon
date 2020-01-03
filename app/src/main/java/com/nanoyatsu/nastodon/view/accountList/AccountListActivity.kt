@@ -7,14 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.endpoint.AccountListGetter
 import com.nanoyatsu.nastodon.data.api.entity.Account
-import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.fragment_timeline.*
 
 class AccountListActivity : AppCompatActivity() {
     enum class IntentKey { TITLE, GETTER }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.content_main)
+        setContentView(R.layout.fragment_timeline)
 //        setSupportActionBar(toolBar) // todo そのうち
 
         val listGetter = intent.getSerializableExtra(IntentKey.GETTER.name)

@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.view.mainBottomNavigation.search
+package com.nanoyatsu.nastodon.view.search
 
 import androidx.lifecycle.ViewModel
 
