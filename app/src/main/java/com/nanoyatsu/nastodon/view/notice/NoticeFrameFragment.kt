@@ -5,27 +5,40 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
-import com.nanoyatsu.nastodon.R
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.google.android.material.tabs.TabLayoutMediator
+import com.nanoyatsu.nastodon.components.ZoomOutPageTransformer
+import com.nanoyatsu.nastodon.databinding.FragmentNoticeFrameBinding
 
 class NoticeFrameFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = NoticeFrameFragment()
-    }
-
-    private lateinit var viewModel: NoticeViewModel
+    lateinit var binding: FragmentNoticeFrameBinding
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_notice_frame, container, false)
+        binding = FragmentNoticeFrameBinding.inflate(inflater, container, false)
+            .also { initBinding(it) }
+        return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(NoticeViewModel::class.java)
-        // TODO: Use the ViewModel
+    private fun initBinding(binding: FragmentNoticeFrameBinding) {
+        val pagerAdapter = NoticePagerAdapter(activity!!)
+        binding.pager.adapter = pagerAdapter
+        binding.pager.setPageTransformer(ZoomOutPageTransformer())
+
+        TabLayoutMediator(binding.pagerTab, binding.pager)
+        { tab, pos -> tab.text = NoticeViewModel.Kind.values()[pos].name }
+            .attach()
+    }
+
+    private inner class NoticePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
+        override fun getItemCount(): Int = NoticeViewModel.Kind.values().size
+
+        override fun createFragment(position: Int): Fragment {
+            val kind = NoticeViewModel.Kind.values()[position]
+            return NoticeFragment.newInstance(kind)
+        }
     }
 }

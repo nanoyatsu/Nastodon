@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  tools:context=".view.notice.NoticeFrameFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <TextView
+  <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:text="notice_fragment_ha_korekara_tukuri_masu" />
+    android:layout_height="match_parent">
 
-</FrameLayout>
+    <com.google.android.material.tabs.TabLayout
+      android:id="@+id/pager_tab"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_constraintBottom_toTopOf="@id/pager"
+      app:layout_constraintTop_toTopOf="parent"
+      app:tabGravity="fill"
+      app:tabIndicatorColor="@color/colorAccent"
+      app:tabIndicatorGravity="bottom" />
+
+    <androidx.viewpager2.widget.ViewPager2
+      android:id="@+id/pager"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:orientation="horizontal"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/pager_tab" />
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
