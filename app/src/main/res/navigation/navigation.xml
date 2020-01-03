@@ -23,7 +23,11 @@
     android:id="@+id/timelineFrameFragment"
     android:name="com.nanoyatsu.nastodon.view.timeline.TimelineFrameFragment"
     android:label="TimelineFrameFragment"
-    tools:layout="@layout/fragment_timeline_frame" />
+    tools:layout="@layout/fragment_timeline_frame">
+    <action
+      android:id="@+id/action_timelineFrameFragment_to_tootEditFragment"
+      app:destination="@id/tootEditFragment" />
+  </fragment>
   <fragment
     android:id="@+id/noticeFrameFragment"
     android:name="com.nanoyatsu.nastodon.view.notice.NoticeFrameFragment"

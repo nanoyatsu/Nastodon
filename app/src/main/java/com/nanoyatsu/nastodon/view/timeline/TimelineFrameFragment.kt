@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import com.nanoyatsu.nastodon.components.ZoomOutPageTransformer
@@ -27,6 +30,7 @@ class TimelineFrameFragment : Fragment() {
     }
 
     private fun initBinding(binding: FragmentTimelineFrameBinding) {
+        binding.vm = ViewModelProvider(this).get(TimelineFrameViewModel::class.java)
         val pagerAdapter = TimelinePagerAdapter(activity!!)
         binding.pager.adapter = pagerAdapter
         binding.pager.setPageTransformer(ZoomOutPageTransformer())
@@ -36,8 +40,8 @@ class TimelineFrameFragment : Fragment() {
         }
             .attach()
 
-//        // FloatingButton
-//        binding.vm!!.tootEvent.observe(viewLifecycleOwner, Observer { if (it) transTootEdit() })
+        // FloatingButton
+        binding.vm!!.tootEvent.observe(viewLifecycleOwner, Observer { if (it) transTootEdit() })
     }
 
     private inner class TimelinePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
@@ -49,15 +53,8 @@ class TimelineFrameFragment : Fragment() {
         }
     }
 
-//    private fun transTootEdit() {
-////        findNavController().navigate(MainBottomNavigationFragmentDirections.actionMainBottomNavigationFragmentToTootEditFragment())
-//        binding.vm!!.onTootClickFinished()
-//    }
+    private fun transTootEdit() {
+        findNavController().navigate(TimelineFrameFragmentDirections.actionTimelineFrameFragmentToTootEditFragment())
+        binding.vm!!.onTootClickFinished()
+    }
 }
-
-//// vm
-//private val _tootEvent = MutableLiveData<Boolean>().apply { value = false }
-//val tootEvent: LiveData<Boolean>
-//    get() = _tootEvent
-//fun onTootClicked() = run { _tootEvent.value = true }
-//fun onTootClickFinished() = run { _tootEvent.value = false }
