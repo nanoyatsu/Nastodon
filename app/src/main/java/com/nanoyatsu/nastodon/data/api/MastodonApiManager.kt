@@ -26,7 +26,8 @@ class MastodonApiManager(baseUrl: String) {
             it.create()
         }
         retrofit = Retrofit.Builder().let {
-            val fullUrl = "https://${if (baseUrl.isEmpty()) "a" else baseUrl}/" // "a"よりも妥当な退避文字あるいは方法
+            val fullUrl =
+                "https://${if (baseUrl.isEmpty()) "a" else baseUrl}/" // "a"よりも妥当な退避文字あるいは方法
             it.baseUrl(fullUrl)
 //            it.baseUrl(baseUrl + basePathV1)
             it.client(httpClient.build())
@@ -70,9 +71,9 @@ class MastodonApiManager(baseUrl: String) {
 //    get() = retrofit.create(MastodonApimedia::class.java)
 // val mutes: MastodonApimutes
 //    get() = retrofit.create(MastodonApimutes::class.java)
-// val notifications: MastodonApinotifications
-//    get() = retrofit.create(MastodonApinotifications::class.java)
-// val polls: MastodonApipolls
+    val notifications: MastodonApiNotifications
+        get() = retrofit.create(MastodonApiNotifications::class.java)
+    // val polls: MastodonApipolls
 //    get() = retrofit.create(MastodonApipolls::class.java)
 // val reports: MastodonApireports
 //    get() = retrofit.create(MastodonApireports::class.java)
