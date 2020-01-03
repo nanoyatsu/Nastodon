@@ -2,9 +2,9 @@ package com.nanoyatsu.nastodon.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
@@ -23,12 +23,15 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 class NavHostActivity : AppCompatActivity() {
-    lateinit var drawerLayout: DrawerLayout
+    lateinit var binding: ActivityNavHostBinding
 
     @Inject
     lateinit var db: NastodonDataBase
     @Inject
     lateinit var apiManager: MastodonApiManager
+
+    private val hasBottomNavFragments =
+        arrayOf(R.id.timelineFrameFragment, R.id.noticeFrameFragment, R.id.searchFragment)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -36,26 +39,34 @@ class NavHostActivity : AppCompatActivity() {
         checkAuth()
 
         super.onCreate(savedInstanceState)
-        val binding =
-            DataBindingUtil.setContentView<ActivityNavHostBinding>(this, R.layout.activity_nav_host)
-        drawerLayout = binding.drawerLayout
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_nav_host)
 
         val navController = findNavController(R.id.main_fragment_container)
 //        val navController = Navigation.findNavController(binding.mainFragmentContainer) // navigationを2.2.0にしてFragmentContainerViewに変える時に使う
-        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
+        NavigationUI.setupActionBarWithNavController(this, navController, binding.drawerLayout)
         NavigationUI.setupWithNavController(binding.navView, navController)
 
         navController.addOnDestinationChangedListener { navController: NavController, navDestination: NavDestination, bundle: Bundle? ->
             // ここに認証確認して戻す処理？ 調べる
         }
 
+        // 下部ナビゲーションの表示制御
+        navController.addOnDestinationChangedListener(::setBottomNavVisibility)
+
         // 下部ナビゲーションメニューのIDとナビゲーショングラフのIDの紐付け
         NavigationUI.setupWithNavController(binding.bottomNavView, navController)
     }
 
+    private fun setBottomNavVisibility(_1: NavController, dest: NavDestination, _2: Bundle?) {
+        if (dest.id in hasBottomNavFragments)
+            binding.bottomNavView.visibility = View.VISIBLE
+        else
+            binding.bottomNavView.visibility = View.GONE
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.main_fragment_container)
-        return NavigationUI.navigateUp(navController, drawerLayout)
+        return NavigationUI.navigateUp(navController, binding.drawerLayout)
     }
 
     private fun checkAuth() {
@@ -71,27 +82,23 @@ class NavHostActivity : AppCompatActivity() {
     }
 
     private fun hasAuthInfo(auth: AuthInfo): Boolean {
-        if (auth.instanceUrl.isEmpty())
-            return false
-        if (auth.accessToken.isEmpty())
-            return false
+        if (auth.instanceUrl.isEmpty()) return false
+        if (auth.accessToken.isEmpty()) return false
         return true
     }
 
     private fun verifyCredentials(auth: AuthInfo): Boolean {
         val api = apiManager.apps
-        var result = false
-        runBlocking {
-            result = try {
+        return runBlocking {
+            try {
                 val res = api.verifyCredentials(auth.accessToken)
                 val apps = res.body()
                 // nameも一致するか確認
-                apps is Apps && apps.name == getString(R.string.app_name)
+                return@runBlocking apps is Apps && apps.name == getString(R.string.app_name)
             } catch (e: HttpException) {
                 e.printStackTrace()
-                false
+                return@runBlocking false
             }
         }
-        return result
     }
 }
