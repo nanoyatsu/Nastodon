@@ -34,7 +34,4 @@
   <string name="accountFollowingCountFormat">フォロー %d</string>
   <string name="accountFollowersCountFormat">フォロワー %d</string>
   <string name="tootUnFoldButtonDescription">本文を開く</string>
-
-  <!-- TODO: Remove or change this placeholder text -->
-  <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

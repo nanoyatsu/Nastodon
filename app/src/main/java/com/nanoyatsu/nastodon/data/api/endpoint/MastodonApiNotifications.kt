@@ -7,7 +7,7 @@ import retrofit2.http.Header
 import retrofit2.http.Query
 
 interface MastodonApiNotifications {
-    @GET
+    @GET("/api/v1/notifications")
     suspend fun getAllNotifications(
         @Header("Authorization") authorization: String,
         @Query("max_id") maxId: String? = null,

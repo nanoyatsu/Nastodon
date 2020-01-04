@@ -23,12 +23,12 @@ class TimelineFragment : Fragment() {
 
     private var eventListener: EventListener? = null
     private lateinit var binding: FragmentTimelineBinding
+    lateinit var kind: TimelineViewModel.Kind
 
     @Inject
     lateinit var auth: AuthInfo
     @Inject
     lateinit var apiManager: MastodonApiManager
-    lateinit var kind: TimelineViewModel.Kind
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -48,7 +48,6 @@ class TimelineFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        super.onCreateView(inflater, container, savedInstanceState)
         binding = FragmentTimelineBinding.inflate(inflater, container, false)
             .also { initBinding(it) }
         return binding.root

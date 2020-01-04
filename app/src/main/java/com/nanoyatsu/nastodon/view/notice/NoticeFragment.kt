@@ -1,15 +1,36 @@
 package com.nanoyatsu.nastodon.view.notice
 
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.nanoyatsu.nastodon.NastodonApplication
+import com.nanoyatsu.nastodon.data.api.MastodonApiManager
+import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.databinding.FragmentNoticeBinding
+import javax.inject.Inject
 
 class NoticeFragment : Fragment() {
+
+    private lateinit var binding: FragmentNoticeBinding
     lateinit var kind: NoticeViewModel.Kind
+
+    @Inject
+    lateinit var auth: AuthInfo
+    @Inject
+    lateinit var apiManager: MastodonApiManager
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (activity!!.application as NastodonApplication).appComponent.inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,8 +43,24 @@ class NoticeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        // return inflater.inflate(R.layout.fragment_notice, container, false)
-        return TextView(activity).apply { text = kind.name }
+        binding = FragmentNoticeBinding.inflate(inflater, container, false)
+            .also { initBinding(it) }
+        return binding.root
+    }
+
+    private fun initBinding(binding: FragmentNoticeBinding) {
+        val factory = NoticeViewModelFactory(kind, auth, apiManager)
+        binding.vm = ViewModelProvider(this, factory).get(NoticeViewModel::class.java)
+        binding.lifecycleOwner = this
+
+        val context = this.context ?: return
+        val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        binding.noticeView.layoutManager = layoutManager
+        val adapter = NoticeAdapter(context)
+        binding.noticeView.adapter = adapter
+
+        // リストの常時更新
+        binding.vm!!.notifications.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
     }
 
     companion object {
