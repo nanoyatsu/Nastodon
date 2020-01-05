@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools">
+
+  <data>
+
+    <variable
+      name="notice"
+      type="com.nanoyatsu.nastodon.data.api.entity.Notification" />
+  </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
@@ -12,11 +20,50 @@
       android:layout_marginBottom="2dp"
       android:padding="8dp">
 
+      <FrameLayout
+        android:id="@+id/icon_frame"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+          android:id="@+id/account_avatar"
+          android:layout_width="36dp"
+          android:layout_height="36dp"
+          android:layout_gravity="top|start"
+          android:contentDescription="@string/account_avatar"
+          app:imageUrl="@{notice.account.avatar}" />
+
+        <ImageView
+          android:id="@+id/type_icon"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="bottom|end"
+          android:background="@drawable/ic_repeat_white"
+          android:backgroundTint="#009af4"
+          tools:background="@drawable/ic_repeat_white"
+          tools:backgroundTint="#009af4" />
+      </FrameLayout>
+
       <TextView
-        android:id="@+id/notice_haribote"
-        android:layout_width="match_parent"
+        android:id="@+id/description"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/icon_frame"
         app:layout_constraintTop_toTopOf="parent" />
+
+      <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/icon_frame"
+        app:layout_constraintTop_toBottomOf="@id/description"
+        app:tootText="@{(notice.status == null) ? `` : notice.status.content}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

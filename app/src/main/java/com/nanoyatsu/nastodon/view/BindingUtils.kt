@@ -36,6 +36,8 @@ fun bindImage(imgView: ImageView, imgUrl: String?) {
 @BindingAdapter("tootText")
 fun bindTootText(view: TextView, text: String?) {
     text?.let {
+        // todo <p>タグの除去
+        // todo androidx.htmlCompat
         view.text = Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT)
     }
 }

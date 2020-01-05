@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.entity.Notification
 import com.nanoyatsu.nastodon.data.api.entity.NotificationType
 import com.nanoyatsu.nastodon.databinding.ItemNoticeBinding
@@ -32,17 +33,16 @@ class NoticeAdapter(private val context: Context) :
         }
 
         fun bind(context: Context, notice: Notification) {
-            // fixme まだ適当
+            binding.notice = notice
+
             val type = NotificationType.values().firstOrNull { it.value == notice.type }
-            val moji = when (type) {
-                NotificationType.FOLLOW -> "フォローされた"
-                NotificationType.FAVOURITE -> "ふぁぼられた"
-                NotificationType.REBLOG -> "BTされた"
-                NotificationType.MENTION -> "リプきた"
-                NotificationType.POLL -> "POLL?"
-                null -> "わからん"
-            }
-            binding.noticeHaribote.text = "${notice.account.displayName}から$moji"
+            binding.description.text = if (type == null)
+                context.getString(R.string.noticeDescriptionUndefined, notice.account.displayName)
+            else
+                context.getString(type.descriptionId, notice.account.displayName)
+
+            // todo type別アイコン
+            // binding.typeIcon.background = context.getDrawable(..)
         }
     }
 
