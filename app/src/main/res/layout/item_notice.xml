@@ -6,12 +6,27 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-      android:id="@+id/notice_haribote"
+    <androidx.constraintlayout.widget.ConstraintLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      app:layout_constraintTop_toTopOf="parent" />
+      android:layout_height="match_parent"
+      android:layout_marginBottom="2dp"
+      android:padding="8dp">
 
+      <TextView
+        android:id="@+id/notice_haribote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="@drawable/shape_divider"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

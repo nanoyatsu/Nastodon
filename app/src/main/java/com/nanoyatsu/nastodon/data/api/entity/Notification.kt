@@ -2,6 +2,7 @@ package com.nanoyatsu.nastodon.data.api.entity
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+import java.util.*
 
 @Parcelize
 data class Notification(
@@ -12,5 +13,9 @@ data class Notification(
     val status: Status? = null
 ) : Parcelable
 
-enum class NotificationType { follow, facourite, reblog, mention, poll }
+enum class NotificationType {
+    FOLLOW, FAVOURITE, REBLOG, MENTION, POLL;
+
+    val value get() = this.name.toLowerCase(Locale.ROOT)
+}
 
