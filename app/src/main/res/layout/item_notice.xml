@@ -40,10 +40,8 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="bottom|end"
-          android:background="@drawable/ic_repeat_white"
-          android:backgroundTint="#009af4"
           tools:background="@drawable/ic_repeat_white"
-          tools:backgroundTint="#009af4" />
+          tools:backgroundTint="@color/reblog_blue" />
       </FrameLayout>
 
       <TextView

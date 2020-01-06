@@ -34,7 +34,7 @@
   <string name="noticeDescriptionFavourite">%sさんからお気に入りに登録されました</string>
   <string name="noticeDescriptionReblog">%sさんからブーストされました</string>
   <string name="noticeDescriptionMention">%sさんからのリプライ</string>
-  <string name="noticeDescriptionPoll">%sさんからPOLL</string><!-- fixme POLLって何・・・？ -->
+  <string name="noticeDescriptionPoll">%sさんから投票されました</string>
   <string name="noticeDescriptionUndefined">%sさんから未定義の通知</string>
 
   <!-- account_page -->

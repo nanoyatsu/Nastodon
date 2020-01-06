@@ -2,6 +2,7 @@ package com.nanoyatsu.nastodon.data.api.entity
 
 import android.os.Parcelable
 import com.nanoyatsu.nastodon.R
+import com.nanoyatsu.nastodon.resource.NoticeIcon
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -14,13 +15,13 @@ data class Notification(
     val status: Status? = null
 ) : Parcelable
 
-// (特にメッセージを持つところの)実装箇所がちょっとつらい todo networkModel, domainModelの分離
-enum class NotificationType(val descriptionId: Int) {
-    FOLLOW(R.string.noticeDescriptionFollow),
-    FAVOURITE(R.string.noticeDescriptionFavourite),
-    REBLOG(R.string.noticeDescriptionReblog),
-    MENTION(R.string.noticeDescriptionMention),
-    POLL(R.string.noticeDescriptionPoll);
+// パラメータ文字列以上の情報があり、実装箇所がちょっとつらい todo networkModel, domainModelの分離
+enum class NotificationType(val descriptionId: Int, val icon: NoticeIcon) {
+    FOLLOW(R.string.noticeDescriptionFollow, NoticeIcon.FOLLOW),
+    FAVOURITE(R.string.noticeDescriptionFavourite, NoticeIcon.FAVOURITE),
+    REBLOG(R.string.noticeDescriptionReblog, NoticeIcon.REBLOG),
+    MENTION(R.string.noticeDescriptionMention, NoticeIcon.MENTION),
+    POLL(R.string.noticeDescriptionPoll, NoticeIcon.POLL);
     // UNDEFINED(R.string.noticeDescriptionUndefined) // domainModel化の時にこうしたい
 
     val value get() = this.name.toLowerCase(Locale.ROOT)

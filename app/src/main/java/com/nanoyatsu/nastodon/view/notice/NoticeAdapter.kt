@@ -10,6 +10,7 @@ import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.entity.Notification
 import com.nanoyatsu.nastodon.data.api.entity.NotificationType
 import com.nanoyatsu.nastodon.databinding.ItemNoticeBinding
+import com.nanoyatsu.nastodon.resource.NoticeIcon
 
 class NoticeAdapter(private val context: Context) :
     PagedListAdapter<Notification, NoticeAdapter.ViewHolder>(DiffCallback()) {
@@ -36,13 +37,21 @@ class NoticeAdapter(private val context: Context) :
             binding.notice = notice
 
             val type = NotificationType.values().firstOrNull { it.value == notice.type }
-            binding.description.text = if (type == null)
-                context.getString(R.string.noticeDescriptionUndefined, notice.account.displayName)
-            else
-                context.getString(type.descriptionId, notice.account.displayName)
 
-            // todo type別アイコン
-            // binding.typeIcon.background = context.getDrawable(..)
+            // todo : Replyは別レイアウトにする
+            val descriptionId: Int
+            val icon: NoticeIcon
+            if (type == null) {
+                descriptionId = R.string.noticeDescriptionUndefined
+                icon = NoticeIcon.UNDEFINED
+            } else {
+                descriptionId = type.descriptionId
+                icon = type.icon
+            }
+
+            binding.description.text = context.getString(descriptionId, notice.account.displayName)
+            binding.typeIcon.background =
+                context.getDrawable(icon.iconId)?.apply { setTint(context.getColor(icon.colorId)) }
         }
     }
 
