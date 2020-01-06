@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
+import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.FragmentTimelineBinding
@@ -55,7 +56,8 @@ class TimelineFragment : Fragment() {
 
     private fun initBinding(binding: FragmentTimelineBinding) {
         val factory = TimelineViewModelFactory(kind, auth, apiManager)
-        binding.vm = ViewModelProvider(this, factory).get(TimelineViewModel::class.java)
+        val vm = ViewModelProvider(this, factory).get(TimelineViewModel::class.java)
+        binding.vm = vm
         binding.lifecycleOwner = this
 
         val context = this.context ?: return
@@ -65,13 +67,16 @@ class TimelineFragment : Fragment() {
         binding.timelineView.adapter = adapter
 
         // Timelineの常時更新
-        binding.vm!!.timeline.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
+        vm.statuses.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
+        vm.networkState.observe(viewLifecycleOwner, Observer { adapter.setNetworkState(it) })
 
         // SwipeRefreshLayout 引っ張って初期化する部品
         binding.swipeRefresh.setOnRefreshListener {
-            initTimeline()
-            binding.swipeRefresh.isRefreshing = false
+            vm.refreshTimeline()
         }
+        vm.refreshState.observe(
+            viewLifecycleOwner,
+            Observer { binding.swipeRefresh.isRefreshing = it == NetworkState.LOADING })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -85,7 +90,7 @@ class TimelineFragment : Fragment() {
     }
 
     private fun initTimeline() {
-        binding.vm!!.clearTimeline()
+        binding.vm!!.refreshTimeline()
     }
 
 

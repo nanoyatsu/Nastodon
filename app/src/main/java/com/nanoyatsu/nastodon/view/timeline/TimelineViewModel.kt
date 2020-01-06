@@ -1,9 +1,11 @@
 package com.nanoyatsu.nastodon.view.timeline
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations.switchMap
 import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiTimelines
 import com.nanoyatsu.nastodon.data.api.entity.Status
@@ -23,16 +25,24 @@ class TimelineViewModel(
         FEDERATED(::federatedTimelineApiProvider)
     }
 
-    val timeline: LiveData<PagedList<Status>> = run {
-        val factory = TimelineDataSourceFactory(kind, apiManager.timelines, auth.accessToken)
-        LivePagedListBuilder<String, Status>(factory, TIMELINE_PAGE_SIZE).build()
+    val statuses: LiveData<PagedList<Status>>
+    val networkState: LiveData<NetworkState>
+    val refreshState: LiveData<NetworkState>
+    private val refresh: () -> Unit
+    private val retry: () -> Unit
+
+    init {
+        val sourceFactory =
+            TimelineDataSourceFactory(kind, apiManager.timelines, auth.accessToken)
+        statuses = LivePagedListBuilder<String, Status>(sourceFactory, TIMELINE_PAGE_SIZE).build()
+        networkState = switchMap(sourceFactory.sourceLiveData) { it.networkState }
+        refreshState = switchMap(sourceFactory.sourceLiveData) { it.initialLoad }
+        refresh = { sourceFactory.sourceLiveData.value?.invalidate() }
+        retry = { sourceFactory.sourceLiveData.value?.retryAllFailed() }
     }
 
-    fun clearTimeline() {
-        val factory = TimelineDataSourceFactory(kind, apiManager.timelines, auth.accessToken)
-        // todo 再生成
-        val dummy = LivePagedListBuilder<String, Status>(factory, 20).build()
-    }
+    fun refreshTimeline() = refresh.invoke()
+    fun retry() = retry.invoke()
 
     companion object {
         const val TIMELINE_PAGE_SIZE = 20
