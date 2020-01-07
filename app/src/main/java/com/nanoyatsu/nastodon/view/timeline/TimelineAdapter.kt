@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.components.networkState.NetworkStateItemViewHolder
+import com.nanoyatsu.nastodon.components.networkState.NetworkStatus
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.entity.Account
 import com.nanoyatsu.nastodon.data.api.entity.Status
@@ -32,7 +33,7 @@ class TimelineAdapter(private val context: Context) :
     private lateinit var auth: AuthInfo
     private var apiManager: MastodonApiManager
 
-    private var networkState: NetworkState? = null
+    private var networkState: NetworkState? = NetworkState.LOADED
 
     init {
         runBlocking(context = Dispatchers.IO) { auth = authInfoDao.getAll().first() }
@@ -40,12 +41,16 @@ class TimelineAdapter(private val context: Context) :
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (!hasExtraRow(networkState) || position != itemCount - 1)
+        return if (!hasExtraRow(networkState) || position < super.getItemCount())
             R.layout.item_toot
         else
             R.layout.item_network_state
-
     }
+
+    // overrideしたgetItemCountの数だけ描画されるため必要(getItemViewTypeの引数position等はこれを参照する)
+    // super.getItemCount()は常にPagedList<Status>の要素数を返す
+    override fun getItemCount(): Int =
+        super.getItemCount() + if (hasExtraRow(networkState)) 1 else 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -62,7 +67,7 @@ class TimelineAdapter(private val context: Context) :
                 (holder as TimelineAdapter.ViewHolder).bind(context, toot!!, apiManager, auth)
             }
             R.layout.item_network_state -> {
-
+                (holder as NetworkStateItemViewHolder).bind(networkState)
             }
         }
     }
@@ -90,14 +95,15 @@ class TimelineAdapter(private val context: Context) :
         val hadExtraRow = hasExtraRow(previousState)
         val hasExtraRow = hasExtraRow(newNetworkState)
         if (hadExtraRow != hasExtraRow) { // 前回と今回が違う
-            if (hasExtraRow) notifyItemInserted(itemCount) // 今回ある -> 追加
-            else notifyItemRemoved(itemCount) // 今回ない -> 削除
-        } else if (hasExtraRow && previousState != newNetworkState) {
-            notifyItemChanged(itemCount - 1)
+            if (hadExtraRow) notifyItemRemoved(super.getItemCount()) // 前回ExtraRowがある -> 削除
+            else notifyItemInserted(super.getItemCount()) // 前回ExtraRowがない -> 追加
+        } else if (hasExtraRow && previousState != newNetworkState) { // 今回ExtraRowがあって、前回と異なる
+            notifyItemChanged(super.getItemCount())
         }
     }
 
-    private fun hasExtraRow(state: NetworkState?) = state != null && state != NetworkState.LOADED
+    private fun hasExtraRow(state: NetworkState?) =
+        state != null && state.status == NetworkStatus.FAILED
 
 
     class ViewHolder(val binding: ItemTootBinding) : RecyclerView.ViewHolder(binding.root) {

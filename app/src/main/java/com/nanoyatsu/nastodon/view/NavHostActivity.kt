@@ -99,6 +99,7 @@ class NavHostActivity : AppCompatActivity() {
                 e.printStackTrace()
                 return@runBlocking false
             }
+            // todo IOExceptionも受ける
         }
     }
 }

@@ -43,7 +43,6 @@ class TimelineDataSource(
         params: LoadInitialParams<String>,
         callback: LoadInitialCallback<Status>
     ) {
-        _networkState.postValue(NetworkState.LOADING)
         _initialLoad.postValue(NetworkState.LOADING)
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -66,8 +65,6 @@ class TimelineDataSource(
     }
 
     override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<Status>) {
-        _networkState.postValue(NetworkState.LOADING)
-
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = timelineKind.getter(apiDir, token, params.key, null)

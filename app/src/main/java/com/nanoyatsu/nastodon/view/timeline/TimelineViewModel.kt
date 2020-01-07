@@ -27,7 +27,7 @@ class TimelineViewModel(
 
     val statuses: LiveData<PagedList<Status>>
     val networkState: LiveData<NetworkState>
-    val refreshState: LiveData<NetworkState>
+    val refreshState: LiveData<NetworkState> // fixme boolでいい
     private val refresh: () -> Unit
     private val retry: () -> Unit
 

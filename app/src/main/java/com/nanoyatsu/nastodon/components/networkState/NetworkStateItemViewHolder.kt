@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.databinding.ItemNetworkStateBinding
 
 class NetworkStateItemViewHolder(
-    binding: ItemNetworkStateBinding,
+    private val binding: ItemNetworkStateBinding,
     private val retryCallback: () -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
     init {
@@ -15,10 +15,7 @@ class NetworkStateItemViewHolder(
     }
 
     fun bind(networkState: NetworkState?) {
-//        progressBar.visibility = toVisibility(networkState?.status == NetworkStatus.RUNNING)
-//        retry.visibility = toVisibility(networkState?.status == NetworkStatus.FAILED)
-//        errorMsg.visibility = toVisibility(networkState?.msg != null)
-//        errorMsg.text = networkState?.msg
+        binding.textView.text = "${networkState?.msg}"
     }
 
     companion object {
