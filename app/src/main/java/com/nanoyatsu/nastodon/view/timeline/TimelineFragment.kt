@@ -14,14 +14,10 @@ import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.FragmentTimelineBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class TimelineFragment : Fragment() {
 
-    private var eventListener: EventListener? = null
     private lateinit var binding: FragmentTimelineBinding
     lateinit var kind: TimelineViewModel.Kind
 
@@ -33,7 +29,6 @@ class TimelineFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         (activity!!.application as NastodonApplication).appComponent.inject(this)
-        eventListener = context as? EventListener
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,36 +65,15 @@ class TimelineFragment : Fragment() {
         vm.networkState.observe(viewLifecycleOwner, Observer { adapter.setNetworkState(it) })
 
         // SwipeRefreshLayout 引っ張って初期化する部品
-        binding.swipeRefresh.setOnRefreshListener {
-            vm.refreshTimeline()
-        }
+        binding.swipeRefresh.setOnRefreshListener { vm.refreshTimeline() }
         vm.isInitialising.observe(
             viewLifecycleOwner,
             Observer { binding.swipeRefresh.isRefreshing = it })
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        eventListener?.progressStart()
-        CoroutineScope(context = Dispatchers.Main).launch {
-            // fixme paging化の関係で特に意味がないスコープ
-            initTimeline()
-            eventListener?.progressEnd()
-        }
-    }
-
-    private fun initTimeline() {
-        binding.vm!!.refreshTimeline()
-    }
-
 
     fun focusTop() {
         binding.timelineView.smoothScrollToPosition(0)
-    }
-
-    interface EventListener {
-        fun progressStart()
-        fun progressEnd()
     }
 
     companion object {
