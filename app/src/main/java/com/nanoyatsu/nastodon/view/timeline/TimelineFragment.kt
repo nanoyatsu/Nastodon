@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
-import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.FragmentTimelineBinding
@@ -74,9 +73,9 @@ class TimelineFragment : Fragment() {
         binding.swipeRefresh.setOnRefreshListener {
             vm.refreshTimeline()
         }
-        vm.refreshState.observe(
+        vm.isInitialising.observe(
             viewLifecycleOwner,
-            Observer { binding.swipeRefresh.isRefreshing = it == NetworkState.LOADING })
+            Observer { binding.swipeRefresh.isRefreshing = it })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

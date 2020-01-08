@@ -22,9 +22,9 @@ class TimelineDataSource(
     private val _networkState = MutableLiveData<NetworkState>()
     val networkState: LiveData<NetworkState>
         get() = _networkState
-    private val _initialLoad = MutableLiveData<NetworkState>()
-    val initialLoad: LiveData<NetworkState>
-        get() = _initialLoad
+    private val _isInitialising = MutableLiveData<Boolean>()
+    val isInitialising: LiveData<Boolean>
+        get() = _isInitialising
 
 
     // todo 各loadの重複処理を抽象化
@@ -43,7 +43,7 @@ class TimelineDataSource(
         params: LoadInitialParams<String>,
         callback: LoadInitialCallback<Status>
     ) {
-        _initialLoad.postValue(NetworkState.LOADING)
+        _isInitialising.postValue(true)
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -52,14 +52,14 @@ class TimelineDataSource(
 
                 retry = null
                 _networkState.postValue(NetworkState.LOADED)
-                _initialLoad.postValue(NetworkState.LOADED)
+                _isInitialising.postValue(false)
 
                 callback.onResult(statuses)
             } catch (ioException: IOException) {
                 retry = { loadInitial(params, callback) }
                 val error = NetworkState.error(ioException.message ?: "unknown error")
                 _networkState.postValue(error)
-                _initialLoad.postValue(error)
+                _isInitialising.postValue(false)
             }
         }
     }

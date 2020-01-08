@@ -27,7 +27,7 @@ class TimelineViewModel(
 
     val statuses: LiveData<PagedList<Status>>
     val networkState: LiveData<NetworkState>
-    val refreshState: LiveData<NetworkState> // fixme boolでいい
+    val isInitialising: LiveData<Boolean>
     private val refresh: () -> Unit
     private val retry: () -> Unit
 
@@ -36,7 +36,7 @@ class TimelineViewModel(
             TimelineDataSourceFactory(kind, apiManager.timelines, auth.accessToken)
         statuses = LivePagedListBuilder<String, Status>(sourceFactory, TIMELINE_PAGE_SIZE).build()
         networkState = switchMap(sourceFactory.sourceLiveData) { it.networkState }
-        refreshState = switchMap(sourceFactory.sourceLiveData) { it.initialLoad }
+        isInitialising = switchMap(sourceFactory.sourceLiveData) { it.isInitialising }
         refresh = { sourceFactory.sourceLiveData.value?.invalidate() }
         retry = { sourceFactory.sourceLiveData.value?.retryAllFailed() }
     }
