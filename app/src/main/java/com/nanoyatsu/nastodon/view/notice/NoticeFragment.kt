@@ -50,17 +50,24 @@ class NoticeFragment : Fragment() {
 
     private fun initBinding(binding: FragmentNoticeBinding) {
         val factory = NoticeViewModelFactory(kind, auth, apiManager)
-        binding.vm = ViewModelProvider(this, factory).get(NoticeViewModel::class.java)
-        binding.lifecycleOwner = this
-
         val context = this.context ?: return
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         binding.noticeView.layoutManager = layoutManager
         val adapter = NoticeAdapter(context)
         binding.noticeView.adapter = adapter
 
+        val vm = ViewModelProvider(this, factory).get(NoticeViewModel::class.java)
         // リストの常時更新
-        binding.vm!!.notifications.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
+        vm.notifications.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
+        vm.networkState.observe(viewLifecycleOwner, Observer { adapter.setNetworkState(it) })
+
+        // SwipeRefresh
+        vm.isInitialising.observe(
+            viewLifecycleOwner,
+            Observer { binding.swipeRefresh.isRefreshing = it })
+
+        binding.vm = vm
+        binding.lifecycleOwner = this
     }
 
     companion object {

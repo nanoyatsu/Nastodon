@@ -28,7 +28,6 @@ import kotlinx.coroutines.runBlocking
 
 class TimelineAdapter(private val context: Context) :
     PagedListAdapter<Status, RecyclerView.ViewHolder>(DiffCallback()) {
-    //    PagedListAdapter<Status, TimelineAdapter.ViewHolder>(DiffCallback()) {
     private var authInfoDao: AuthInfoDao = NastodonDataBase.getInstance().authInfoDao()
     private lateinit var auth: AuthInfo
     private var apiManager: MastodonApiManager
@@ -104,7 +103,6 @@ class TimelineAdapter(private val context: Context) :
 
     private fun hasExtraRow(state: NetworkState?) =
         state != null && state.status == NetworkStatus.FAILED
-
 
     class ViewHolder(val binding: ItemTootBinding) : RecyclerView.ViewHolder(binding.root) {
         companion object {

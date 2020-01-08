@@ -71,4 +71,13 @@ class NoticeDataSource(
     override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<Notification>) {}
 
     override fun getKey(item: Notification): String = item.id
+
+    /**
+     * 外部から要求する再取得処理
+     */
+    fun retryAllFailed() {
+        val prevRetry = retry
+        retry = null
+        prevRetry?.invoke()
+    }
 }

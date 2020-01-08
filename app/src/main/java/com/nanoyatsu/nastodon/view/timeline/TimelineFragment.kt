@@ -50,16 +50,13 @@ class TimelineFragment : Fragment() {
 
     private fun initBinding(binding: FragmentTimelineBinding) {
         val factory = TimelineViewModelFactory(kind, auth, apiManager)
-        val vm = ViewModelProvider(this, factory).get(TimelineViewModel::class.java)
-        binding.vm = vm
-        binding.lifecycleOwner = this
-
         val context = this.context ?: return
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         binding.timelineView.layoutManager = layoutManager // fixme 画面回転を連続したりするとNPE
         val adapter = TimelineAdapter(context)
         binding.timelineView.adapter = adapter
 
+        val vm = ViewModelProvider(this, factory).get(TimelineViewModel::class.java)
         // Timelineの常時更新
         vm.statuses.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
         vm.networkState.observe(viewLifecycleOwner, Observer { adapter.setNetworkState(it) })
@@ -69,6 +66,9 @@ class TimelineFragment : Fragment() {
         vm.isInitialising.observe(
             viewLifecycleOwner,
             Observer { binding.swipeRefresh.isRefreshing = it })
+
+        binding.vm = vm
+        binding.lifecycleOwner = this
     }
 
 

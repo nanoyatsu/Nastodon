@@ -1,9 +1,11 @@
 package com.nanoyatsu.nastodon.view.notice
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Transformations.switchMap
 import androidx.lifecycle.ViewModel
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiNotifications
 import com.nanoyatsu.nastodon.data.api.entity.Notification
@@ -20,10 +22,25 @@ class NoticeViewModel(
 ) : ViewModel() {
     enum class Kind(val getter: NotificationsGetter) { ALL(::allNoticeApiProvider), REPLY(::replyNoticeApiProvider) }
 
-    val notifications: LiveData<PagedList<Notification>> = run {
-        val factory = NoticeDataSourceFactory(kind, apiManager.notifications, auth.accessToken)
-        LivePagedListBuilder<String, Notification>(factory, NOTICE_PAGE_SIZE).build()
+    val notifications: LiveData<PagedList<Notification>>
+    val networkState: LiveData<NetworkState>
+    val isInitialising: LiveData<Boolean>
+    private val refresh: () -> Unit
+    private val retry: () -> Unit
+
+    init {
+        val sourceFactory =
+            NoticeDataSourceFactory(kind, apiManager.notifications, auth.accessToken)
+        notifications =
+            LivePagedListBuilder<String, Notification>(sourceFactory, NOTICE_PAGE_SIZE).build()
+        networkState = switchMap(sourceFactory.sourceLiveData) { it.networkState }
+        isInitialising = switchMap(sourceFactory.sourceLiveData) { it.isInitialising }
+        refresh = { sourceFactory.sourceLiveData.value?.invalidate() }
+        retry = { sourceFactory.sourceLiveData.value?.retryAllFailed() }
     }
+
+    fun refreshNotifications() = refresh.invoke()
+    fun retry() = retry.invoke()
 
     companion object {
         const val NOTICE_PAGE_SIZE = 20
