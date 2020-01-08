@@ -10,6 +10,7 @@ import com.nanoyatsu.nastodon.data.api.entity.Status
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import retrofit2.Response
 import java.io.IOException
 
 class TimelineDataSource(
@@ -27,66 +28,54 @@ class TimelineDataSource(
         get() = _isInitialising
 
 
-    // todo 各loadの重複処理を抽象化
-//    private suspend fun getByApi(getter: suspend () -> Response<List<Status>>): List<Status> {
-//        return try {
-//            val res = getter()
-//            res.body() ?: listOf() // todo レスポンスが期待通りじゃないときの処理 res.errorBody()
-//        } catch (e: HttpException) {
-//            e.printStackTrace()
-//            // todo 通信失敗のときの処理
-//            listOf()
-//        }
-//    }
+    // 通信処理の共通部品
+    private suspend fun <T : LoadCallback<Status>> tryLoad(
+        callback: T, getter: suspend () -> Response<List<Status>>, retry: (() -> Unit)
+    ) {
+        try {
+            val response = getter()
+            val statuses = response.body() ?: emptyList()
+
+            this.retry = null
+            _networkState.postValue(NetworkState.LOADED)
+
+            callback.onResult(statuses)
+        } catch (ioException: IOException) {
+            this.retry = retry
+            _networkState.postValue(NetworkState.error(ioException.message ?: "unknown error"))
+        }
+        // todo } catch (e: HttpException) {
+    }
 
     override fun loadInitial(
-        params: LoadInitialParams<String>,
-        callback: LoadInitialCallback<Status>
+        params: LoadInitialParams<String>, callback: LoadInitialCallback<Status>
     ) {
         _isInitialising.postValue(true)
-
         CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val response = timelineKind.getter(apiDir, token, null, null)
-                val statuses = response.body() ?: emptyList()
+            tryLoad(callback,
+                { timelineKind.getter(apiDir, token, null, null) },
+                { loadInitial(params, callback) })
 
-                retry = null
-                _networkState.postValue(NetworkState.LOADED)
-                _isInitialising.postValue(false)
-
-                callback.onResult(statuses)
-            } catch (ioException: IOException) {
-                retry = { loadInitial(params, callback) }
-                val error = NetworkState.error(ioException.message ?: "unknown error")
-                _networkState.postValue(error)
-                _isInitialising.postValue(false)
-            }
+            _isInitialising.postValue(false)
         }
     }
 
     override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<Status>) {
         CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val response = timelineKind.getter(apiDir, token, params.key, null)
-                val statuses = response.body() ?: emptyList()
-
-                retry = null
-                _networkState.postValue(NetworkState.LOADED)
-
-                callback.onResult(statuses)
-            } catch (ioException: IOException) {
-                retry = { loadAfter(params, callback) }
-                _networkState.postValue(NetworkState.error(ioException.message ?: "unknown err"))
-            }
+            tryLoad(callback,
+                { timelineKind.getter(apiDir, token, params.key, null) },
+                { loadAfter(params, callback) })
         }
     }
 
-    override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<Status>) {
-        // なにもしない 未来方向のloadは実装しない
-    }
+    // なにもしない 未来方向のloadは実装しない
+    override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<Status>) {}
 
     override fun getKey(item: Status): String = item.id
 
+    /**
+     * 外部から要求する再取得処理
+     */
     fun retryAllFailed() {
         val prevRetry = retry
         retry = null
