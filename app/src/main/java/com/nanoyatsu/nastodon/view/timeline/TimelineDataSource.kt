@@ -27,7 +27,6 @@ class TimelineDataSource(
     val isInitialising: LiveData<Boolean>
         get() = _isInitialising
 
-
     // 通信処理の共通部品
     private suspend fun <T : LoadCallback<Status>> tryLoad(
         callback: T, getter: suspend () -> Response<List<Status>>, retry: (() -> Unit)
