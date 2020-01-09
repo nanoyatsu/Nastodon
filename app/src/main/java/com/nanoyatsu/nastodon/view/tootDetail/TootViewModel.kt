@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
+import com.nanoyatsu.nastodon.data.api.entity.Account
 import com.nanoyatsu.nastodon.data.api.entity.Status
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import kotlinx.coroutines.CoroutineScope
@@ -26,9 +27,23 @@ class TootViewModel(
     // 双方向binding対象
     val isFolding = MutableLiveData<Boolean>().apply { value = true }
 
-    private val _toot = MutableLiveData<Status>().apply { value = initToot }
+    private val _toot = MutableLiveData<Status>()
     val toot: LiveData<Status>
         get() = _toot
+    private val _rebloggedBy = MutableLiveData<Account?>()
+    val rebloggedBy: LiveData<Account?>
+        get() = _rebloggedBy
+
+    init {
+        if (initToot.reblog == null) { // BTでないとき
+            _toot.value = initToot
+            _rebloggedBy.value = null
+        } else { // BTのとき
+            _toot.value = initToot.reblog
+            _rebloggedBy.value = initToot.account
+        }
+    }
+
     private val _reblogEvent = MutableLiveData<Boolean>().apply { value = false }
     val reblogEvent: LiveData<Boolean>
         get() = _reblogEvent
