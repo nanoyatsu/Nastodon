@@ -62,6 +62,7 @@ class NoticeFragment : Fragment() {
         vm.networkState.observe(viewLifecycleOwner, Observer { adapter.setNetworkState(it) })
 
         // SwipeRefresh
+        binding.swipeRefresh.setOnRefreshListener { vm.refreshNotifications() }
         vm.isInitialising.observe(
             viewLifecycleOwner,
             Observer { binding.swipeRefresh.isRefreshing = it })
