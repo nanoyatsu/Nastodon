@@ -25,20 +25,35 @@
       android:layout_marginBottom="2dp"
       android:padding="8dp">
 
+      <ImageView
+        android:layout_width="@dimen/icon_bottom_end_size"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_repeat_white"
+        android:tint="@{Color.GRAY}"
+        android:visibility="@{(vm.rebloggedBy == null) ? View.GONE : View.VISIBLE}"
+        app:layout_constraintBottom_toBottomOf="@id/description"
+        app:layout_constraintEnd_toEndOf="@id/icon_frame"
+        app:layout_constraintTop_toTopOf="@id/description" />
+
       <TextView
         android:id="@+id/description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:singleLine="true"
+        android:text="@{@string/toot_description_reblog(vm.rebloggedBy.displayName)}"
+        android:visibility="@{(vm.rebloggedBy == null) ? View.GONE : View.VISIBLE}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/icon_frame"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="boosted by display_name" />
 
       <FrameLayout
         android:id="@+id/icon_frame"
         android:layout_width="@dimen/icon_frame_size"
         android:layout_height="@dimen/icon_frame_size"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/description">
 
         <ImageView
           android:id="@+id/account_avatar"
@@ -61,69 +76,6 @@
           tools:backgroundTint="@color/reblog_blue" />
       </FrameLayout>
 
-      <TextView
-        android:id="@+id/displayName"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="4dp"
-        android:singleLine="true"
-        android:text="@{vm.toot.account.displayName}"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintStart_toEndOf="@+id/icon_frame"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="displayName" />
-
-      <TextView
-        android:id="@+id/username"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginBottom="4dp"
-        android:singleLine="true"
-        android:text="@{'@'+vm.toot.account.username}"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintEnd_toStartOf="@id/created_at"
-        app:layout_constraintStart_toEndOf="@+id/displayName"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="\@username" />
-
-      <TextView
-        android:id="@+id/created_at"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginBottom="4dp"
-        android:onClick="@{() -> vm.onTimeClicked()}"
-        app:createdAt="@{vm.toot.createdAt}"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/username"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="createdAt" />
-
-      <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="24dp" />
-
-      <TextView
-        android:id="@+id/spoiler_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:autoLink="all"
-        android:visibility="@{vm.toot.spoilerText.empty ? View.GONE : View.VISIBLE}"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/icon_frame"
-        app:layout_constraintTop_toTopOf="@+id/guideline"
-        app:tootText="@{vm.toot.spoilerText}"
-        tools:text="spoilerText" />
-
       <ImageButton
         style="@style/NonPaddingButton"
         android:layout_width="54dp"
@@ -141,6 +93,59 @@
         app:layout_constraintTop_toBottomOf="@id/icon_frame"
         app:srcCompat="@drawable/ic_arrow_drop_down_black_24dp" />
       <!--   todo 閉じるとき上向き、開閉アニメーション   -->
+
+      <TextView
+        android:id="@+id/displayName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:singleLine="true"
+        android:text="@{vm.toot.account.displayName}"
+        app:layout_constraintStart_toEndOf="@+id/icon_frame"
+        app:layout_constraintTop_toBottomOf="@id/description"
+        tools:text="displayName" />
+
+      <TextView
+        android:id="@+id/username"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:singleLine="true"
+        android:text="@{'@'+vm.toot.account.username}"
+        app:layout_constraintEnd_toStartOf="@id/created_at"
+        app:layout_constraintStart_toEndOf="@+id/displayName"
+        app:layout_constraintTop_toBottomOf="@id/description"
+        tools:text="\@username" />
+
+      <TextView
+        android:id="@+id/created_at"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:onClick="@{() -> vm.onTimeClicked()}"
+        app:createdAt="@{vm.toot.createdAt}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/username"
+        app:layout_constraintTop_toBottomOf="@id/description"
+        tools:text="createdAt" />
+
+      <TextView
+        android:id="@+id/spoiler_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:autoLink="all"
+        android:visibility="@{vm.toot.spoilerText.empty ? View.GONE : View.VISIBLE}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/icon_frame"
+        app:layout_constraintTop_toBottomOf="@+id/displayName"
+        app:tootText="@{vm.toot.spoilerText}"
+        tools:text="spoilerText" />
 
       <TextView
         android:id="@+id/content"

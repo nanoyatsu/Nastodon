@@ -20,6 +20,7 @@
   <string name="frame_tab_search">Search</string>
 
   <!-- toot_item -->
+  <string name="toot_description_reblog">%sさんのブースト</string>
   <string name="account_avatar">account_avatar</string>
   <string name="button_reply">button_reply</string>
   <string name="button_repeat">button_repeat</string>
