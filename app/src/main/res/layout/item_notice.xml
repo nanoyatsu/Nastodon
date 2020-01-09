@@ -22,8 +22,8 @@
 
       <FrameLayout
         android:id="@+id/icon_frame"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/icon_frame_size"
+        android:layout_height="@dimen/icon_frame_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 

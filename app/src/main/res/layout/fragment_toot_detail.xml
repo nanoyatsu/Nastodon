@@ -26,8 +26,8 @@
 
       <ImageView
         android:id="@+id/accountAvatar"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/icon_frame_size"
+        android:layout_height="@dimen/icon_frame_size"
         android:contentDescription="@string/account_avatar"
         app:imageUrl="@{vm.toot.account.avatar}"
         app:layout_constraintStart_toStartOf="parent"
