@@ -70,7 +70,7 @@ fun bindTimeText(view: TextView, text: String?) {
             when {
                 (betweenSec < 60) -> "${betweenSec}秒前"
                 (betweenSec < 60 * 60) -> "${betweenSec / 60}分前"
-                (betweenSec < 60 * 60 * 24) -> "${betweenSec / 60 / 24}時間前"
+                (betweenSec < 60 * 60 * 24) -> "${betweenSec / 60 / 60}時間前"
                 else -> createdAt.format(DateTimeFormatter.ofPattern("MM/dd"))
             }
         } else {
@@ -81,7 +81,7 @@ fun bindTimeText(view: TextView, text: String?) {
             when {
                 (betweenSec < 60) -> "${betweenSec}秒前"
                 (betweenSec < 60 * 60) -> "${betweenSec / 60}分前"
-                (betweenSec < 60 * 60 * 24) -> "${betweenSec / 60 / 24}時間前"
+                (betweenSec < 60 * 60 * 24) -> "${betweenSec / 60 / 60}時間前"
                 else -> SimpleDateFormat("MM/dd", Locale.JAPAN).format(createdAt)
             }
         }
