@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.data.api.entity
+package com.nanoyatsu.nastodon.data.sharedPreference
 
 import android.content.Context
 import android.content.SharedPreferences
