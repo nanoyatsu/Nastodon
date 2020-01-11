@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
@@ -16,12 +17,14 @@ import com.nanoyatsu.nastodon.components.networkState.NetworkStateItemViewHolder
 import com.nanoyatsu.nastodon.components.networkState.NetworkStatus
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.entity.Account
+import com.nanoyatsu.nastodon.data.api.entity.Attachment
 import com.nanoyatsu.nastodon.data.api.entity.Status
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
 import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.ItemTootBinding
 import com.nanoyatsu.nastodon.view.accountDetail.AccountPageActivity
+import com.nanoyatsu.nastodon.view.tootDetail.MediaAttachmentAdapter
 import com.nanoyatsu.nastodon.view.tootDetail.TootViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -115,6 +118,8 @@ class TimelineAdapter(private val context: Context) :
 
         fun bind(context: Context, toot: Status, apiManager: MastodonApiManager, auth: AuthInfo) {
             require(context is FragmentActivity)
+            setupAttachments(context, binding.attachments, toot.mediaAttachments)
+
             val vm = TootViewModel(toot, auth, apiManager)
             vm.reblogEvent.observe(context, Observer { if (it) vm.doReblog() })
             vm.favouriteEvent.observe(context, Observer { if (it) vm.doFav() })
@@ -124,6 +129,16 @@ class TimelineAdapter(private val context: Context) :
             binding.vm = vm
 
             binding.executePendingBindings()
+        }
+
+        private fun setupAttachments(
+            context: Context,
+            view: RecyclerView,
+            contents: List<Attachment>
+        ) {
+            val layoutManager = GridLayoutManager(context, 2)
+            view.layoutManager = layoutManager
+            view.adapter = MediaAttachmentAdapter(context, contents.toTypedArray())
         }
 
         fun transTootDetail(context: Context, vm: TootViewModel) {

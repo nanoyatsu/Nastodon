@@ -2,6 +2,7 @@ package com.nanoyatsu.nastodon.data.api.entity
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+import java.util.*
 
 @Parcelize
 data class Attachment(
@@ -17,7 +18,9 @@ data class Attachment(
 ) : Parcelable
 
 enum class MediaType() {
-    UNKNOWN, IMAGE, GIFV, VIDEO, AUDIO
+    UNKNOWN, IMAGE, GIFV, VIDEO, AUDIO;
+
+    fun toLower() = this.name.toLowerCase(Locale.ROOT)
 }
 //    - unknown = unsupported or unrecognized file type
 //    - image = Static image
