@@ -24,7 +24,7 @@ data class Status(
     val sensitive: Boolean,
     val spoilerText: String,
     val visibility: String,
-//    val mediaAttachments: Array<Attachment>,
+    val mediaAttachments: List<Attachment>,
 //    val mentions: Array<Mention>,
 //    val tags: Array<Tag>,
 //    val card: Card?,
