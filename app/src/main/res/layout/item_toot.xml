@@ -162,40 +162,56 @@
         app:tootText="@{vm.toot.content}"
         tools:text="statusContent" />
 
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/attachments"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="@{vm.toot.mediaAttachments.empty ? View.GONE : View.VISIBLE }"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/icon_frame"
+        app:layout_constraintTop_toBottomOf="@id/content"
+        tools:itemCount="4" />
+
       <ImageButton
         android:id="@+id/button_reply"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
         android:background="@drawable/ic_reply_white"
         android:backgroundTint="@color/colorPrimaryDark"
         android:contentDescription="@string/button_reply"
-        app:layout_constraintStart_toEndOf="@+id/icon_frame"
-        app:layout_constraintTop_toBottomOf="@id/content" />
+        app:layout_constraintStart_toEndOf="@id/icon_frame"
+        app:layout_constraintTop_toBottomOf="@id/attachments" />
 
       <ImageButton
         android:id="@+id/button_repeat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
         android:background="@drawable/ic_repeat_white"
         android:backgroundTint="@{vm.reblogged == true ? @color/colorPrimaryDark : Color.GRAY}"
         android:contentDescription="@string/button_repeat"
         android:onClick="@{() -> vm.onReblogClicked()}"
         app:layout_constraintStart_toEndOf="@id/button_reply"
-        app:layout_constraintTop_toBottomOf="@id/content" />
+        app:layout_constraintTop_toBottomOf="@id/attachments" />
 
       <ImageButton
         android:id="@+id/button_star"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
         android:background="@drawable/ic_star_white"
         android:backgroundTint="@{vm.favourited == true ? @color/colorPrimaryDark : Color.GRAY}"
         android:contentDescription="@string/button_star"
         android:onClick="@{() -> vm.onFavouriteClicked()}"
         app:layout_constraintStart_toEndOf="@id/button_repeat"
-        app:layout_constraintTop_toBottomOf="@id/content" />
+        app:layout_constraintTop_toBottomOf="@id/attachments" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

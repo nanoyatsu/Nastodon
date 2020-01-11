@@ -13,7 +13,7 @@ data class Attachment(
     val text_url: String?,
     // val meta:
     val description: String?,
-    val blurhash: String
+    val blurhash: String? // added in 2.8.1
 ) : Parcelable
 
 enum class MediaType() {
