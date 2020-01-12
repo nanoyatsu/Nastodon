@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
@@ -26,6 +27,7 @@ import com.nanoyatsu.nastodon.databinding.ItemTootBinding
 import com.nanoyatsu.nastodon.view.accountDetail.AccountPageActivity
 import com.nanoyatsu.nastodon.view.tootDetail.MediaAttachmentAdapter
 import com.nanoyatsu.nastodon.view.tootDetail.TootViewModel
+import kotlinx.android.synthetic.main.activity_nav_host.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
@@ -132,13 +134,15 @@ class TimelineAdapter(private val context: Context) :
         }
 
         private fun setupAttachments(
-            context: Context,
-            view: RecyclerView,
-            contents: List<Attachment>
+            context: Context, view: RecyclerView, contents: List<Attachment>
         ) {
             val layoutManager = GridLayoutManager(context, 2)
             view.layoutManager = layoutManager
-            view.adapter = MediaAttachmentAdapter(context, contents.toTypedArray())
+            view.adapter = MediaAttachmentAdapter(contents.toTypedArray()).apply {
+                publicListener = object : MediaAttachmentAdapter.ThumbnailClickListener {
+                    override val onThumbnailClick = { transImagePager(context, contents) }
+                }
+            }
         }
 
         fun transTootDetail(context: Context, vm: TootViewModel) {
@@ -150,6 +154,15 @@ class TimelineAdapter(private val context: Context) :
 //                )
 
             vm.onTimeClickFinished()
+        }
+
+        fun transImagePager(context: Context, contents: List<Attachment>) {
+            if (context is FragmentActivity)
+                context.main_fragment_container.findNavController().navigate(
+                    TimelineFrameFragmentDirections.actionTimelineFrameFragmentToImagePagerFragment(
+                        contents.map { it.url }.toTypedArray()
+                    )
+                )
         }
     }
 

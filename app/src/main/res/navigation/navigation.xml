@@ -13,6 +13,9 @@
     <argument
       android:name="toot"
       app:argType="com.nanoyatsu.nastodon.data.api.entity.Status" />
+    <action
+      android:id="@+id/action_tootDetailFragment_to_imagePagerFragment"
+      app:destination="@id/imagePagerFragment" />
   </fragment>
   <fragment
     android:id="@+id/tootEditFragment"
@@ -27,6 +30,9 @@
     <action
       android:id="@+id/action_timelineFrameFragment_to_tootEditFragment"
       app:destination="@id/tootEditFragment" />
+    <action
+      android:id="@+id/action_timelineFrameFragment_to_imagePagerFragment"
+      app:destination="@id/imagePagerFragment" />
   </fragment>
   <fragment
     android:id="@+id/noticeFrameFragment"
@@ -38,5 +44,14 @@
     android:name="com.nanoyatsu.nastodon.view.search.SearchFragment"
     android:label="fragment_search"
     tools:layout="@layout/fagment_search" />
+  <fragment
+    android:id="@+id/imagePagerFragment"
+    android:name="com.nanoyatsu.nastodon.view.imageViewer.ImagePagerFragment"
+    android:label="ImagePagerFragment"
+    tools:layout="@layout/fragment_image_pager">
+    <argument
+      android:name="urls"
+      app:argType="string[]" />
+  </fragment>
 
 </navigation>
