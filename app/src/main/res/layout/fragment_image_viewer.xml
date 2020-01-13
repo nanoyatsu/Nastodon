@@ -4,7 +4,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   tools:context=".view.imageViewer.ImageViewerFragment">
 
-  <ImageView
+  <com.nanoyatsu.nastodon.components.ScalableImageView
     android:id="@+id/image"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />
