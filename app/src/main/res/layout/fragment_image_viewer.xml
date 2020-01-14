@@ -5,11 +5,11 @@
   xmlns:tools="http://schemas.android.com/tools"
   tools:context=".view.imageViewer.ImageViewerFragment">
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <com.nanoyatsu.nastodon.components.ViewerConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
-    >
+    app:scalable_view="@{image}">
 
     <!--  todo サイズに合わせた縮尺の初期値  -->
     <ImageView
@@ -20,5 +20,5 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
-  </androidx.constraintlayout.widget.ConstraintLayout>
+  </com.nanoyatsu.nastodon.components.ViewerConstraintLayout>
 </layout>
