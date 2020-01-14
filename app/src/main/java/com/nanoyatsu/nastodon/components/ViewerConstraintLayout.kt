@@ -33,7 +33,6 @@ class ViewerConstraintLayout @JvmOverloads constructor(
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         mScaleGestureDetector.onTouchEvent(event)
-
         return true
     }
 
