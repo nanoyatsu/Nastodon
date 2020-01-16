@@ -182,6 +182,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         android:contentDescription="@string/button_reply"
+        android:onClick="@{() -> vm.onReplyClicked()}"
         android:src="@drawable/ic_reply_white"
         android:tint="@{Color.GRAY}"
         app:layout_constraintStart_toEndOf="@id/icon_frame"

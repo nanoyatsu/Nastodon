@@ -19,6 +19,8 @@ class TootEditViewModel(
     private val auth: AuthInfo,
     private val apiManager: MastodonApiManager
 ) : ViewModel() {
+    var replyTo: Status? = null
+
     // 双方向binding対象
     val isContentWarning = MutableLiveData<Boolean>().apply { value = false }
     val cwContent = MutableLiveData<String>().apply { value = "" }

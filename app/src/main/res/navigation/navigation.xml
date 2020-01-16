@@ -21,7 +21,13 @@
     android:id="@+id/tootEditFragment"
     android:name="com.nanoyatsu.nastodon.view.tootEdit.TootEditFragment"
     android:label="TootEditFragment"
-    tools:layout="@layout/fragment_toot_edit" />
+    tools:layout="@layout/fragment_toot_edit">
+    <argument
+      android:name="replyTo"
+      app:argType="com.nanoyatsu.nastodon.data.api.entity.Status"
+      app:nullable="true"
+      android:defaultValue="@null" />
+  </fragment>
   <fragment
     android:id="@+id/timelineFrameFragment"
     android:name="com.nanoyatsu.nastodon.view.timeline.TimelineFrameFragment"

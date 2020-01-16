@@ -123,6 +123,7 @@ class TimelineAdapter(private val context: Context) :
             setupAttachments(context, binding.attachments, toot.mediaAttachments)
 
             val vm = TootViewModel(toot, auth, apiManager)
+            vm.replyEvent.observe(context, Observer { if (it) transTootEditAsReply(context, vm) })
             vm.reblogEvent.observe(context, Observer { if (it) vm.doReblog() })
             vm.favouriteEvent.observe(context, Observer { if (it) vm.doFav() })
             vm.timeClickEvent.observe(context, Observer { if (it) transTootDetail(context, vm) })
@@ -145,6 +146,14 @@ class TimelineAdapter(private val context: Context) :
             }
         }
 
+        fun transTootEditAsReply(context: Context, vm: TootViewModel) {
+            if (context is FragmentActivity)
+                context.main_fragment_container.findNavController().navigate(
+                    TimelineFrameFragmentDirections.actionTimelineFrameFragmentToTootEditFragment(vm.toot.value!!)
+                )
+            vm.onReplyClickFinished()
+        }
+
         fun transTootDetail(context: Context, vm: TootViewModel) {
 //            if (context is FragmentActivity)
 //                context.main_fragment_container.findNavController().navigate(
@@ -152,7 +161,6 @@ class TimelineAdapter(private val context: Context) :
 //                        vm.toot.value!!
 //                    )
 //                )
-
             vm.onTimeClickFinished()
         }
 

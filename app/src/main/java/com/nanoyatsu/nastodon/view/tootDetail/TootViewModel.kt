@@ -44,15 +44,14 @@ class TootViewModel(
         }
     }
 
+    private val _replyEvent = MutableLiveData<Boolean>().apply { value = false }
+    val replyEvent: LiveData<Boolean> get() = _replyEvent
     private val _reblogEvent = MutableLiveData<Boolean>().apply { value = false }
-    val reblogEvent: LiveData<Boolean>
-        get() = _reblogEvent
+    val reblogEvent: LiveData<Boolean> get() = _reblogEvent
     private val _favouriteEvent = MutableLiveData<Boolean>().apply { value = false }
-    val favouriteEvent: LiveData<Boolean>
-        get() = _favouriteEvent
+    val favouriteEvent: LiveData<Boolean> get() = _favouriteEvent
     private val _timeClickEvent = MutableLiveData<Boolean>().apply { value = false }
-    val timeClickEvent: LiveData<Boolean>
-        get() = _timeClickEvent
+    val timeClickEvent: LiveData<Boolean> get() = _timeClickEvent
 
     // Toot:Statusのうち、変動する値
     val repliesCount = Transformations.map(toot) { it.repliesCount }
@@ -63,6 +62,8 @@ class TootViewModel(
 
     fun toggleFolding() = run { isFolding.value = isFolding.value?.not() }
 
+    fun onReplyClicked() = run { _replyEvent.value = true }
+    fun onReplyClickFinished() = run { _replyEvent.value = false }
     fun onReblogClicked() = run { _reblogEvent.value = true }
     private fun onReblogFinished() = run { _reblogEvent.value = false }
     fun onFavouriteClicked() = run { _favouriteEvent.value = true }

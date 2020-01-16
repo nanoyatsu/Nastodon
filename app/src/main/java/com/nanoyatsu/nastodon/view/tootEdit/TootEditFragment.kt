@@ -52,6 +52,9 @@ class TootEditFragment : Fragment() {
         val vm = ViewModelProvider(this, factory).get(TootEditViewModel::class.java)
         binding.vm = vm
 
+        val args = TootEditFragmentArgs.fromBundle(arguments!!)
+        vm.replyTo = args.replyTo
+
         // 警告投稿 review : Switch値のVisibilityへの反映がXML側だけで対応出来ない？
         vm.isContentWarning.observe(viewLifecycleOwner, Observer
         { binding.cwContent.visibility = if (it) View.VISIBLE else View.GONE })
