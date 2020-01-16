@@ -182,10 +182,11 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         android:background="@drawable/ic_reply_white"
-        android:backgroundTint="@color/colorPrimaryDark"
+        android:backgroundTint="@{Color.GRAY}"
         android:contentDescription="@string/button_reply"
         app:layout_constraintStart_toEndOf="@id/icon_frame"
-        app:layout_constraintTop_toBottomOf="@id/attachments" />
+        app:layout_constraintTop_toBottomOf="@id/attachments"
+        tools:backgroundTint="@android:color/darker_gray" />
 
       <ImageButton
         android:id="@+id/button_repeat"
@@ -194,11 +195,12 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         android:background="@drawable/ic_repeat_white"
-        android:backgroundTint="@{vm.reblogged == true ? @color/colorPrimaryDark : Color.GRAY}"
+        android:backgroundTint="@{vm.reblogged == true ? @color/reblog_blue : Color.GRAY}"
         android:contentDescription="@string/button_repeat"
         android:onClick="@{() -> vm.onReblogClicked()}"
         app:layout_constraintStart_toEndOf="@id/button_reply"
-        app:layout_constraintTop_toBottomOf="@id/attachments" />
+        app:layout_constraintTop_toBottomOf="@id/attachments"
+        tools:backgroundTint="@color/reblog_blue" />
 
       <ImageButton
         android:id="@+id/button_star"
@@ -207,11 +209,26 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
         android:background="@drawable/ic_star_white"
-        android:backgroundTint="@{vm.favourited == true ? @color/colorPrimaryDark : Color.GRAY}"
+        android:backgroundTint="@{vm.favourited == true ? @color/fav_yellow : Color.GRAY}"
         android:contentDescription="@string/button_star"
         android:onClick="@{() -> vm.onFavouriteClicked()}"
         app:layout_constraintStart_toEndOf="@id/button_repeat"
-        app:layout_constraintTop_toBottomOf="@id/attachments" />
+        app:layout_constraintTop_toBottomOf="@id/attachments"
+        tools:backgroundTint="@color/fav_yellow" />
+
+      <ImageButton
+        android:id="@+id/button_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/ic_more_horiz_white"
+        android:backgroundTint="@{Color.GRAY}"
+        android:contentDescription="@string/button_star"
+        android:onClick="@{() -> vm.onFavouriteClicked()}"
+        app:layout_constraintStart_toEndOf="@id/button_star"
+        app:layout_constraintTop_toBottomOf="@id/attachments"
+        tools:backgroundTint="@android:color/darker_gray" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
