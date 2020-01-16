@@ -26,7 +26,7 @@
       android:padding="8dp">
 
       <ImageView
-        android:layout_width="@dimen/icon_bottom_end_size"
+        android:layout_width="@dimen/avatar_bottom_end_size"
         android:layout_height="0dp"
         android:src="@drawable/ic_repeat_white"
         android:tint="@{Color.GRAY}"
@@ -50,8 +50,8 @@
 
       <FrameLayout
         android:id="@+id/icon_frame"
-        android:layout_width="@dimen/icon_frame_size"
-        android:layout_height="@dimen/icon_frame_size"
+        android:layout_width="@dimen/avatar_frame_size"
+        android:layout_height="@dimen/avatar_frame_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/description">
 
@@ -62,13 +62,13 @@
           android:layout_gravity="top|start"
           android:contentDescription="@string/account_avatar"
           app:imageUrl="@{vm.toot.account.avatar}"
-          app:layout_height="@{(vm.rebloggedBy == null) ? (float)@dimen/icon_frame_size : (float)@dimen/icon_top_start_size}"
-          app:layout_width="@{(vm.rebloggedBy == null) ? (float)@dimen/icon_frame_size : (float)@dimen/icon_top_start_size}" />
+          app:layout_height="@{(vm.rebloggedBy == null) ? (float)@dimen/avatar_frame_size : (float)@dimen/avatar_top_start_size}"
+          app:layout_width="@{(vm.rebloggedBy == null) ? (float)@dimen/avatar_frame_size : (float)@dimen/avatar_top_start_size}" />
 
         <ImageView
           android:id="@+id/reblogged_avatar"
-          android:layout_width="@dimen/icon_bottom_end_size"
-          android:layout_height="@dimen/icon_bottom_end_size"
+          android:layout_width="@dimen/avatar_bottom_end_size"
+          android:layout_height="@dimen/avatar_bottom_end_size"
           android:layout_gravity="bottom|end"
           android:visibility="@{(vm.rebloggedBy == null) ? View.GONE : View.VISIBLE}"
           app:imageUrl="@{vm.rebloggedBy.avatar}"
@@ -194,7 +194,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
-        android:background="@drawable/ic_repeat_white"
+        android:background="@{vm.reblogEvent ? @drawable/loading_animation : @drawable/ic_repeat_white}"
         android:backgroundTint="@{vm.reblogged == true ? @color/reblog_blue : Color.GRAY}"
         android:contentDescription="@string/button_repeat"
         android:onClick="@{() -> vm.onReblogClicked()}"
