@@ -73,17 +73,15 @@ class TootViewModel(
 
     fun doReblog() {
         val api = if (reblogged.value!!) apiStatuses::unReblog else apiStatuses::reblog
-        doStatusApi(suspend { api(auth.accessToken, toot.value!!.id) })
-        onReblogFinished()
+        doStatusApi(suspend { api(auth.accessToken, toot.value!!.id) }, ::onReblogFinished)
     }
 
     fun doFav() {
         val api = if (favourited.value!!) apiFavourites::unFavourite else apiFavourites::favourite
-        doStatusApi(suspend { api(auth.accessToken, toot.value!!.id) })
-        onFavouriteFinished()
+        doStatusApi(suspend { api(auth.accessToken, toot.value!!.id) }, ::onFavouriteFinished)
     }
 
-    private fun doStatusApi(api: suspend () -> Response<Status>) {
+    private fun doStatusApi(api: suspend () -> Response<Status>, onFinished: () -> Unit) {
         ioScope.launch {
             try {
                 val res = api()
@@ -93,6 +91,8 @@ class TootViewModel(
                 _toot.value = res.body()!!
             } catch (e: Exception) {
                 // todo エラー表示
+            } finally {
+                onFinished()
             }
         }
     }

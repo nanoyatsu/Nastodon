@@ -175,48 +175,50 @@
         app:layout_constraintTop_toBottomOf="@id/content"
         tools:itemCount="4" />
 
-      <ImageButton
+      <ImageView
         android:id="@+id/button_reply"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/icon_button"
+        android:layout_height="@dimen/icon_button"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
-        android:background="@drawable/ic_reply_white"
-        android:backgroundTint="@{Color.GRAY}"
         android:contentDescription="@string/button_reply"
+        android:src="@drawable/ic_reply_white"
+        android:tint="@{Color.GRAY}"
         app:layout_constraintStart_toEndOf="@id/icon_frame"
         app:layout_constraintTop_toBottomOf="@id/attachments"
-        tools:backgroundTint="@android:color/darker_gray" />
+        tools:tint="@android:color/darker_gray" />
 
-      <ImageButton
+      <ImageView
         android:id="@+id/button_repeat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/icon_button"
+        android:layout_height="@dimen/icon_button"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
-        android:background="@{vm.reblogEvent ? @drawable/loading_animation : @drawable/ic_repeat_white}"
-        android:backgroundTint="@{vm.reblogged == true ? @color/reblog_blue : Color.GRAY}"
         android:contentDescription="@string/button_repeat"
         android:onClick="@{() -> vm.onReblogClicked()}"
+        android:src="@{vm.reblogEvent == true ? @drawable/animation_refresh : @drawable/ic_repeat_white}"
+        android:tint="@{vm.reblogged == true ? @color/reblog_blue : Color.GRAY}"
         app:layout_constraintStart_toEndOf="@id/button_reply"
         app:layout_constraintTop_toBottomOf="@id/attachments"
-        tools:backgroundTint="@color/reblog_blue" />
+        tools:src="@drawable/ic_repeat_white"
+        tools:tint="@color/reblog_blue" />
 
-      <ImageButton
+      <ImageView
         android:id="@+id/button_star"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/icon_button"
+        android:layout_height="@dimen/icon_button"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
-        android:background="@drawable/ic_star_white"
-        android:backgroundTint="@{vm.favourited == true ? @color/fav_yellow : Color.GRAY}"
         android:contentDescription="@string/button_star"
         android:onClick="@{() -> vm.onFavouriteClicked()}"
+        android:src="@{vm.favouriteEvent == true ? @drawable/animation_refresh : @drawable/ic_star_white}"
+        android:tint="@{vm.favourited == true ? @color/fav_yellow : Color.GRAY}"
         app:layout_constraintStart_toEndOf="@id/button_repeat"
         app:layout_constraintTop_toBottomOf="@id/attachments"
-        tools:backgroundTint="@color/fav_yellow" />
+        tools:src="@drawable/ic_star_white"
+        tools:tint="@color/fav_yellow" />
 
-      <ImageButton
+      <ImageView
         android:id="@+id/button_share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
