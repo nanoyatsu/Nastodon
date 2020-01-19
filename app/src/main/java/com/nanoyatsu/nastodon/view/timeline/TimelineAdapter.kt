@@ -149,7 +149,7 @@ class TimelineAdapter(private val context: Context) :
         fun transTootEditAsReply(context: Context, vm: TootViewModel) {
             if (context is FragmentActivity)
                 context.main_fragment_container.findNavController().navigate(
-                    TimelineFrameFragmentDirections.actionTimelineFrameFragmentToTootEditFragment(vm.toot.value!!)
+                    TimelineFrameFragmentDirections.actionTimelineFrameFragmentToTootEditFragment(vm.toot.value)
                 )
             vm.onReplyClickFinished()
         }

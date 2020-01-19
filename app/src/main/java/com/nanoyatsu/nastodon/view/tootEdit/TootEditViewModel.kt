@@ -16,14 +16,15 @@ import retrofit2.Response
 import java.util.*
 
 class TootEditViewModel(
+    replyTo: Status?,
     private val auth: AuthInfo,
     private val apiManager: MastodonApiManager
 ) : ViewModel() {
-    var replyTo: Status? = null
+    private val liveReplyTo = MutableLiveData<Status?>().apply { value = replyTo }
 
     // 双方向binding対象
-    val isContentWarning = MutableLiveData<Boolean>().apply { value = false }
-    val cwContent = MutableLiveData<String>().apply { value = "" }
+    val isContentWarning = MutableLiveData<Boolean>().apply { value = replyTo?.spoilerText != null }
+    val cwContent = MutableLiveData<String>().apply { value = replyTo?.spoilerText ?: "" }
     val sendContent = MutableLiveData<String>().apply { value = "" }
 
     private val _tootSendEvent = MutableLiveData<Boolean>().apply { value = false }
@@ -57,6 +58,7 @@ class TootEditViewModel(
             apiManager.statuses.postToot(
                 authorization = auth.accessToken,
                 status = sendContent.value!!,
+                inReplyToId = liveReplyTo.value?.id,
                 spoilerText = if (cwContent.value == "") null else cwContent.value,
                 visibility = visibility.name.toLowerCase(Locale.ROOT)
             )

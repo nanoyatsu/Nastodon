@@ -48,12 +48,11 @@ class TootEditFragment : Fragment() {
     }
 
     private fun initBinding(binding: FragmentTootEditBinding) {
-        val factory = TootEditViewModelFactory(auth, apiManager)
+        val args = TootEditFragmentArgs.fromBundle(arguments!!)
+        val factory = TootEditViewModelFactory(args.replyTo, auth, apiManager)
         val vm = ViewModelProvider(this, factory).get(TootEditViewModel::class.java)
         binding.vm = vm
 
-        val args = TootEditFragmentArgs.fromBundle(arguments!!)
-        vm.replyTo = args.replyTo
 
         // 警告投稿 review : Switch値のVisibilityへの反映がXML側だけで対応出来ない？
         vm.isContentWarning.observe(viewLifecycleOwner, Observer
@@ -78,5 +77,4 @@ class TootEditFragment : Fragment() {
         { Toast.makeText(applicationContext, it, Toast.LENGTH_LONG).show() }
         activity?.onBackPressed() // todo ナビゲーションで遷移
     }
-
 }
