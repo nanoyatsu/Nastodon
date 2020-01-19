@@ -24,7 +24,8 @@ class TootEditViewModel(
     val liveReplyTo: LiveData<Status?> get() = _liveReplyTo
 
     // 双方向binding対象
-    val isContentWarning = MutableLiveData<Boolean>().apply { value = replyTo?.spoilerText != null }
+    val isContentWarning =
+        MutableLiveData<Boolean>().apply { value = replyTo?.spoilerText?.isNotEmpty() ?: false }
     val cwContent = MutableLiveData<String>().apply { value = replyTo?.spoilerText ?: "" }
     val sendContent = MutableLiveData<String>().apply { value = "" }
 
