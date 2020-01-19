@@ -79,6 +79,7 @@
       <ImageView
         android:layout_width="@dimen/icon_button"
         android:layout_height="@dimen/icon_button"
+        android:onClick="@{() -> vm.onReplyToClearClicked()}"
         android:src="@drawable/ic_close_white"
         android:tint="@android:color/darker_gray" />
     </LinearLayout>
@@ -88,8 +89,8 @@
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:ems="10"
-      android:hint="@string/inputMainTextHint"
       android:gravity="top"
+      android:hint="@string/inputMainTextHint"
       android:inputType="textMultiLine"
       android:maxLines="10"
       android:minLines="4"

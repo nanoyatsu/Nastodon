@@ -57,6 +57,8 @@ class TootEditFragment : Fragment() {
         // 警告投稿 review : Switch値のVisibilityへの反映がXML側だけで対応出来ない？
         vm.isContentWarning.observe(viewLifecycleOwner, Observer
         { binding.cwContent.visibility = if (it) View.VISIBLE else View.GONE })
+        vm.liveReplyTo.observe(viewLifecycleOwner, Observer
+        { binding.frameReply.visibility = if (it != null) View.VISIBLE else View.GONE })
 
         // 可視範囲指定
         val adapter = ArrayAdapter(

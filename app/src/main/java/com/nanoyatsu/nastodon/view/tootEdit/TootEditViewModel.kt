@@ -34,6 +34,7 @@ class TootEditViewModel(
 
     fun onTootSendClicked() = run { _tootSendEvent.value = true }
     fun onTootSendFinished() = run { _tootSendEvent.value = false }
+    fun onReplyToClearClicked() = run { _liveReplyTo.value = null }
 
     fun sendToot(visibility: Visibility, messenger: (String) -> Unit) {
         CoroutineScope(context = Dispatchers.Main).launch {
