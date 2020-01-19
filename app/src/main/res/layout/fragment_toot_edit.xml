@@ -45,19 +45,58 @@
       tool:text="警告文"
       tool:visibility="visible" />
 
+    <LinearLayout
+      android:id="@+id/frame_reply"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:alpha="0.8"
+      android:background="#33000000"
+      android:paddingStart="8dp"
+      android:paddingTop="4dp"
+      android:paddingEnd="8dp"
+      android:paddingBottom="4dp"
+      android:visibility="@{(vm.liveReplyTo == null) ? View.GONE : View.VISIBLE}"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/cw_content">
+
+      <ImageView
+        imageUrl="@{vm.liveReplyTo.account.avatarStatic}"
+        android:layout_width="@dimen/avatar_top_start_size"
+        android:layout_height="@dimen/avatar_top_start_size"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        tool:background="@color/colorPrimary" />
+
+      <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_weight="1"
+        app:tootText="@{vm.liveReplyTo.content}"
+        tool:text="\@nastodon いろはにほへとちりぬるをわかよたれそぬねならむういのおくやまけふこへてあさきゆめみしえひもせす\nいろはにほへと" />
+
+      <ImageView
+        android:layout_width="@dimen/icon_button"
+        android:layout_height="@dimen/icon_button"
+        android:src="@drawable/ic_close_white"
+        android:tint="@android:color/darker_gray" />
+    </LinearLayout>
+
     <com.google.android.material.textfield.TextInputEditText
       android:id="@+id/content"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:ems="10"
       android:hint="@string/inputMainTextHint"
+      android:gravity="top"
       android:inputType="textMultiLine"
       android:maxLines="10"
       android:minLines="4"
       android:text="@={vm.sendContent}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/cw_content"
+      app:layout_constraintTop_toBottomOf="@id/frame_reply"
       tool:text="\@nastodon いろはにほへとちりぬるをわかよたれそぬねならむういのおくやまけふこへてあさきゆめみしえひもせす\nいろはにほへと" />
 
     <Spinner
