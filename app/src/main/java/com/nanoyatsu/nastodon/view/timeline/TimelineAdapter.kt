@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -86,6 +87,7 @@ class TimelineAdapter(private val context: Context) :
         if (holder is TimelineAdapter.ViewHolder) holder.binding.vm!!.vmJob.cancel()
     }
 
+    // todo : navigation対応
     private fun transAccountPage(v: View, account: Account) {
         val intent = Intent(context, AccountPageActivity::class.java)
             .also { it.putExtra(AccountPageActivity.IntentKey.ACCOUNT.name, account) }
@@ -146,31 +148,29 @@ class TimelineAdapter(private val context: Context) :
             }
         }
 
-        private fun transTootEditAsReply(context: Context, vm: TootViewModel) {
+        private fun navigate(context: Context, directions: NavDirections) {
             if (context is FragmentActivity)
-                context.main_fragment_container.findNavController().navigate(
-                    TimelineFrameFragmentDirections.actionTimelineFrameFragmentToTootEditFragment(vm.toot.value)
-                )
+                context.main_fragment_container.findNavController().navigate(directions)
+        }
+
+        private fun transTootEditAsReply(context: Context, vm: TootViewModel) {
+            val directions = TimelineFrameFragmentDirections
+                .actionTimelineFrameFragmentToTootEditFragment(vm.toot.value)
+            navigate(context, directions)
             vm.onReplyClickFinished()
         }
 
         private fun transTootDetail(context: Context, vm: TootViewModel) {
-            if (context is FragmentActivity)
-                context.main_fragment_container.findNavController().navigate(
-                    TimelineFrameFragmentDirections.actionTimelineFrameFragmentToTootDetailFragment(
-                        vm.toot.value!!
-                    )
-                )
+            val directions = TimelineFrameFragmentDirections
+                .actionTimelineFrameFragmentToTootDetailFragment(vm.toot.value!!)
+            navigate(context, directions)
             vm.onTimeClickFinished()
         }
 
         fun transImagePager(context: Context, contents: List<Attachment>) {
-            if (context is FragmentActivity)
-                context.main_fragment_container.findNavController().navigate(
-                    TimelineFrameFragmentDirections.actionTimelineFrameFragmentToImagePagerFragment(
-                        contents.map { it.url }.toTypedArray()
-                    )
-                )
+            val directions = TimelineFrameFragmentDirections
+                .actionTimelineFrameFragmentToImagePagerFragment(contents.map { it.url }.toTypedArray())
+            navigate(context, directions)
         }
     }
 
