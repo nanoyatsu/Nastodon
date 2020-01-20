@@ -123,10 +123,10 @@ class TimelineAdapter(private val context: Context) :
             setupAttachments(context, binding.attachments, toot.mediaAttachments)
 
             val vm = TootViewModel(toot, auth, apiManager)
+            vm.timeClickEvent.observe(context, Observer { if (it) transTootDetail(context, vm) })
             vm.replyEvent.observe(context, Observer { if (it) transTootEditAsReply(context, vm) })
             vm.reblogEvent.observe(context, Observer { if (it) vm.doReblog() })
             vm.favouriteEvent.observe(context, Observer { if (it) vm.doFav() })
-            vm.timeClickEvent.observe(context, Observer { if (it) transTootDetail(context, vm) })
             binding.lifecycleOwner = context
 
             binding.vm = vm
@@ -146,7 +146,7 @@ class TimelineAdapter(private val context: Context) :
             }
         }
 
-        fun transTootEditAsReply(context: Context, vm: TootViewModel) {
+        private fun transTootEditAsReply(context: Context, vm: TootViewModel) {
             if (context is FragmentActivity)
                 context.main_fragment_container.findNavController().navigate(
                     TimelineFrameFragmentDirections.actionTimelineFrameFragmentToTootEditFragment(vm.toot.value)
@@ -154,13 +154,13 @@ class TimelineAdapter(private val context: Context) :
             vm.onReplyClickFinished()
         }
 
-        fun transTootDetail(context: Context, vm: TootViewModel) {
-//            if (context is FragmentActivity)
-//                context.main_fragment_container.findNavController().navigate(
-//                    MainBottomNavigationFragmentDirections.actionMainBottomNavigationFragmentToTootDetailFragment(
-//                        vm.toot.value!!
-//                    )
-//                )
+        private fun transTootDetail(context: Context, vm: TootViewModel) {
+            if (context is FragmentActivity)
+                context.main_fragment_container.findNavController().navigate(
+                    TimelineFrameFragmentDirections.actionTimelineFrameFragmentToTootDetailFragment(
+                        vm.toot.value!!
+                    )
+                )
             vm.onTimeClickFinished()
         }
 

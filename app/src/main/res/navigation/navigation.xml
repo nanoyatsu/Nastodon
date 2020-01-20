@@ -39,6 +39,9 @@
     <action
       android:id="@+id/action_timelineFrameFragment_to_imagePagerFragment"
       app:destination="@id/imagePagerFragment" />
+    <action
+      android:id="@+id/action_timelineFrameFragment_to_tootDetailFragment"
+      app:destination="@id/tootDetailFragment" />
   </fragment>
   <fragment
     android:id="@+id/noticeFrameFragment"
