@@ -15,11 +15,14 @@ import retrofit2.HttpException
 import retrofit2.Response
 import java.util.*
 
+
 class TootEditViewModel(
     replyTo: Status?,
     private val auth: AuthInfo,
     private val apiManager: MastodonApiManager
 ) : ViewModel() {
+    val visibilitySpinnerEntries = Visibility.values().map { it.label }
+
     private val _liveReplyTo = MutableLiveData<Status?>().apply { value = replyTo }
     val liveReplyTo: LiveData<Status?> get() = _liveReplyTo
 

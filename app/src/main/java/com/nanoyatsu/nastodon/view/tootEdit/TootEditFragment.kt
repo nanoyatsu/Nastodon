@@ -6,13 +6,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.nanoyatsu.nastodon.NastodonApplication
-import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.entity.Visibility
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
@@ -29,14 +27,6 @@ class TootEditFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         (activity!!.application as NastodonApplication).appComponent.inject(this)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        if (auth.instanceUrl == "") {
-//            finish() // todo 認証に行く
-//            return
-//        }
     }
 
     override fun onCreateView(
@@ -59,13 +49,6 @@ class TootEditFragment : Fragment() {
         { binding.cwContent.visibility = if (it) View.VISIBLE else View.GONE })
         vm.liveReplyTo.observe(viewLifecycleOwner, Observer
         { binding.frameReply.visibility = if (it != null) View.VISIBLE else View.GONE })
-
-        // 可視範囲指定
-        val adapter = ArrayAdapter(
-            activity!!,
-            R.layout.support_simple_spinner_dropdown_item,
-            Visibility.values().map { it.label })
-        binding.visibilitySpinner.adapter = adapter
 
         // トゥート送信
         vm.tootSendEvent.observe(viewLifecycleOwner, Observer { if (it) sendToot() })
