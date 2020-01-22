@@ -106,6 +106,7 @@
       android:layout_height="wrap_content"
       android:layout_margin="8dp"
       android:entries="@{vm.visibilitySpinnerEntries}"
+      android:selectedItemPosition="@={vm.visibilityIdx}"
       app:layout_constraintBottom_toBottomOf="@+id/buttonSend"
       app:layout_constraintEnd_toStartOf="@+id/buttonSend"
       app:layout_constraintTop_toTopOf="@+id/buttonSend" />

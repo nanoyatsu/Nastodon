@@ -31,6 +31,11 @@ class TootEditViewModel(
         MutableLiveData<Boolean>().apply { value = replyTo?.spoilerText?.isNotEmpty() ?: false }
     val cwContent = MutableLiveData<String>().apply { value = replyTo?.spoilerText ?: "" }
     val sendContent = MutableLiveData<String>().apply { value = "" }
+    val visibilityIdx = MutableLiveData<Int>()
+        .apply {
+            val vis = replyTo?.visibility?.toUpperCase(Locale.ROOT)
+            value = if (vis == null) Visibility.PUBLIC.ordinal else Visibility.valueOf(vis).ordinal
+        }
 
     private val _tootSendEvent = MutableLiveData<Boolean>().apply { value = false }
     val tootSendEvent: LiveData<Boolean>
@@ -40,10 +45,10 @@ class TootEditViewModel(
     fun onTootSendFinished() = run { _tootSendEvent.value = false }
     fun onReplyToClearClicked() = run { _liveReplyTo.value = null }
 
-    fun sendToot(visibility: Visibility, messenger: (String) -> Unit) {
+    fun sendToot(messenger: (String) -> Unit) {
         CoroutineScope(context = Dispatchers.Main).launch {
             try {
-                val res = returnArgSetPostToot(visibility).invoke()
+                val res = returnArgSetPostToot().invoke()
                 Log.d(
                     this.javaClass.simpleName,
                     res.body()?.toString() ?: res.errorBody().toString()
@@ -59,14 +64,14 @@ class TootEditViewModel(
         }
     }
 
-    private fun returnArgSetPostToot(visibility: Visibility): suspend () -> Response<Status> {
+    private fun returnArgSetPostToot(): suspend () -> Response<Status> {
         return suspend {
             apiManager.statuses.postToot(
                 authorization = auth.accessToken,
                 status = sendContent.value!!,
                 inReplyToId = liveReplyTo.value?.id,
                 spoilerText = if (cwContent.value == "") null else cwContent.value,
-                visibility = visibility.name.toLowerCase(Locale.ROOT)
+                visibility = Visibility.values()[this.visibilityIdx.value!!].name.toLowerCase(Locale.ROOT)
             )
         }
     }

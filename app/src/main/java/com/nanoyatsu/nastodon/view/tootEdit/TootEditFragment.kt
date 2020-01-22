@@ -12,7 +12,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.data.api.entity.Visibility
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.FragmentTootEditBinding
 import javax.inject.Inject
@@ -58,8 +57,7 @@ class TootEditFragment : Fragment() {
     private fun sendToot() {
         // todo キーボードをしまう
         val applicationContext = activity?.applicationContext
-        binding.vm?.sendToot(Visibility.values()[binding.visibilitySpinner.selectedItemPosition])
-        { Toast.makeText(applicationContext, it, Toast.LENGTH_LONG).show() }
+        binding.vm?.sendToot { Toast.makeText(applicationContext, it, Toast.LENGTH_LONG).show() }
         activity?.onBackPressed() // todo ナビゲーションで遷移
     }
 }
