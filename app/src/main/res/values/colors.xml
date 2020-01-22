@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="colorPrimary">#008577</color>
-  <color name="colorPrimaryDark">#00574B</color>
-  <color name="colorAccent">#D81B60</color>
-  <color name="colorTrans">#00FFFFFF</color>
+  <color name="qiita_main_light">#73F700</color>
+  <color name="qiita_main">#55C500</color>
+  <color name="qiita_main_dark">#5D7511</color>
+  <color name="qiita_base_light">#F7E9E4</color>
+  <color name="qiita_base">#F2E0D7</color>
+  <color name="qiita_base_dark">#E2CFC7</color>
+  <color name="qiita_sub_light">#5EC6FF</color>
+  <color name="qiita_sub">#4097DB</color>
+  <color name="qiita_sub_dark">#3090C6</color>
+
+  <color name="colorPrimary">@color/qiita_main</color>
+  <color name="colorPrimaryDark">@color/qiita_main_dark</color>
+  <color name="colorAccent">@color/qiita_sub</color>
 
   <color name="fav_yellow">#ffffbc00</color>
   <color name="reblog_blue">#ff009af4</color>
