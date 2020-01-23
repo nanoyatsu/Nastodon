@@ -1,7 +1,6 @@
 package com.nanoyatsu.nastodon.view.notice
 
 import android.content.Context
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -11,9 +10,6 @@ import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.components.networkState.NetworkStateItemViewHolder
 import com.nanoyatsu.nastodon.components.networkState.NetworkStatus
 import com.nanoyatsu.nastodon.data.api.entity.Notification
-import com.nanoyatsu.nastodon.data.api.entity.NotificationType
-import com.nanoyatsu.nastodon.databinding.ItemNoticeBinding
-import com.nanoyatsu.nastodon.resource.NoticeIcon
 
 class NoticeAdapter(private val context: Context) :
     PagedListAdapter<Notification, RecyclerView.ViewHolder>(DiffCallback()) {
@@ -34,7 +30,7 @@ class NoticeAdapter(private val context: Context) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            R.layout.item_notice -> NoticeAdapter.ViewHolder.from(parent)
+            R.layout.item_notice -> NoticeItemViewHolder.from(parent)
             R.layout.item_network_state -> NetworkStateItemViewHolder.from(parent, {})
             else -> throw IllegalArgumentException("unknown view type $viewType")
         }
@@ -42,7 +38,7 @@ class NoticeAdapter(private val context: Context) :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
-            R.layout.item_notice -> (holder as NoticeAdapter.ViewHolder).bind(
+            R.layout.item_notice -> (holder as NoticeItemViewHolder).bind(
                 context,
                 getItem(position)!!
             )
@@ -66,37 +62,6 @@ class NoticeAdapter(private val context: Context) :
 
     private fun hasExtraRow(state: NetworkState?) =
         state != null && state.status == NetworkStatus.FAILED
-
-    class ViewHolder(val binding: ItemNoticeBinding) : RecyclerView.ViewHolder(binding.root) {
-        companion object {
-            fun from(parent: ViewGroup): ViewHolder {
-                val binding =
-                    ItemNoticeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                return ViewHolder(binding)
-            }
-        }
-
-        fun bind(context: Context, notice: Notification) {
-            binding.notice = notice
-
-            val type = NotificationType.values().firstOrNull { it.value == notice.type }
-
-            // todo : Replyは別レイアウトにする
-            val descriptionId: Int
-            val icon: NoticeIcon
-            if (type == null) {
-                descriptionId = R.string.noticeDescriptionUndefined
-                icon = NoticeIcon.UNDEFINED
-            } else {
-                descriptionId = type.descriptionId
-                icon = type.icon
-            }
-
-            binding.description.text = context.getString(descriptionId, notice.account.displayName)
-            binding.typeIcon.background =
-                context.getDrawable(icon.iconId)?.apply { setTint(context.getColor(icon.colorId)) }
-        }
-    }
 
     companion object {
         class DiffCallback : DiffUtil.ItemCallback<Notification>() {
