@@ -3,14 +3,17 @@ package com.nanoyatsu.nastodon.data.api.entity
 import android.os.Parcelable
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.resource.NoticeIcon
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class Notification(
     val id: String,
     val type: String,
-    val created_at: String,
+    @Json(name = "created_at") val created_at: String,
     val account: Account,
     val status: Status? = null
 ) : Parcelable

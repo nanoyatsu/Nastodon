@@ -1,16 +1,20 @@
 package com.nanoyatsu.nastodon.data.api
 
-import com.google.gson.FieldNamingPolicy
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.nanoyatsu.nastodon.data.api.endpoint.*
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 class MastodonApiManager(baseUrl: String) {
-    private val gson: Gson
+    companion object {
+        val moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+    }
+
     private val retrofit: Retrofit
     private val basePathV1 = "api/v1/"
 
@@ -21,17 +25,13 @@ class MastodonApiManager(baseUrl: String) {
         val httpClient = OkHttpClient.Builder().also {
             it.addInterceptor(logging)
         }
-        gson = GsonBuilder().let {
-            it.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            it.create()
-        }
         retrofit = Retrofit.Builder().let {
             val fullUrl =
                 "https://${if (baseUrl.isEmpty()) "a" else baseUrl}/" // "a"よりも妥当な退避文字あるいは方法
             it.baseUrl(fullUrl)
 //            it.baseUrl(baseUrl + basePathV1)
             it.client(httpClient.build())
-            it.addConverterFactory(GsonConverterFactory.create(gson))
+            it.addConverterFactory(MoshiConverterFactory.create(moshi))
             it.build()
         }
     }

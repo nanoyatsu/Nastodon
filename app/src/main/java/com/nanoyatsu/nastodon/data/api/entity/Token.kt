@@ -1,10 +1,14 @@
 package com.nanoyatsu.nastodon.data.api.entity
 
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
 data class Token(
-    val accessToken: String,
-    val tokenType: String,
+    @Json(name = "access_token") val accessToken: String,
+    @Json(name = "token_type") val tokenType: String,
     val scope: String,
-    val createdAt: Int
+    @Json(name = "created_at") val createdAt: Int
 )
 
 //{

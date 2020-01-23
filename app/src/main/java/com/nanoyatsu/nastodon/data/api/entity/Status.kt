@@ -1,30 +1,33 @@
 package com.nanoyatsu.nastodon.data.api.entity
 
 import android.os.Parcelable
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
+@JsonClass(generateAdapter = true)
 data class Status(
     val id: String,
     val uri: String,
     val url: String?,
     val account: Account,
-    val inReplyToId: String?,
-    val inReplyToAccountId: String?,
+    @Json(name = "in_reply_to_id") val inReplyToId: String?,
+    @Json(name = "in_reply_to_account_id") val inReplyToAccountId: String?,
     val reblog: Status?,
     val content: String,
-    val createdAt: String,
+    @Json(name = "created_at") val createdAt: String,
 //    val emojis:Array<Emoji>
-    var repliesCount: Int,
-    var reblogsCount: Int,
-    var favouritesCount: Int,
+    @Json(name = "replies_count") var repliesCount: Int?, // Added in 2.5.0
+    @Json(name = "reblogs_count") var reblogsCount: Int,
+    @Json(name = "favourites_count") var favouritesCount: Int,
     var reblogged: Boolean?,
     var favourited: Boolean?,
     val muted: Boolean?,
     val sensitive: Boolean,
-    val spoilerText: String,
+    @Json(name = "spoiler_text") val spoilerText: String,
     val visibility: String,
-    val mediaAttachments: List<Attachment>,
+    @Json(name = "media_attachments") val mediaAttachments: List<Attachment>,
 //    val mentions: Array<Mention>,
 //    val tags: Array<Tag>,
 //    val card: Card?,
