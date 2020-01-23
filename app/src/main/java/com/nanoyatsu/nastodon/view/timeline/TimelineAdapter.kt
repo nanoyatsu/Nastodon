@@ -1,8 +1,6 @@
 package com.nanoyatsu.nastodon.view.timeline
 
 import android.content.Context
-import android.content.Intent
-import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -12,16 +10,17 @@ import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.components.networkState.NetworkStateItemViewHolder
 import com.nanoyatsu.nastodon.components.networkState.NetworkStatus
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.data.api.entity.Account
 import com.nanoyatsu.nastodon.data.api.entity.Status
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
 import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
-import com.nanoyatsu.nastodon.view.accountDetail.AccountPageActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
-class TimelineAdapter(private val context: Context) :
+class TimelineAdapter(
+    private val context: Context,
+    private val navigation: TimelineItemViewHolder.Navigation? = null
+) :
     PagedListAdapter<Status, RecyclerView.ViewHolder>(DiffCallback()) {
     private var authInfoDao: AuthInfoDao = NastodonDataBase.getInstance().authInfoDao()
     private lateinit var auth: AuthInfo
@@ -48,7 +47,7 @@ class TimelineAdapter(private val context: Context) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            R.layout.item_toot -> TimelineItemViewHolder.from(parent)
+            R.layout.item_toot -> TimelineItemViewHolder.from(parent, navigation)
             R.layout.item_network_state -> NetworkStateItemViewHolder.from(parent, {})
             else -> throw IllegalArgumentException("unknown view type $viewType")
         }
@@ -74,13 +73,6 @@ class TimelineAdapter(private val context: Context) :
     override fun onViewDetachedFromWindow(holder: RecyclerView.ViewHolder) {
         super.onViewDetachedFromWindow(holder)
         if (holder is TimelineItemViewHolder) holder.binding.vm!!.vmJob.cancel()
-    }
-
-    // todo : navigation対応
-    private fun transAccountPage(v: View, account: Account) {
-        val intent = Intent(context, AccountPageActivity::class.java)
-            .also { it.putExtra(AccountPageActivity.IntentKey.ACCOUNT.name, account) }
-        v.context.startActivity(intent)
     }
 
     // github android/architecture-components-samples/PagingWithNetworkSample より
@@ -109,7 +101,6 @@ class TimelineAdapter(private val context: Context) :
             override fun areContentsTheSame(oldItem: Status, newItem: Status): Boolean {
                 return oldItem == newItem
             }
-
         }
     }
 }

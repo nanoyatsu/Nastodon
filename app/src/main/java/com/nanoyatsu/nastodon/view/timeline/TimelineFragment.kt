@@ -8,12 +8,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
+import com.nanoyatsu.nastodon.data.api.entity.Attachment
+import com.nanoyatsu.nastodon.data.api.entity.Status
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.FragmentTimelineBinding
+import kotlinx.android.synthetic.main.activity_nav_host.*
 import javax.inject.Inject
 
 class TimelineFragment : Fragment() {
@@ -53,7 +58,7 @@ class TimelineFragment : Fragment() {
         val context = this.context ?: return
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         binding.timelineView.layoutManager = layoutManager // fixme 画面回転を連続したりするとNPE
-        val adapter = TimelineAdapter(context)
+        val adapter = TimelineAdapter(context, navigation)
         binding.timelineView.adapter = adapter
 
         val vm = ViewModelProvider(this, factory).get(TimelineViewModel::class.java)
@@ -71,6 +76,38 @@ class TimelineFragment : Fragment() {
         binding.lifecycleOwner = this
     }
 
+    private val navigation = object : TimelineItemViewHolder.Navigation {
+        //    // todo : navigation対応
+        //    private fun transAccountPage(v: View, account: Account) {
+        //        val intent = Intent(context, AccountPageActivity::class.java)
+        //            .also { it.putExtra(AccountPageActivity.IntentKey.ACCOUNT.name, account) }
+        //        v.context.startActivity(intent)
+        //    }
+
+        private fun navigate(directions: NavDirections) {
+            val activity = requireNotNull(activity)
+            activity.main_fragment_container.findNavController().navigate(directions)
+        }
+
+        override fun transTootEditAsReply(toot: Status) {
+            val directions =
+                TimelineFrameFragmentDirections.actionTimelineFrameFragmentToTootEditFragment(toot)
+            navigate(directions)
+        }
+
+        override fun transTootDetail(toot: Status) {
+            val directions =
+                TimelineFrameFragmentDirections.actionTimelineFrameFragmentToTootDetailFragment(toot)
+            navigate(directions)
+        }
+
+        override fun transImagePager(contents: List<Attachment>) {
+            val urls = contents.map { it.url }.toTypedArray()
+            val directions =
+                TimelineFrameFragmentDirections.actionTimelineFrameFragmentToImagePagerFragment(urls)
+            navigate(directions)
+        }
+    }
 
     fun focusTop() {
         binding.timelineView.smoothScrollToPosition(0)

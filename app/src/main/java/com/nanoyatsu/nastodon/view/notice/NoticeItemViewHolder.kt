@@ -7,15 +7,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.entity.Notification
 import com.nanoyatsu.nastodon.data.api.entity.NotificationType
+import com.nanoyatsu.nastodon.data.api.entity.Status
 import com.nanoyatsu.nastodon.databinding.ItemNoticeBinding
 import com.nanoyatsu.nastodon.resource.NoticeIcon
 
-class NoticeItemViewHolder(val binding: ItemNoticeBinding) : RecyclerView.ViewHolder(binding.root) {
+class NoticeItemViewHolder(val binding: ItemNoticeBinding, private val navigation: Navigation?) :
+    RecyclerView.ViewHolder(binding.root) {
     companion object {
-        fun from(parent: ViewGroup): NoticeItemViewHolder {
+        fun from(parent: ViewGroup, navigation: Navigation?): NoticeItemViewHolder {
             val binding =
                 ItemNoticeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            return NoticeItemViewHolder(binding)
+            return NoticeItemViewHolder(binding, navigation)
         }
     }
 
@@ -38,5 +40,9 @@ class NoticeItemViewHolder(val binding: ItemNoticeBinding) : RecyclerView.ViewHo
         binding.description.text = context.getString(descriptionId, notice.account.displayName)
         binding.typeIcon.background =
             context.getDrawable(icon.iconId)?.apply { setTint(context.getColor(icon.colorId)) }
+    }
+
+    interface Navigation {
+        fun transTootDetail(toot: Status)
     }
 }

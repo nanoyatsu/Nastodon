@@ -5,8 +5,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
-import androidx.navigation.NavDirections
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
@@ -16,20 +14,14 @@ import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.ItemTootBinding
 import com.nanoyatsu.nastodon.view.tootDetail.MediaAttachmentAdapter
 import com.nanoyatsu.nastodon.view.tootDetail.TootViewModel
-import kotlinx.android.synthetic.main.activity_nav_host.*
 
-class TimelineItemViewHolder(val binding: ItemTootBinding) : RecyclerView.ViewHolder(binding.root) {
+class TimelineItemViewHolder(val binding: ItemTootBinding, private val navigation: Navigation?) :
+    RecyclerView.ViewHolder(binding.root) {
     companion object {
-        fun from(parent: ViewGroup): TimelineItemViewHolder {
-            val binding =
-                ItemTootBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            return TimelineItemViewHolder(
-                binding
-            )
+        fun from(parent: ViewGroup, navigation: Navigation?): TimelineItemViewHolder {
+            val binding = ItemTootBinding
+                .inflate(LayoutInflater.from(parent.context), parent, false)
+            return TimelineItemViewHolder(binding, navigation)
         }
     }
 
@@ -38,8 +30,8 @@ class TimelineItemViewHolder(val binding: ItemTootBinding) : RecyclerView.ViewHo
         setupAttachments(context, binding.attachments, toot.mediaAttachments)
 
         val vm = TootViewModel(toot, auth, apiManager) //
-        vm.timeClickEvent.observe(context, Observer { if (it) transTootDetail(context, vm) })
-        vm.replyEvent.observe(context, Observer { if (it) transTootEditAsReply(context, vm) })
+        vm.timeClickEvent.observe(context, Observer { if (it) onTimeClick(vm) })
+        vm.replyEvent.observe(context, Observer { if (it) onReplyClick(vm) })
         vm.reblogEvent.observe(context, Observer { if (it) vm.doReblog() })
         vm.favouriteEvent.observe(context, Observer { if (it) vm.doFav() })
         binding.lifecycleOwner = context
@@ -49,51 +41,33 @@ class TimelineItemViewHolder(val binding: ItemTootBinding) : RecyclerView.ViewHo
         binding.executePendingBindings()
     }
 
-    private fun setupAttachments(
-        context: Context, view: RecyclerView, contents: List<Attachment>
-    ) {
-        val layoutManager =
-            GridLayoutManager(context, 2)
-        view.layoutManager = layoutManager
-        view.adapter = MediaAttachmentAdapter(
-            contents.toTypedArray()
-        ).apply {
-            publicListener = object :
-                MediaAttachmentAdapter.ThumbnailClickListener {
-                override val onThumbnailClick = { transImagePager(context, contents) }
+    private fun setupAttachments(context: Context, view: RecyclerView, contents: List<Attachment>) {
+        view.layoutManager = GridLayoutManager(context, 2)
+        view.adapter = MediaAttachmentAdapter(contents.toTypedArray())
+            .apply {
+                publicListener = object : MediaAttachmentAdapter.ThumbnailClickListener {
+                    override val onThumbnailClick = { onAttachmentClick(contents) }
+                }
             }
-        }
     }
 
-    // todo interface化、親Fragmentで処理を持つ
-    private fun navigate(context: Context, directions: NavDirections) {
-        if (context is FragmentActivity)
-            context.main_fragment_container.findNavController().navigate(directions)
-    }
-
-    private fun transTootEditAsReply(context: Context, vm: TootViewModel) {
-        val directions =
-            TimelineFrameFragmentDirections.actionTimelineFrameFragmentToTootEditFragment(
-                vm.toot.value
-            )
-        navigate(context, directions)
-        vm.onReplyClickFinished()
-    }
-
-    private fun transTootDetail(context: Context, vm: TootViewModel) {
-        val directions =
-            TimelineFrameFragmentDirections.actionTimelineFrameFragmentToTootDetailFragment(
-                vm.toot.value!!
-            )
-        navigate(context, directions)
+    private fun onTimeClick(vm: TootViewModel) {
+        navigation?.transTootDetail(vm.toot.value!!)
         vm.onTimeClickFinished()
     }
 
-    fun transImagePager(context: Context, contents: List<Attachment>) {
-        val directions =
-            TimelineFrameFragmentDirections.actionTimelineFrameFragmentToImagePagerFragment(
-                contents.map { it.url }.toTypedArray()
-            )
-        navigate(context, directions)
+    private fun onReplyClick(vm: TootViewModel) {
+        navigation?.transTootEditAsReply(vm.toot.value!!)
+        vm.onReplyClickFinished()
+    }
+
+    private fun onAttachmentClick(contents: List<Attachment>) {
+        navigation?.transImagePager(contents)
+    }
+
+    interface Navigation {
+        fun transTootEditAsReply(toot: Status)
+        fun transTootDetail(toot: Status)
+        fun transImagePager(contents: List<Attachment>)
     }
 }

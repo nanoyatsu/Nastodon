@@ -47,7 +47,17 @@
     android:id="@+id/noticeFrameFragment"
     android:name="com.nanoyatsu.nastodon.view.notice.NoticeFrameFragment"
     android:label="fragment_notice_frame"
-    tools:layout="@layout/fragment_notice_frame" />
+    tools:layout="@layout/fragment_notice_frame" >
+    <action
+      android:id="@+id/action_noticeFrameFragment_to_tootDetailFragment"
+      app:destination="@id/tootDetailFragment" />
+    <action
+      android:id="@+id/action_noticeFrameFragment_to_imagePagerFragment"
+      app:destination="@id/imagePagerFragment" />
+    <action
+      android:id="@+id/action_noticeFrameFragment_to_tootEditFragment"
+      app:destination="@id/tootEditFragment" />
+  </fragment>
   <fragment
     android:id="@+id/searchFragment"
     android:name="com.nanoyatsu.nastodon.view.search.SearchFragment"

@@ -9,12 +9,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavDirections
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
+import com.nanoyatsu.nastodon.data.api.entity.Attachment
+import com.nanoyatsu.nastodon.data.api.entity.Status
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.FragmentNoticeBinding
+import com.nanoyatsu.nastodon.view.timeline.TimelineItemViewHolder
+import kotlinx.android.synthetic.main.activity_nav_host.*
 import javax.inject.Inject
 
 class NoticeFragment : Fragment() {
@@ -53,7 +59,7 @@ class NoticeFragment : Fragment() {
         val context = this.context ?: return
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         binding.noticeView.layoutManager = layoutManager
-        val adapter = NoticeAdapter(context)
+        val adapter = NoticeAdapter(context, noticeNavigation, tootNavigation)
         binding.noticeView.adapter = adapter
 
         val vm = ViewModelProvider(this, factory).get(NoticeViewModel::class.java)
@@ -69,6 +75,41 @@ class NoticeFragment : Fragment() {
 
         binding.vm = vm
         binding.lifecycleOwner = this
+    }
+
+    private val noticeNavigation = null // todo NoticeItemViewHolder.Navigation 実装
+
+    private val tootNavigation = object : TimelineItemViewHolder.Navigation {
+        //    // todo : navigation対応
+        //    private fun transAccountPage(v: View, account: Account) {
+        //        val intent = Intent(context, AccountPageActivity::class.java)
+        //            .also { it.putExtra(AccountPageActivity.IntentKey.ACCOUNT.name, account) }
+        //        v.context.startActivity(intent)
+        //    }
+
+        private fun navigate(directions: NavDirections) {
+            val activity = requireNotNull(activity)
+            activity.main_fragment_container.findNavController().navigate(directions)
+        }
+
+        override fun transTootEditAsReply(toot: Status) {
+            val directions =
+                NoticeFrameFragmentDirections.actionNoticeFrameFragmentToTootEditFragment(toot)
+            navigate(directions)
+        }
+
+        override fun transTootDetail(toot: Status) {
+            val directions =
+                NoticeFrameFragmentDirections.actionNoticeFrameFragmentToTootDetailFragment(toot)
+            navigate(directions)
+        }
+
+        override fun transImagePager(contents: List<Attachment>) {
+            val urls = contents.map { it.url }.toTypedArray()
+            val directions =
+                NoticeFrameFragmentDirections.actionNoticeFrameFragmentToImagePagerFragment(urls)
+            navigate(directions)
+        }
     }
 
     companion object {

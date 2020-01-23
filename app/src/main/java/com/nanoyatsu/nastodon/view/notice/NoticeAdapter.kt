@@ -19,7 +19,11 @@ import com.nanoyatsu.nastodon.view.timeline.TimelineItemViewHolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
-class NoticeAdapter(private val context: Context) :
+class NoticeAdapter(
+    private val context: Context,
+    private val noticeNavigation: NoticeItemViewHolder.Navigation? = null,
+    private val tootNavigation: TimelineItemViewHolder.Navigation? = null
+) :
     PagedListAdapter<Notification, RecyclerView.ViewHolder>(DiffCallback()) {
     private var authInfoDao: AuthInfoDao = NastodonDataBase.getInstance().authInfoDao()
     private lateinit var auth: AuthInfo
@@ -33,16 +37,14 @@ class NoticeAdapter(private val context: Context) :
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (!hasExtraRow(networkState) || position < super.getItemCount()) {
-            val item = requireNotNull(getItem(position))
-            val type = NotificationType.values().firstOrNull { it.value == item.type }
-            if (type == NotificationType.MENTION)
-                R.layout.item_toot
-            else
-                R.layout.item_notice
-        } else {
-            R.layout.item_network_state
-        }
+        if (hasExtraRow(networkState) && position >= super.getItemCount())
+            return R.layout.item_network_state
+
+        val item = requireNotNull(getItem(position))
+        val type = NotificationType.values().firstOrNull { it.value == item.type }
+        if (type == NotificationType.MENTION)
+            return R.layout.item_toot
+        return R.layout.item_notice
     }
 
     // overrideしたgetItemCountの数だけ描画されるため必要(getItemViewTypeの引数position等はこれを参照する)
@@ -52,8 +54,8 @@ class NoticeAdapter(private val context: Context) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            R.layout.item_notice -> NoticeItemViewHolder.from(parent)
-            R.layout.item_toot -> TimelineItemViewHolder.from(parent)
+            R.layout.item_notice -> NoticeItemViewHolder.from(parent, noticeNavigation)
+            R.layout.item_toot -> TimelineItemViewHolder.from(parent, tootNavigation)
             R.layout.item_network_state -> NetworkStateItemViewHolder.from(parent, {})
             else -> throw IllegalArgumentException("unknown view type $viewType")
         }
