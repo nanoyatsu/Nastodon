@@ -9,18 +9,40 @@ import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.components.networkState.NetworkStateItemViewHolder
 import com.nanoyatsu.nastodon.components.networkState.NetworkStatus
+import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.entity.Notification
+import com.nanoyatsu.nastodon.data.api.entity.NotificationType
+import com.nanoyatsu.nastodon.data.database.NastodonDataBase
+import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
+import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.view.timeline.TimelineItemViewHolder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
 class NoticeAdapter(private val context: Context) :
     PagedListAdapter<Notification, RecyclerView.ViewHolder>(DiffCallback()) {
+    private var authInfoDao: AuthInfoDao = NastodonDataBase.getInstance().authInfoDao()
+    private lateinit var auth: AuthInfo
+    private var apiManager: MastodonApiManager
 
     private var networkState: NetworkState? = NetworkState.LOADED
 
+    init {
+        runBlocking(context = Dispatchers.IO) { auth = authInfoDao.getAll().first() }
+        apiManager = MastodonApiManager(auth.instanceUrl)
+    }
+
     override fun getItemViewType(position: Int): Int {
-        return if (!hasExtraRow(networkState) || position < super.getItemCount())
-            R.layout.item_notice
-        else
+        return if (!hasExtraRow(networkState) || position < super.getItemCount()) {
+            val item = requireNotNull(getItem(position))
+            val type = NotificationType.values().firstOrNull { it.value == item.type }
+            if (type == NotificationType.MENTION)
+                R.layout.item_toot
+            else
+                R.layout.item_notice
+        } else {
             R.layout.item_network_state
+        }
     }
 
     // overrideしたgetItemCountの数だけ描画されるため必要(getItemViewTypeの引数position等はこれを参照する)
@@ -31,6 +53,7 @@ class NoticeAdapter(private val context: Context) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             R.layout.item_notice -> NoticeItemViewHolder.from(parent)
+            R.layout.item_toot -> TimelineItemViewHolder.from(parent)
             R.layout.item_network_state -> NetworkStateItemViewHolder.from(parent, {})
             else -> throw IllegalArgumentException("unknown view type $viewType")
         }
@@ -38,10 +61,14 @@ class NoticeAdapter(private val context: Context) :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (getItemViewType(position)) {
-            R.layout.item_notice -> (holder as NoticeItemViewHolder).bind(
-                context,
-                getItem(position)!!
-            )
+            R.layout.item_toot -> {
+                val toot = requireNotNull(getItem(position)?.status)
+                (holder as TimelineItemViewHolder).bind(context, toot, apiManager, auth)
+            }
+            R.layout.item_notice -> {
+                val notice = requireNotNull(getItem(position))
+                (holder as NoticeItemViewHolder).bind(context, notice)
+            }
             R.layout.item_network_state -> (holder as NetworkStateItemViewHolder).bind(networkState)
         }
     }

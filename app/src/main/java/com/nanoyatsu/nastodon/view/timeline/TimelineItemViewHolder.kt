@@ -37,11 +37,7 @@ class TimelineItemViewHolder(val binding: ItemTootBinding) : RecyclerView.ViewHo
         require(context is FragmentActivity)
         setupAttachments(context, binding.attachments, toot.mediaAttachments)
 
-        val vm = TootViewModel(
-            toot,
-            auth,
-            apiManager
-        )
+        val vm = TootViewModel(toot, auth, apiManager) //
         vm.timeClickEvent.observe(context, Observer { if (it) transTootDetail(context, vm) })
         vm.replyEvent.observe(context, Observer { if (it) transTootEditAsReply(context, vm) })
         vm.reblogEvent.observe(context, Observer { if (it) vm.doReblog() })
