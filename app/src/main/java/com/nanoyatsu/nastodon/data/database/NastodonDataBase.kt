@@ -5,11 +5,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
+import com.nanoyatsu.nastodon.data.database.dao.TimelineDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.data.database.entity.DBStatus
 
-@Database(entities = [AuthInfo::class], version = 1, exportSchema = true)
+// しばらく意図的にversion=1のまま migration保留
+@Database(entities = [AuthInfo::class, DBStatus::class], version = 1, exportSchema = true)
 abstract class NastodonDataBase : RoomDatabase() {
     abstract fun authInfoDao(): AuthInfoDao
+    abstract fun timelineDao(): TimelineDao
 
     companion object {
         private var INSTANCE: NastodonDataBase? = null
