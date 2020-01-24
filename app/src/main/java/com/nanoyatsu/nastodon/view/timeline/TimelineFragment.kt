@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.entity.Attachment
-import com.nanoyatsu.nastodon.data.api.entity.Status
+import com.nanoyatsu.nastodon.data.entity.Status
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.FragmentTimelineBinding
 import kotlinx.android.synthetic.main.activity_nav_host.*

@@ -3,7 +3,7 @@ package com.nanoyatsu.nastodon.view.notice
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiNotifications
-import com.nanoyatsu.nastodon.data.api.entity.Notification
+import com.nanoyatsu.nastodon.data.entity.Notification
 
 class NoticeDataSourceFactory(
     private val noticeKind: NoticeViewModel.Kind,

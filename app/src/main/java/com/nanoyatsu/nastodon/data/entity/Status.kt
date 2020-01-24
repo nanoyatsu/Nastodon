@@ -1,6 +1,8 @@
-package com.nanoyatsu.nastodon.data.api.entity
+package com.nanoyatsu.nastodon.data.entity
 
 import android.os.Parcelable
+import com.nanoyatsu.nastodon.data.api.MastodonApiManager
+import com.nanoyatsu.nastodon.data.api.entity.Attachment
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
@@ -35,7 +37,11 @@ data class Status(
 //    val application: Application,
     val language: String?,
     val pinned: Boolean?
-) : Parcelable
+) : Parcelable {
+    fun asDatabaseModel() =
+        MastodonApiManager.moshi.adapter<Status>(
+            Status::class.java).toJson(this)
+}
 
 enum class Visibility(val label: String) {
     PUBLIC("公開"),

@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApi
-import com.nanoyatsu.nastodon.data.api.entity.Account
+import com.nanoyatsu.nastodon.data.entity.Account
 import com.nanoyatsu.nastodon.data.sharedPreference.AuthPreferenceManager
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
 import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao

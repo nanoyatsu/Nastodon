@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonClass(generateAdapter = true)
-data class Account(
+data class APIAccount(
     val id: String,
     val username: String,
     val acct: String,
@@ -24,7 +24,7 @@ data class Account(
     val header: String,
     @Json(name = "header_static") val headerStatic: String,
 //    val emojis:Array<Emoji>,
-    val moved: Account?,
+    val moved: APIAccount?,
 //    val fields:Array<Hash>?,
     val bot: Boolean?,
     val source: Source?

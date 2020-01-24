@@ -4,7 +4,7 @@ package com.nanoyatsu.nastodon.data.api.entity
 // Added in 2.6.0
 data class Conversation(
     val id: String,
-    val accounts: List<Account>,
+    val accounts: List<APIAccount>,
     val unread: Boolean,
-    val lastStatus: Status?
+    val lastStatus: APIStatus?
 )

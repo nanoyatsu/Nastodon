@@ -8,8 +8,8 @@ import androidx.paging.PagedList
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiNotifications
-import com.nanoyatsu.nastodon.data.api.entity.Notification
-import com.nanoyatsu.nastodon.data.api.entity.NotificationType
+import com.nanoyatsu.nastodon.data.entity.Notification
+import com.nanoyatsu.nastodon.data.entity.NotificationType
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import retrofit2.Response
 

@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.data.api.entity
+package com.nanoyatsu.nastodon.data.entity
 
 import android.os.Parcelable
 import com.nanoyatsu.nastodon.R

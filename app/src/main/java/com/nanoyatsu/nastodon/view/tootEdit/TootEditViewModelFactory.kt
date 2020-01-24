@@ -4,7 +4,7 @@ package com.nanoyatsu.nastodon.view.tootEdit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.data.api.entity.Status
+import com.nanoyatsu.nastodon.data.entity.Status
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 
 class TootEditViewModelFactory(

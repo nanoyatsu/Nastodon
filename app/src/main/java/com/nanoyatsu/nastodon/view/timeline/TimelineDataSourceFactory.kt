@@ -3,7 +3,7 @@ package com.nanoyatsu.nastodon.view.timeline
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
 import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiTimelines
-import com.nanoyatsu.nastodon.data.api.entity.Status
+import com.nanoyatsu.nastodon.data.entity.Status
 
 class TimelineDataSourceFactory(
     private val timelineKind: TimelineViewModel.Kind,

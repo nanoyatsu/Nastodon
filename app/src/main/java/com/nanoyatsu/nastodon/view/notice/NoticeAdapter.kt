@@ -10,8 +10,8 @@ import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.components.networkState.NetworkStateItemViewHolder
 import com.nanoyatsu.nastodon.components.networkState.NetworkStatus
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.data.api.entity.Notification
-import com.nanoyatsu.nastodon.data.api.entity.NotificationType
+import com.nanoyatsu.nastodon.data.entity.Notification
+import com.nanoyatsu.nastodon.data.entity.NotificationType
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
 import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo

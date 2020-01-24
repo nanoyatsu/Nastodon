@@ -1,6 +1,6 @@
 package com.nanoyatsu.nastodon.data.api.endpoint
 
-import com.nanoyatsu.nastodon.data.api.entity.Status
+import com.nanoyatsu.nastodon.data.entity.Status
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
