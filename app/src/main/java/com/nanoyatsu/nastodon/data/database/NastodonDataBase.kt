@@ -7,7 +7,7 @@ import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 
-@Database(entities = [AuthInfo::class], version = 1, exportSchema = false)
+@Database(entities = [AuthInfo::class], version = 1, exportSchema = true)
 abstract class NastodonDataBase : RoomDatabase() {
     abstract fun authInfoDao(): AuthInfoDao
 
@@ -18,9 +18,12 @@ abstract class NastodonDataBase : RoomDatabase() {
         fun getInstance(): NastodonDataBase {
             if (INSTANCE is NastodonDataBase) return INSTANCE!!
             INSTANCE =
-                Room.databaseBuilder(NastodonApplication.appContext, NastodonDataBase::class.java, "TODO_DB").build()
+                Room.databaseBuilder(
+                    NastodonApplication.appContext,
+                    NastodonDataBase::class.java,
+                    "nastodon_database"
+                ).build()
             return INSTANCE!!
         }
     }
-
 }
