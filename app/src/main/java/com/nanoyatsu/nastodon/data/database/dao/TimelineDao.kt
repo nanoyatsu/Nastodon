@@ -14,4 +14,7 @@ interface TimelineDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(videos: List<DBStatus>)
+
+    @Query("DELETE FROM db_status")
+    fun deleteAll()
 }
