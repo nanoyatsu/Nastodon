@@ -8,16 +8,20 @@ import androidx.paging.PagedList
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiTimelines
-import com.nanoyatsu.nastodon.data.entity.Status
+import com.nanoyatsu.nastodon.data.api.entity.APIStatus
+import com.nanoyatsu.nastodon.data.database.dao.TimelineDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.data.entity.Status
+import com.nanoyatsu.nastodon.data.repository.timeline.TimelineRepository
 import retrofit2.Response
 
-typealias TimelineGetter = (suspend (MastodonApiTimelines, String, String?, String?) -> Response<List<Status>>)
+typealias TimelineGetter = (suspend (MastodonApiTimelines, String, String?, String?) -> Response<List<APIStatus>>)
 
 class TimelineViewModel(
-    private val kind: Kind,
-    private val auth: AuthInfo,
-    private val apiManager: MastodonApiManager
+    kind: Kind,
+    auth: AuthInfo,
+    timelineDao: TimelineDao,
+    apiManager: MastodonApiManager
 ) : ViewModel() {
     enum class Kind(val getter: TimelineGetter) {
         HOME(::homeTimelineApiProvider),
@@ -25,20 +29,28 @@ class TimelineViewModel(
         FEDERATED(::federatedTimelineApiProvider)
     }
 
-    val statuses: LiveData<PagedList<Status>>
-    val networkState: LiveData<NetworkState>
-    val isInitialising: LiveData<Boolean>
-    private val refresh: () -> Unit
-    private val retry: () -> Unit
+    private val repoResult =
+        TimelineRepository(timelineDao, apiManager.timelines, auth.accessToken).posts(kind)
+    val statuses = repoResult.pagedList
+    val networkState = repoResult.networkState
+    val isInitialising = repoResult.refreshState
+    private val refresh = repoResult.refresh
+    private val retry = repoResult.retry
+
+    val _statuses: LiveData<PagedList<Status>>
+    val _networkState: LiveData<NetworkState>
+    val _isInitialising: LiveData<Boolean>
+    private val _refresh: () -> Unit
+    private val _retry: () -> Unit
 
     init {
         val sourceFactory =
             TimelineDataSourceFactory(kind, apiManager.timelines, auth.accessToken)
-        statuses = LivePagedListBuilder<String, Status>(sourceFactory, TIMELINE_PAGE_SIZE).build()
-        networkState = switchMap(sourceFactory.sourceLiveData) { it.networkState }
-        isInitialising = switchMap(sourceFactory.sourceLiveData) { it.isInitialising }
-        refresh = { sourceFactory.sourceLiveData.value?.invalidate() }
-        retry = { sourceFactory.sourceLiveData.value?.retryAllFailed() }
+        _statuses = LivePagedListBuilder<String, Status>(sourceFactory, TIMELINE_PAGE_SIZE).build()
+        _networkState = switchMap(sourceFactory.sourceLiveData) { it.networkState }
+        _isInitialising = switchMap(sourceFactory.sourceLiveData) { it.isInitialising }
+        _refresh = { sourceFactory.sourceLiveData.value?.invalidate() }
+        _retry = { sourceFactory.sourceLiveData.value?.retryAllFailed() }
     }
 
     fun refreshTimeline() = refresh.invoke()

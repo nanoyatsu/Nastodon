@@ -14,5 +14,5 @@ data class DBStatus(
     val status: String
 ) {
     fun asDomainModel() =
-        MastodonApiManager.moshi.adapter<Status>(Status::class.java).fromJson(status)
+        requireNotNull(MastodonApiManager.moshi.adapter<Status>(Status::class.java).fromJson(status))
 }

@@ -13,10 +13,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
+import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.entity.Attachment
-import com.nanoyatsu.nastodon.data.entity.Status
+import com.nanoyatsu.nastodon.data.database.dao.TimelineDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.data.entity.Status
 import com.nanoyatsu.nastodon.databinding.FragmentTimelineBinding
 import kotlinx.android.synthetic.main.activity_nav_host.*
 import javax.inject.Inject
@@ -28,6 +30,8 @@ class TimelineFragment : Fragment() {
 
     @Inject
     lateinit var auth: AuthInfo
+    @Inject
+    lateinit var timelineDao: TimelineDao
     @Inject
     lateinit var apiManager: MastodonApiManager
 
@@ -54,7 +58,7 @@ class TimelineFragment : Fragment() {
     }
 
     private fun initBinding(binding: FragmentTimelineBinding) {
-        val factory = TimelineViewModelFactory(kind, auth, apiManager)
+        val factory = TimelineViewModelFactory(kind, auth, timelineDao, apiManager)
         val context = this.context ?: return
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         binding.timelineView.layoutManager = layoutManager // fixme 画面回転を連続したりするとNPE
@@ -70,7 +74,7 @@ class TimelineFragment : Fragment() {
         binding.swipeRefresh.setOnRefreshListener { vm.refreshTimeline() }
         vm.isInitialising.observe(
             viewLifecycleOwner,
-            Observer { binding.swipeRefresh.isRefreshing = it })
+            Observer { binding.swipeRefresh.isRefreshing = it == NetworkState.LOADING }) // fixme Repositoryパターン移行時に不具合折込
 
         binding.vm = vm
         binding.lifecycleOwner = this

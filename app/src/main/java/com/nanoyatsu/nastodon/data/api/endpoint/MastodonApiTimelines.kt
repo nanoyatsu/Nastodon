@@ -1,6 +1,6 @@
 package com.nanoyatsu.nastodon.data.api.endpoint
 
-import com.nanoyatsu.nastodon.data.entity.Status
+import com.nanoyatsu.nastodon.data.api.entity.APIStatus
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -15,7 +15,7 @@ interface MastodonApiTimelines {
         @Query("since_id") sinceId: String? = null, // returns are newer than ID
         @Query("min_id") minId: String? = null, // returns are immediately newer than ID (?? todo 試す)
         @Query("limit") limit: Int? = null // default 20
-    ): Response<List<Status>>
+    ): Response<List<APIStatus>>
 
     // todo GET /api/v1/conversations
 
@@ -29,7 +29,7 @@ interface MastodonApiTimelines {
         @Query("since_id") sinceId: String? = null,
         @Query("min_id") minId: String? = null,
         @Query("limit") limit: Int? = null // default 20
-    ): Response<List<Status>>
+    ): Response<List<APIStatus>>
 
     // todo GET /api/v1/timelines/tag/:hashtag
     // todo GET /api/v1/timelines/list/:list_id

@@ -1,23 +1,26 @@
-package com.nanoyatsu.nastodon.view.timeline
-
+package com.nanoyatsu.nastodon.data.repository.timeline
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.ItemKeyedDataSource
+import androidx.paging.PagedList
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiTimelines
+import com.nanoyatsu.nastodon.data.api.entity.APIStatus
+import com.nanoyatsu.nastodon.data.database.dao.TimelineDao
 import com.nanoyatsu.nastodon.data.entity.Status
+import com.nanoyatsu.nastodon.view.timeline.TimelineViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException
 
-class TimelineDataSource(
+class TimelineBoundaryCallback(
+    private val timelineDao: TimelineDao,
     private val timelineKind: TimelineViewModel.Kind,
     private val apiDir: MastodonApiTimelines,
     private val token: String
-) : ItemKeyedDataSource<String, Status>() {
+) : PagedList.BoundaryCallback<Status>() {
     private var retry: (() -> Unit)? = null
 
     private val _networkState = MutableLiveData<NetworkState>()
@@ -28,8 +31,9 @@ class TimelineDataSource(
         get() = _isInitialising
 
     // 通信処理の共通部品
-    private suspend fun <T : LoadCallback<Status>> tryLoad(
-        callback: T, getter: suspend () -> Response<List<Status>>, retry: (() -> Unit)
+    private suspend fun tryLoad(
+        getter: suspend () -> Response<List<APIStatus>>,
+        retry: () -> Unit
     ) {
         try {
             val response = getter()
@@ -38,7 +42,7 @@ class TimelineDataSource(
             this.retry = null
             _networkState.postValue(NetworkState.LOADED)
 
-            callback.onResult(statuses)
+            timelineDao.insertAll(statuses.map { it.asDatabaseModel() })
         } catch (ioException: IOException) {
             this.retry = retry
             _networkState.postValue(NetworkState.error(ioException.message ?: "unknown error"))
@@ -46,31 +50,26 @@ class TimelineDataSource(
         // todo } catch (e: HttpException) {
     }
 
-    override fun loadInitial(
-        params: LoadInitialParams<String>, callback: LoadInitialCallback<Status>
-    ) {
+    override fun onZeroItemsLoaded() {
         _isInitialising.postValue(true)
         CoroutineScope(Dispatchers.IO).launch {
-//            tryLoad(callback,
-//                { timelineKind.getter(apiDir, token, null, null) },
-//                { loadInitial(params, callback) })
+            tryLoad({ timelineKind.getter(apiDir, token, null, null) },
+                { onZeroItemsLoaded() })
 
             _isInitialising.postValue(false)
         }
     }
 
-    override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<Status>) {
+    override fun onItemAtEndLoaded(itemAtEnd: Status) {
         CoroutineScope(Dispatchers.IO).launch {
-//            tryLoad(callback,
-//                { timelineKind.getter(apiDir, token, params.key, null) },
-//                { loadAfter(params, callback) })
+            // val apiStatus = itemAtEnd.asDomainModel()!!
+            tryLoad({ timelineKind.getter(apiDir, token, itemAtEnd.id, null) },
+                { onItemAtEndLoaded(itemAtEnd) })
         }
     }
 
-    // なにもしない 未来方向のloadは実装しない
-    override fun loadBefore(params: LoadParams<String>, callback: LoadCallback<Status>) {}
-
-    override fun getKey(item: Status): String = item.id
+    // なにもしない 未来方向のloadは(いまのところ)実装しない
+    override fun onItemAtFrontLoaded(itemAtFront: Status) {}
 
     /**
      * 外部から要求する再取得処理
