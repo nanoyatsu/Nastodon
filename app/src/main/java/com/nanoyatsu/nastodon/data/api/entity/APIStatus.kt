@@ -38,9 +38,9 @@ data class APIStatus(
     val language: String?,
     val pinned: Boolean?
 ) : Parcelable {
-    fun asDatabaseModel(): DBStatus {
+    fun asDatabaseModel(timelineKind: Int): DBStatus {
         val status = MastodonApiManager.moshi.adapter<APIStatus>(APIStatus::class.java).toJson(this)
-        return DBStatus(0, status)
+        return DBStatus(0, timelineKind, status)
     }
 }
 

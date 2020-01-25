@@ -9,12 +9,15 @@ import com.nanoyatsu.nastodon.data.database.entity.DBStatus
 
 @Dao
 interface TimelineDao {
-    @Query("select * from db_status")
-    fun getTimeline(): DataSource.Factory<Int, DBStatus>
+    @Query("select * from db_status WHERE timeline_kind = :timelineKind")
+    fun getTimeline(timelineKind: Int): DataSource.Factory<Int, DBStatus>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(videos: List<DBStatus>)
 
     @Query("DELETE FROM db_status")
     fun deleteAll()
+
+    @Query("DELETE FROM db_status WHERE timeline_kind = :timelineKind")
+    fun deleteByTimelineKind(timelineKind: Int)
 }

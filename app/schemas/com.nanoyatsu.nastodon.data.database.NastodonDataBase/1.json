@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8cda03a7ddfc54cfbf6f3b880ccf2c85",
+    "identityHash": "36336efe0024c6db2c142749022c86c6",
     "entities": [
       {
         "tableName": "auth_info",
@@ -86,11 +86,17 @@
       },
       {
         "tableName": "db_status",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`index` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `status` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`index` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timeline_kind` INTEGER NOT NULL, `status` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "index",
             "columnName": "index",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timelineKind",
+            "columnName": "timeline_kind",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -114,7 +120,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8cda03a7ddfc54cfbf6f3b880ccf2c85')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '36336efe0024c6db2c142749022c86c6')"
     ]
   }
 }

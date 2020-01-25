@@ -26,7 +26,7 @@ class TimelineRepository(
     fun posts(kind: TimelineViewModel.Kind): Listing<Status> {
         val boundaryCallback = TimelineBoundaryCallback(dao, kind, apiDir, token)
 
-        val dataSourceFactory = dao.getTimeline().map { it.asDomainModel() }
+        val dataSourceFactory = dao.getTimeline(kind.ordinal).map { it.asDomainModel() }
         val livePagedList = LivePagedListBuilder(dataSourceFactory, TIMELINE_PAGE_SIZE)
             .setBoundaryCallback(boundaryCallback)
             .build()
@@ -43,13 +43,13 @@ class TimelineRepository(
         )
     }
 
-    private fun refresh(timelineKind: TimelineViewModel.Kind): LiveData<NetworkState> {
+    private fun refresh(kind: TimelineViewModel.Kind): LiveData<NetworkState> {
         val networkState = MutableLiveData<NetworkState>()
         networkState.value = NetworkState.LOADING
         runBlocking(context = Dispatchers.IO) {
             try {
-                val response = timelineKind.getter(apiDir, token, null, null)
-                val status = response.body()?.map { it.asDatabaseModel() }
+                val response = kind.getter(apiDir, token, null, null)
+                val status = response.body()?.map { it.asDatabaseModel(kind.ordinal) }
                     ?: throw IOException("response.body() is null") // todo レスポンスエラー処理
 
                 dao.deleteAll()

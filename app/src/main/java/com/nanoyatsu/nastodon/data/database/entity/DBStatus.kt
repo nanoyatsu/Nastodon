@@ -1,5 +1,6 @@
 package com.nanoyatsu.nastodon.data.database.entity
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
@@ -11,6 +12,7 @@ import com.nanoyatsu.nastodon.data.entity.Status
 @Entity(tableName = "db_status")
 data class DBStatus(
     @PrimaryKey(autoGenerate = true) val index: Int = 0,
+    @ColumnInfo(name = "timeline_kind") val timelineKind: Int,
     val status: String
 ) {
     fun asDomainModel() =

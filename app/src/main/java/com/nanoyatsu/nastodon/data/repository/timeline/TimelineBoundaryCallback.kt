@@ -42,7 +42,7 @@ class TimelineBoundaryCallback(
             this.retry = null
             _networkState.postValue(NetworkState.LOADED)
 
-            timelineDao.insertAll(statuses.map { it.asDatabaseModel() })
+            timelineDao.insertAll(statuses.map { it.asDatabaseModel(timelineKind.ordinal) })
         } catch (ioException: IOException) {
             this.retry = retry
             _networkState.postValue(NetworkState.error(ioException.message ?: "unknown error"))
