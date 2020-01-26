@@ -75,7 +75,7 @@ class TimelineFragment : Fragment() {
         binding.swipeRefresh.setOnRefreshListener { vm.refreshTimeline() }
         vm.isInitialising.observe(
             viewLifecycleOwner,
-            Observer { binding.swipeRefresh.isRefreshing = it }) // fixme Repositoryパターン移行時に不具合折込
+            Observer { binding.swipeRefresh.isRefreshing = it })
 
         binding.vm = vm
         binding.lifecycleOwner = this

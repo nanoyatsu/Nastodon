@@ -26,8 +26,6 @@ class TimelineViewModel(repo: TimelineRepository) : ViewModel() {
     fun retry() = retry.invoke()
 
     companion object {
-        const val TIMELINE_PAGE_SIZE = 20
-
         suspend fun homeTimelineApiProvider(
             apiDir: MastodonApiTimelines, token: String, maxId: String?, sinceId: String?
         ) = apiDir.getHomeTimeline(token, maxId, sinceId)

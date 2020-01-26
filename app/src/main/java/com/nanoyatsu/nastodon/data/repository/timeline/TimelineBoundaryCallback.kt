@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException
 
+// fixme コンストラクタ引数がかなり多くなっている 再考したい
 class TimelineBoundaryCallback(
     private val timelineDao: TimelineDao,
     private val timelineKind: TimelineViewModel.Kind,
