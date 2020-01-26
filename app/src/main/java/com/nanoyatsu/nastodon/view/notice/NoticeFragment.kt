@@ -16,8 +16,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.entity.Attachment
-import com.nanoyatsu.nastodon.data.entity.Status
+import com.nanoyatsu.nastodon.data.database.dao.NoticeDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.data.entity.Status
+import com.nanoyatsu.nastodon.data.repository.notice.NoticeRepository
 import com.nanoyatsu.nastodon.databinding.FragmentNoticeBinding
 import com.nanoyatsu.nastodon.view.timeline.TimelineItemViewHolder
 import kotlinx.android.synthetic.main.activity_nav_host.*
@@ -30,6 +32,8 @@ class NoticeFragment : Fragment() {
 
     @Inject
     lateinit var auth: AuthInfo
+    @Inject
+    lateinit var noticeDao: NoticeDao
     @Inject
     lateinit var apiManager: MastodonApiManager
 
@@ -55,7 +59,8 @@ class NoticeFragment : Fragment() {
     }
 
     private fun initBinding(binding: FragmentNoticeBinding) {
-        val factory = NoticeViewModelFactory(kind, auth, apiManager)
+        val repo = NoticeRepository(kind, noticeDao, apiManager.notifications, auth.accessToken)
+        val factory = NoticeViewModelFactory(repo)
         val context = this.context ?: return
         val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         binding.noticeView.layoutManager = layoutManager

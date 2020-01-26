@@ -1,6 +1,6 @@
 package com.nanoyatsu.nastodon.data.api.endpoint
 
-import com.nanoyatsu.nastodon.data.entity.Notification
+import com.nanoyatsu.nastodon.data.api.entity.APINotification
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -16,7 +16,7 @@ interface MastodonApiNotifications {
         @Query("limit") limit: String? = null,
         @Query("exclude_types") excludeTypes: List<String>? = null,
         @Query("account_id") accountId: String? = null
-    ): Response<List<Notification>>
+    ): Response<List<APINotification>>
 
     // todo GET /api/v1/notifications/:id
     // todo POST /api/v1/notifications/clear

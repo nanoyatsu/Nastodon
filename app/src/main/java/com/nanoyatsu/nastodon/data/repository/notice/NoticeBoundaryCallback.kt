@@ -1,44 +1,42 @@
-package com.nanoyatsu.nastodon.data.repository.timeline
+package com.nanoyatsu.nastodon.data.repository.notice
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
-import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiTimelines
-import com.nanoyatsu.nastodon.data.api.entity.APIStatus
-import com.nanoyatsu.nastodon.data.database.dao.TimelineDao
-import com.nanoyatsu.nastodon.data.entity.Status
-import com.nanoyatsu.nastodon.view.timeline.TimelineViewModel
+import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiNotifications
+import com.nanoyatsu.nastodon.data.api.entity.APINotification
+import com.nanoyatsu.nastodon.data.database.dao.NoticeDao
+import com.nanoyatsu.nastodon.data.entity.Notification
+import com.nanoyatsu.nastodon.view.notice.NoticeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException
 
-// fixme コンストラクタ引数がかなり多くなっている 再考したい
-// review NoticeBoundaryCallbackとほぼ同じ たぶんKindの抽象化が出来たら型引数で解決できる
-class TimelineBoundaryCallback(
-    private val dao: TimelineDao,
-    private val kind: TimelineViewModel.Kind,
-    private val apiDir: MastodonApiTimelines,
+class NoticeBoundaryCallback(
+    private val dao: NoticeDao,
+    private val kind: NoticeViewModel.Kind,
+    private val apiDir: MastodonApiNotifications,
     private val token: String,
     private val networkState: MutableLiveData<NetworkState>,
     private val isRefreshing: MutableLiveData<Boolean>
-) : PagedList.BoundaryCallback<Status>() {
+) : PagedList.BoundaryCallback<Notification>() {
     private var retry: (() -> Unit)? = null
 
     // 通信処理の共通部品
     private suspend fun tryLoad(
-        getter: suspend () -> Response<List<APIStatus>>,
+        getter: suspend () -> Response<List<APINotification>>,
         retry: () -> Unit
     ) {
         try {
             val response = getter()
-            val statuses = response.body() ?: emptyList()
+            val notices = response.body() ?: emptyList()
 
             this.retry = null
             networkState.postValue(NetworkState.LOADED)
 
-            dao.insertAll(statuses.map { it.asDatabaseModel(kind.ordinal) })
+            dao.insertAll(notices.map { it.asDatabaseModel(kind.ordinal) })
         } catch (ioException: IOException) {
             this.retry = retry
             networkState.postValue(NetworkState.error(ioException.message ?: "unknown error"))
@@ -55,7 +53,7 @@ class TimelineBoundaryCallback(
         }
     }
 
-    override fun onItemAtEndLoaded(itemAtEnd: Status) {
+    override fun onItemAtEndLoaded(itemAtEnd: Notification) {
         CoroutineScope(Dispatchers.IO).launch {
             tryLoad({ kind.getter(apiDir, token, itemAtEnd.id, null) },
                 { onItemAtEndLoaded(itemAtEnd) })
@@ -63,7 +61,7 @@ class TimelineBoundaryCallback(
     }
 
     // なにもしない 未来方向のloadは(いまのところ)実装しない
-    override fun onItemAtFrontLoaded(itemAtFront: Status) {}
+    override fun onItemAtFrontLoaded(itemAtFront: Notification) {}
 
     /**
      * 外部から要求する再取得処理

@@ -1,43 +1,23 @@
 package com.nanoyatsu.nastodon.view.notice
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations.switchMap
 import androidx.lifecycle.ViewModel
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
-import com.nanoyatsu.nastodon.components.networkState.NetworkState
-import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiNotifications
-import com.nanoyatsu.nastodon.data.entity.Notification
+import com.nanoyatsu.nastodon.data.api.entity.APINotification
 import com.nanoyatsu.nastodon.data.entity.NotificationType
-import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.data.repository.notice.NoticeRepository
 import retrofit2.Response
 
-typealias NotificationsGetter = (suspend (MastodonApiNotifications, String, String?, String?) -> Response<List<Notification>>)
+typealias NotificationsGetter = (suspend (MastodonApiNotifications, String, String?, String?) -> Response<List<APINotification>>)
 
-class NoticeViewModel(
-    private val kind: Kind,
-    private val auth: AuthInfo,
-    private val apiManager: MastodonApiManager
-) : ViewModel() {
+class NoticeViewModel(repo: NoticeRepository) : ViewModel() {
     enum class Kind(val getter: NotificationsGetter) { ALL(::allNoticeApiProvider), REPLY(::replyNoticeApiProvider) }
 
-    val notifications: LiveData<PagedList<Notification>>
-    val networkState: LiveData<NetworkState>
-    val isInitialising: LiveData<Boolean>
-    private val refresh: () -> Unit
-    private val retry: () -> Unit
-
-    init {
-        val sourceFactory =
-            NoticeDataSourceFactory(kind, apiManager.notifications, auth.accessToken)
-        notifications =
-            LivePagedListBuilder<String, Notification>(sourceFactory, NOTICE_PAGE_SIZE).build()
-        networkState = switchMap(sourceFactory.sourceLiveData) { it.networkState }
-        isInitialising = switchMap(sourceFactory.sourceLiveData) { it.isInitialising }
-        refresh = { sourceFactory.sourceLiveData.value?.invalidate() }
-        retry = { sourceFactory.sourceLiveData.value?.retryAllFailed() }
-    }
+    private val repoResult = repo.posts()
+    val notifications = repoResult.pagedList
+    val networkState = repoResult.networkState
+    val isInitialising = repoResult.isRefreshing
+    private val refresh = repoResult.refresh
+    private val retry = repoResult.retry
 
     fun refreshNotifications() = refresh.invoke()
     fun retry() = retry.invoke()

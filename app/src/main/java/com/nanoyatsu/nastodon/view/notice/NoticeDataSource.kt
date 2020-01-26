@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException
 
+// 削除可能(SearchFragmentあたりで利用しそうなので一旦残している)
 class NoticeDataSource(
     private val noticeKind: NoticeViewModel.Kind,
     private val apiDir: MastodonApiNotifications,
@@ -50,10 +51,10 @@ class NoticeDataSource(
     ) {
         _isInitialising.postValue(true)
         CoroutineScope(Dispatchers.IO).launch {
-            tryLoad(
-                callback,
-                { noticeKind.getter(apiDir, token, null, null) },
-                { loadInitial(params, callback) })
+            //            tryLoad(
+//                callback,
+//                { noticeKind.getter(apiDir, token, null, null) },
+//                { loadInitial(params, callback) })
 
             _isInitialising.postValue(false)
         }
@@ -61,9 +62,9 @@ class NoticeDataSource(
 
     override fun loadAfter(params: LoadParams<String>, callback: LoadCallback<Notification>) {
         CoroutineScope(Dispatchers.IO).launch {
-            tryLoad(callback,
-                { noticeKind.getter(apiDir, token, params.key, null) },
-                { loadAfter(params, callback) })
+            //            tryLoad(callback,
+//                { noticeKind.getter(apiDir, token, params.key, null) },
+//                { loadAfter(params, callback) })
         }
     }
 

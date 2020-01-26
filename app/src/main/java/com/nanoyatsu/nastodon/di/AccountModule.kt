@@ -2,6 +2,7 @@ package com.nanoyatsu.nastodon.di
 
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
+import com.nanoyatsu.nastodon.data.database.dao.NoticeDao
 import com.nanoyatsu.nastodon.data.database.dao.TimelineDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import dagger.Module
@@ -21,6 +22,9 @@ class AccountModule {
 
     @Provides
     fun provideTimelineDao(db: NastodonDataBase): TimelineDao = db.timelineDao()
+
+    @Provides
+    fun provideNoticeDao(db: NastodonDataBase): NoticeDao = db.noticeDao()
 
     @Provides
 //    fun provideApiManager(authInfo: AuthInfo?): MastodonApiManager = MastodonApiManager("https://qiitadon.com")
