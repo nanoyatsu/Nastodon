@@ -1,6 +1,5 @@
 package com.nanoyatsu.nastodon.data.repository.timeline
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
@@ -19,16 +18,11 @@ class TimelineBoundaryCallback(
     private val timelineDao: TimelineDao,
     private val timelineKind: TimelineViewModel.Kind,
     private val apiDir: MastodonApiTimelines,
-    private val token: String
+    private val token: String,
+    private val networkState: MutableLiveData<NetworkState>,
+    private val isRefreshing: MutableLiveData<Boolean>
 ) : PagedList.BoundaryCallback<Status>() {
     private var retry: (() -> Unit)? = null
-
-    private val _networkState = MutableLiveData<NetworkState>()
-    val networkState: LiveData<NetworkState>
-        get() = _networkState
-    private val _isInitialising = MutableLiveData<Boolean>()
-    val isInitialising: LiveData<Boolean>
-        get() = _isInitialising
 
     // 通信処理の共通部品
     private suspend fun tryLoad(
@@ -40,23 +34,22 @@ class TimelineBoundaryCallback(
             val statuses = response.body() ?: emptyList()
 
             this.retry = null
-            _networkState.postValue(NetworkState.LOADED)
+            networkState.postValue(NetworkState.LOADED)
 
             timelineDao.insertAll(statuses.map { it.asDatabaseModel(timelineKind.ordinal) })
         } catch (ioException: IOException) {
             this.retry = retry
-            _networkState.postValue(NetworkState.error(ioException.message ?: "unknown error"))
+            networkState.postValue(NetworkState.error(ioException.message ?: "unknown error"))
         }
         // todo } catch (e: HttpException) {
     }
 
     override fun onZeroItemsLoaded() {
-        _isInitialising.postValue(true)
+        isRefreshing.postValue(true)
         CoroutineScope(Dispatchers.IO).launch {
             tryLoad({ timelineKind.getter(apiDir, token, null, null) },
                 { onZeroItemsLoaded() })
-
-            _isInitialising.postValue(false)
+            isRefreshing.postValue(false)
         }
     }
 

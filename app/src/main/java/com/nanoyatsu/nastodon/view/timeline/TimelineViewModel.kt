@@ -18,7 +18,7 @@ class TimelineViewModel(repo: TimelineRepository) : ViewModel() {
     private val repoResult = repo.posts()
     val statuses = repoResult.pagedList
     val networkState = repoResult.networkState
-    val isInitialising = repoResult.refreshState
+    val isInitialising = repoResult.isRefreshing
     private val refresh = repoResult.refresh
     private val retry = repoResult.retry
 

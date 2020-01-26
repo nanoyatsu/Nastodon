@@ -17,7 +17,7 @@ data class Listing<T>(
     // represents the refresh status to show to the user. Separate from networkState, this
     // value is importantly only when refresh is requested.
     // ユーザーに表示する更新ステータスを表します。 networkStateとは別に、値は更新が要求された場合にのみ重要です。
-    val refreshState: LiveData<NetworkState>,
+    val isRefreshing: LiveData<Boolean>,
     // refreshes the whole data and fetches it from scratch.
     // データ全体を更新し、ゼロからフェッチします。
     val refresh: () -> Unit,

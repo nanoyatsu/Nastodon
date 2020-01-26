@@ -13,7 +13,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
-import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.entity.Attachment
 import com.nanoyatsu.nastodon.data.database.dao.TimelineDao
@@ -76,9 +75,7 @@ class TimelineFragment : Fragment() {
         binding.swipeRefresh.setOnRefreshListener { vm.refreshTimeline() }
         vm.isInitialising.observe(
             viewLifecycleOwner,
-            Observer {
-                binding.swipeRefresh.isRefreshing = it == NetworkState.LOADING
-            }) // fixme Repositoryパターン移行時に不具合折込
+            Observer { binding.swipeRefresh.isRefreshing = it }) // fixme Repositoryパターン移行時に不具合折込
 
         binding.vm = vm
         binding.lifecycleOwner = this
