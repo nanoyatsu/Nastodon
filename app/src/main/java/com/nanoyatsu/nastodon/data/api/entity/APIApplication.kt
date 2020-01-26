@@ -1,6 +1,6 @@
 package com.nanoyatsu.nastodon.data.api.entity
 
-data class Application(
+data class APIApplication(
     val name: String,
     val website: String?,
     val vapidKey: String?, // Added in 2.8.0

@@ -2,7 +2,7 @@ package com.nanoyatsu.nastodon.data.api.entity
 
 // relationship between accounts, such as following / blocking / muting / etc.
 // アカウント間の関係 フォローとかブロックとかミュートとか
-data class Relationship(
+data class APIRelationship(
     val id: String,
     val following: Boolean,
     val requested: Boolean, // フォローリクエスト中かどうか

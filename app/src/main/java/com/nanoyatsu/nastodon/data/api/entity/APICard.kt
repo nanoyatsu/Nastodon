@@ -1,7 +1,7 @@
 package com.nanoyatsu.nastodon.data.api.entity
 
 // for rich preview
-data class Card(
+data class APICard(
     val url: String,
     val title: String,
     val description: String,

@@ -2,7 +2,7 @@ package com.nanoyatsu.nastodon.data.api.entity
 
 // The most important part of an error response is the HTTP status code.
 // 「レスポンスのHTTPステータスコードみたほうがいい」
-data class Error(
+data class APIError(
     val error: String,
     val errorDescription: String?
 )

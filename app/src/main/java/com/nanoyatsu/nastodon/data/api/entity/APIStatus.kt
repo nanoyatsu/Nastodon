@@ -29,7 +29,7 @@ data class APIStatus(
     val sensitive: Boolean,
     @Json(name = "spoiler_text") val spoilerText: String,
     val visibility: String,
-    @Json(name = "media_attachments") val mediaAttachments: List<Attachment>,
+    @Json(name = "media_attachments") val mediaAttachments: List<APIAttachment>,
 //    val mentions: Array<Mention>,
 //    val tags: Array<Tag>,
 //    val card: Card?,

@@ -8,7 +8,7 @@ import java.util.*
 
 @Parcelize
 @JsonClass(generateAdapter = true)
-data class Attachment(
+data class APIAttachment(
     val id: String,
     val type: String,
     val url: String,

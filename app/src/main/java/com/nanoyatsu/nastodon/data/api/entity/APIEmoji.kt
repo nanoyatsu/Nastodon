@@ -1,7 +1,7 @@
 package com.nanoyatsu.nastodon.data.api.entity
 
 // カスタム絵文字
-data class Emoji(
+data class APIEmoji(
     val shortcode: String,
     val url: String,
     val staticUrl: String,
