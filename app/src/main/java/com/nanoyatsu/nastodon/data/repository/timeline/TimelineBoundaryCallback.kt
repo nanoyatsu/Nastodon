@@ -62,7 +62,6 @@ class TimelineBoundaryCallback(
 
     override fun onItemAtEndLoaded(itemAtEnd: Status) {
         CoroutineScope(Dispatchers.IO).launch {
-            // val apiStatus = itemAtEnd.asDomainModel()!!
             tryLoad({ timelineKind.getter(apiDir, token, itemAtEnd.id, null) },
                 { onItemAtEndLoaded(itemAtEnd) })
         }

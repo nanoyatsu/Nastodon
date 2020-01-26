@@ -15,6 +15,7 @@ import kotlinx.coroutines.runBlocking
 import java.io.IOException
 
 class TimelineRepository(
+    private val kind: TimelineViewModel.Kind,
     private val dao: TimelineDao,
     private val apiDir: MastodonApiTimelines,
     private val token: String
@@ -23,7 +24,7 @@ class TimelineRepository(
         const val TIMELINE_PAGE_SIZE = 20
     }
 
-    fun posts(kind: TimelineViewModel.Kind): Listing<Status> {
+    fun posts(): Listing<Status> {
         val boundaryCallback = TimelineBoundaryCallback(dao, kind, apiDir, token)
 
         val dataSourceFactory = dao.getTimeline(kind.ordinal).map { it.asDomainModel() }
@@ -32,7 +33,7 @@ class TimelineRepository(
             .build()
 
         val refreshTrigger = MutableLiveData<Unit>()
-        val refreshState = Transformations.switchMap(refreshTrigger) { refresh(kind) }
+        val refreshState = Transformations.switchMap(refreshTrigger) { refresh() }
 
         return Listing(
             pagedList = livePagedList,
@@ -43,7 +44,7 @@ class TimelineRepository(
         )
     }
 
-    private fun refresh(kind: TimelineViewModel.Kind): LiveData<NetworkState> {
+    private fun refresh(): LiveData<NetworkState> {
         val networkState = MutableLiveData<NetworkState>()
         networkState.value = NetworkState.LOADING
         runBlocking(context = Dispatchers.IO) {
