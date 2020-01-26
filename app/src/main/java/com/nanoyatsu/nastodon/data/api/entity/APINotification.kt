@@ -3,6 +3,8 @@ package com.nanoyatsu.nastodon.data.api.entity
 
 import android.os.Parcelable
 import com.nanoyatsu.nastodon.R
+import com.nanoyatsu.nastodon.data.api.MastodonApiManager
+import com.nanoyatsu.nastodon.data.database.entity.DBNotice
 import com.nanoyatsu.nastodon.resource.NoticeIcon
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -11,13 +13,19 @@ import java.util.*
 
 @Parcelize
 @JsonClass(generateAdapter = true)
-data class Notification(
+data class APINotification(
     val id: String,
     val type: String,
-    @Json(name = "created_at") val created_at: String,
+    @Json(name = "created_at") val createdAt: String,
     val account: APIAccount,
     val status: APIStatus? = null
-) : Parcelable
+) : Parcelable {
+    fun asDatabaseModel(noticeKind: Int): DBNotice {
+        val notice = MastodonApiManager.moshi
+            .adapter<APINotification>(APINotification::class.java).toJson(this)
+        return DBNotice(0, noticeKind, notice)
+    }
+}
 
 // パラメータ文字列以上の情報があり、実装箇所がちょっとつらい todo networkModel, domainModelの分離
 enum class NotificationType(val descriptionId: Int, val icon: NoticeIcon) {
