@@ -27,7 +27,7 @@ data class Status(
     val muted: Boolean?,
     val sensitive: Boolean,
     @Json(name = "spoiler_text") val spoilerText: String,
-    val visibility: String,
+    val visibility: Visibility,
     @Json(name = "media_attachments") val mediaAttachments: List<Attachment>,
 //    val mentions: Array<Mention>,
 //    val tags: Array<Tag>,
