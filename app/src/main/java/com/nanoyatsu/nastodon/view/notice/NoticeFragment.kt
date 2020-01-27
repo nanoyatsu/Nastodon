@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -82,7 +81,9 @@ class NoticeFragment : Fragment() {
         binding.lifecycleOwner = this
     }
 
-    private val noticeNavigation = null // todo NoticeItemViewHolder.Navigation 実装
+    private val noticeNavigation = object : NoticeItemViewHolder.Navigation {
+        override fun transTootDetail(toot: Status) = this@NoticeFragment.transTootDetail(toot)
+    }
 
     private val tootNavigation = object : TimelineItemViewHolder.Navigation {
         //    // todo : navigation対応
@@ -92,29 +93,32 @@ class NoticeFragment : Fragment() {
         //        v.context.startActivity(intent)
         //    }
 
-        private fun navigate(directions: NavDirections) {
-            val activity = requireNotNull(activity)
-            activity.main_fragment_container.findNavController().navigate(directions)
-        }
+        override fun transTootEditAsReply(toot: Status) =
+            this@NoticeFragment.transTootEditAsReply(toot)
 
-        override fun transTootEditAsReply(toot: Status) {
-            val directions =
-                NoticeFrameFragmentDirections.actionNoticeFrameFragmentToTootEditFragment(toot)
-            navigate(directions)
-        }
+        override fun transTootDetail(toot: Status) = this@NoticeFragment.transTootDetail(toot)
 
-        override fun transTootDetail(toot: Status) {
-            val directions =
-                NoticeFrameFragmentDirections.actionNoticeFrameFragmentToTootDetailFragment(toot)
-            navigate(directions)
-        }
+        override fun transImagePager(contents: List<Attachment>) =
+            this@NoticeFragment.transImagePager(contents)
+    }
 
-        override fun transImagePager(contents: List<Attachment>) {
-            val urls = contents.map { it.url }.toTypedArray()
-            val directions =
-                NoticeFrameFragmentDirections.actionNoticeFrameFragmentToImagePagerFragment(urls)
-            navigate(directions)
-        }
+    private fun transTootEditAsReply(toot: Status) {
+        val directions =
+            NoticeFrameFragmentDirections.actionNoticeFrameFragmentToTootEditFragment(toot)
+        activity?.let { main_fragment_container?.findNavController()?.navigate(directions) }
+    }
+
+    private fun transTootDetail(toot: Status) {
+        val directions =
+            NoticeFrameFragmentDirections.actionNoticeFrameFragmentToTootDetailFragment(toot)
+        activity?.let { main_fragment_container?.findNavController()?.navigate(directions) }
+    }
+
+    private fun transImagePager(contents: List<Attachment>) {
+        val urls = contents.map { it.url }.toTypedArray()
+        val directions =
+            NoticeFrameFragmentDirections.actionNoticeFrameFragmentToImagePagerFragment(urls)
+        activity?.let { main_fragment_container?.findNavController()?.navigate(directions) }
     }
 
     companion object {

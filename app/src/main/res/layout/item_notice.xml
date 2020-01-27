@@ -6,8 +6,8 @@
   <data>
 
     <variable
-      name="notice"
-      type="com.nanoyatsu.nastodon.data.domain.Notification" />
+      name="vm"
+      type="com.nanoyatsu.nastodon.view.notice.NoticeItemViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,7 +33,7 @@
           android:layout_height="36dp"
           android:layout_gravity="top|start"
           android:contentDescription="@string/account_avatar"
-          app:imageUrl="@{notice.account.avatar}" />
+          app:imageUrl="@{vm.notice.account.avatar}" />
 
         <ImageView
           android:id="@+id/type_icon"
@@ -57,11 +57,12 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="3"
+        android:onClick="@{() -> vm.onContentClicked()}"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/icon_frame"
         app:layout_constraintTop_toBottomOf="@id/description"
-        app:tootText="@{(notice.status == null) ? `` : notice.status.content}" />
+        app:tootText="@{(vm.notice.status == null) ? `` : vm.notice.status.content}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
