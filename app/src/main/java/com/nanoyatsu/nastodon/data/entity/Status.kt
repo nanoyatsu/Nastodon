@@ -42,8 +42,12 @@ data class Status(
 }
 
 enum class Visibility(val label: String) {
+    @Json(name = "public")
     PUBLIC("公開"),
+    @Json(name = "unlisted")
     UNLISTED("未収載"),
+    @Json(name = "private")
     PRIVATE("非公開"),
+    @Json(name = "direct")
     DIRECT("ダイレクト"),
 }

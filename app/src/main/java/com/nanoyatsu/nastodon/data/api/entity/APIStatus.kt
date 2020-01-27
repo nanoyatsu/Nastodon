@@ -28,7 +28,7 @@ data class APIStatus(
     val muted: Boolean?,
     val sensitive: Boolean,
     @Json(name = "spoiler_text") val spoilerText: String,
-    val visibility: String,
+    val visibility: Visibility,
     @Json(name = "media_attachments") val mediaAttachments: List<APIAttachment>,
 //    val mentions: Array<Mention>,
 //    val tags: Array<Tag>,
@@ -44,9 +44,13 @@ data class APIStatus(
     }
 }
 
-enum class Visibility(val label: String) {
-    PUBLIC("公開"),
-    UNLISTED("未収載"),
-    PRIVATE("非公開"),
-    DIRECT("ダイレクト"),
+enum class Visibility {
+    @Json(name = "public")
+    PUBLIC,
+    @Json(name = "unlisted")
+    UNLISTED,
+    @Json(name = "private")
+    PRIVATE,
+    @Json(name = "direct")
+    DIRECT,
 }
