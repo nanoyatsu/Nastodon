@@ -1,6 +1,6 @@
 package com.nanoyatsu.nastodon.data.api.endpoint
 
-import com.nanoyatsu.nastodon.data.api.entity.Apps
+import com.nanoyatsu.nastodon.data.api.entity.APIApplication
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -10,7 +10,7 @@ import retrofit2.http.POST
 interface MastodonApiApps {
     // POST /api/v1/apps
     @POST("api/v1/apps")
-    suspend fun getClientId(@Body appsBody: AppsBody = AppsBody()): Response<Apps>
+    suspend fun getClientId(@Body appsBody: AppsBody = AppsBody()): Response<APIApplication>
 
     data class AppsBody(
         val client_name: String = "Nastodon",
@@ -21,5 +21,5 @@ interface MastodonApiApps {
 
     // GET /api/v1/apps/verify_credentials
     @GET("api/v1/apps/verify_credentials")
-    suspend fun verifyCredentials(@Header("Authorization") authorization: String): Response<Apps>
+    suspend fun verifyCredentials(@Header("Authorization") authorization: String): Response<APIApplication>
 }

@@ -7,11 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApi
-import com.nanoyatsu.nastodon.data.entity.Account
-import com.nanoyatsu.nastodon.data.sharedPreference.AuthPreferenceManager
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
 import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.data.entity.Account
+import com.nanoyatsu.nastodon.data.sharedPreference.AuthPreferenceManager
 import com.nanoyatsu.nastodon.view.NavHostActivity
 import kotlinx.android.synthetic.main.activity_auth.*
 import kotlinx.coroutines.CoroutineScope
@@ -44,25 +44,22 @@ class AuthActivity : AppCompatActivity() {
     }
 
     private fun sendAuth() {
-        val pref =
-            AuthPreferenceManager(
-                this@AuthActivity
-            )
+        val pref = AuthPreferenceManager(this@AuthActivity)
         pref.instanceUrl = instanceUrl.text.toString()
         apiManager = MastodonApiManager(instanceUrl.text.toString())
 
         val api = apiManager.apps
         CoroutineScope(context = Dispatchers.Main).launch {
             try {
-                val res = api.getClientId()
+                val res = api.getClientId().body()?.asDomainModel()
 
-                pref.clientId = res.body()?.client_id ?: ""
-                pref.clientSecret = res.body()?.client_secret ?: ""
+                pref.clientId = res?.clientId ?: ""
+                pref.clientSecret = res?.clientSecret ?: ""
 
                 val baseUrl = "https://${instanceUrl.text}/"
                 val authPath = baseUrl + "oauth/authorize" +
-                        "?client_id=${res.body()?.client_id}" +
-                        "&redirect_uri=${res.body()?.redirect_uri}" +
+                        "?client_id=${res?.clientId}" +
+                        "&redirect_uri=${res?.redirectUri}" +
                         "&response_type=code" +
                         "&scope=${"read write follow"}"
                 val uri = Uri.parse(authPath)
@@ -94,10 +91,10 @@ class AuthActivity : AppCompatActivity() {
                         client_secret = pref.clientSecret,
                         code = uri?.getQueryParameter("code") ?: ""
                     )
-                )
+                ).body()?.asDomainModel()
 
-                pref.accessToken = res.body()?.accessToken ?: ""
-                pref.accessTokenCreatedAt = res.body()?.createdAt ?: 0
+                pref.accessToken = res?.accessToken ?: ""
+                pref.accessTokenCreatedAt = res?.createdAt ?: 0
                 val account = getOwnAccount(pref)
 
                 setAccountToPref(pref, account)

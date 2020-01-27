@@ -12,9 +12,9 @@ import androidx.navigation.ui.NavigationUI
 import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.data.api.entity.Apps
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.data.entity.Application
 import com.nanoyatsu.nastodon.databinding.ActivityNavHostBinding
 import com.nanoyatsu.nastodon.view.auth.AuthActivity
 import kotlinx.coroutines.Dispatchers
@@ -92,9 +92,9 @@ class NavHostActivity : AppCompatActivity() {
         return runBlocking {
             try {
                 val res = api.verifyCredentials(auth.accessToken)
-                val apps = res.body()
+                val apps = res.body()?.asDomainModel()
                 // nameも一致するか確認
-                return@runBlocking apps is Apps && apps.name == getString(R.string.app_name)
+                return@runBlocking apps is Application && apps.name == getString(R.string.app_name)
             } catch (e: HttpException) {
                 e.printStackTrace()
                 return@runBlocking false

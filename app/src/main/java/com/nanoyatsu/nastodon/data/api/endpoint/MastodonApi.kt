@@ -1,6 +1,6 @@
 package com.nanoyatsu.nastodon.data.api.endpoint
 
-import com.nanoyatsu.nastodon.data.api.entity.Token
+import com.nanoyatsu.nastodon.data.api.entity.APIToken
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -8,7 +8,7 @@ import retrofit2.http.POST
 interface MastodonApi {
     // 認証
     @POST("oauth/token")
-    suspend fun getAccessToken(@Body tokenBody: TokenBody): Response<Token>
+    suspend fun getAccessToken(@Body tokenBody: TokenBody): Response<APIToken>
 
     data class TokenBody(
         val client_id: String,
