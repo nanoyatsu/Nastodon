@@ -3,7 +3,7 @@ package com.nanoyatsu.nastodon.view.notice
 import androidx.lifecycle.ViewModel
 import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiNotifications
 import com.nanoyatsu.nastodon.data.api.entity.APINotification
-import com.nanoyatsu.nastodon.data.entity.NotificationType
+import com.nanoyatsu.nastodon.data.domain.NotificationType
 import com.nanoyatsu.nastodon.data.repository.notice.NoticeRepository
 import retrofit2.Response
 

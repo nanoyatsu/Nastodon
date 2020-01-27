@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.data.entity
+package com.nanoyatsu.nastodon.data.domain
 
 import android.os.Parcelable
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager

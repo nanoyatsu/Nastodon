@@ -6,7 +6,7 @@ import com.nanoyatsu.nastodon.components.networkState.Listing
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiTimelines
 import com.nanoyatsu.nastodon.data.database.dao.TimelineDao
-import com.nanoyatsu.nastodon.data.entity.Status
+import com.nanoyatsu.nastodon.data.domain.Status
 import com.nanoyatsu.nastodon.view.timeline.TimelineViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

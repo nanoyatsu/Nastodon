@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.data.entity.Notification
+import com.nanoyatsu.nastodon.data.domain.Notification
 
 @Entity(tableName = "db_notice")
 data class DBNotice(

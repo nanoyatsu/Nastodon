@@ -1,6 +1,6 @@
 package com.nanoyatsu.nastodon.data.api.entity
 
-import com.nanoyatsu.nastodon.data.entity.Token
+import com.nanoyatsu.nastodon.data.domain.Token
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 

@@ -10,7 +10,7 @@ import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApi
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
 import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
-import com.nanoyatsu.nastodon.data.entity.Account
+import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.sharedPreference.AuthPreferenceManager
 import com.nanoyatsu.nastodon.view.NavHostActivity
 import kotlinx.android.synthetic.main.activity_auth.*

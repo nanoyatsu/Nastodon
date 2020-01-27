@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.endpoint.AccountListGetter
-import com.nanoyatsu.nastodon.data.entity.Account
+import com.nanoyatsu.nastodon.data.domain.Account
 import kotlinx.android.synthetic.main.fragment_timeline.*
 
 class AccountListActivity : AppCompatActivity() {

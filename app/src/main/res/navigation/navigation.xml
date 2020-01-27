@@ -12,7 +12,7 @@
     tools:layout="@layout/fragment_toot_detail">
     <argument
       android:name="toot"
-      app:argType="com.nanoyatsu.nastodon.data.entity.Status" />
+      app:argType="com.nanoyatsu.nastodon.data.domain.Status" />
     <action
       android:id="@+id/action_tootDetailFragment_to_imagePagerFragment"
       app:destination="@id/imagePagerFragment" />
@@ -24,7 +24,7 @@
     tools:layout="@layout/fragment_toot_edit">
     <argument
       android:name="replyTo"
-      app:argType="com.nanoyatsu.nastodon.data.entity.Status"
+      app:argType="com.nanoyatsu.nastodon.data.domain.Status"
       app:nullable="true"
       android:defaultValue="@null" />
   </fragment>

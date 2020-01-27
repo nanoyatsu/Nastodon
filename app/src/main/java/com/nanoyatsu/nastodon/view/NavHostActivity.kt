@@ -14,7 +14,7 @@ import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
-import com.nanoyatsu.nastodon.data.entity.Application
+import com.nanoyatsu.nastodon.data.domain.Application
 import com.nanoyatsu.nastodon.databinding.ActivityNavHostBinding
 import com.nanoyatsu.nastodon.view.auth.AuthActivity
 import kotlinx.coroutines.Dispatchers

@@ -9,7 +9,7 @@ import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
 import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
-import com.nanoyatsu.nastodon.data.entity.Account
+import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.view.accountList.AccountListActivity
 import kotlinx.android.synthetic.main.activity_account_page.*

@@ -12,7 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nanoyatsu.nastodon.R
-import com.nanoyatsu.nastodon.data.entity.Account
+import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.view.accountDetail.AccountPageActivity
 
 class AccountsAdapter(private val context: Context, private val accounts: ArrayList<Account>) :

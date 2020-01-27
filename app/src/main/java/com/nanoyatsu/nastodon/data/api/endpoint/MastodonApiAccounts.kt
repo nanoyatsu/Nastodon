@@ -1,6 +1,6 @@
 package com.nanoyatsu.nastodon.data.api.endpoint
 
-import com.nanoyatsu.nastodon.data.entity.Account
+import com.nanoyatsu.nastodon.data.domain.Account
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header

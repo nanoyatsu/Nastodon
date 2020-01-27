@@ -13,8 +13,8 @@ import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
 import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
-import com.nanoyatsu.nastodon.data.entity.Notification
-import com.nanoyatsu.nastodon.data.entity.NotificationType
+import com.nanoyatsu.nastodon.data.domain.Notification
+import com.nanoyatsu.nastodon.data.domain.NotificationType
 import com.nanoyatsu.nastodon.view.timeline.TimelineItemViewHolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking

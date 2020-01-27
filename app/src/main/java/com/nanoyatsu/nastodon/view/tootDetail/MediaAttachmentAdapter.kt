@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.nanoyatsu.nastodon.R
-import com.nanoyatsu.nastodon.data.entity.Attachment
-import com.nanoyatsu.nastodon.data.entity.MediaType
+import com.nanoyatsu.nastodon.data.domain.Attachment
+import com.nanoyatsu.nastodon.data.domain.MediaType
 import com.nanoyatsu.nastodon.databinding.ItemThumbnailBinding
 
 class MediaAttachmentAdapter(private val attachments: Array<Attachment>) :

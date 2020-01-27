@@ -7,7 +7,7 @@
 
     <variable
       name="notice"
-      type="com.nanoyatsu.nastodon.data.entity.Notification" />
+      type="com.nanoyatsu.nastodon.data.domain.Notification" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout

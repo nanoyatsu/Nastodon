@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.data.entity
+package com.nanoyatsu.nastodon.data.domain
 
 data class Application(
     val name: String,

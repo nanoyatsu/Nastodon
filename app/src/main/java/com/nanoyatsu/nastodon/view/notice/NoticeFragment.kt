@@ -15,10 +15,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.data.entity.Attachment
 import com.nanoyatsu.nastodon.data.database.dao.NoticeDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
-import com.nanoyatsu.nastodon.data.entity.Status
+import com.nanoyatsu.nastodon.data.domain.Attachment
+import com.nanoyatsu.nastodon.data.domain.Status
 import com.nanoyatsu.nastodon.data.repository.notice.NoticeRepository
 import com.nanoyatsu.nastodon.databinding.FragmentNoticeBinding
 import com.nanoyatsu.nastodon.view.timeline.TimelineItemViewHolder

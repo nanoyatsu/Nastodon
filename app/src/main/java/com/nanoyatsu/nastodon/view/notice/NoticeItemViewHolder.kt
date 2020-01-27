@@ -4,8 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.nanoyatsu.nastodon.data.entity.Notification
-import com.nanoyatsu.nastodon.data.entity.Status
+import com.nanoyatsu.nastodon.data.domain.Notification
+import com.nanoyatsu.nastodon.data.domain.Status
 import com.nanoyatsu.nastodon.databinding.ItemNoticeBinding
 import com.nanoyatsu.nastodon.resource.NoticeIcon
 
