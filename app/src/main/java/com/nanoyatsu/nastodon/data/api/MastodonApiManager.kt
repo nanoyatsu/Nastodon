@@ -1,6 +1,7 @@
 package com.nanoyatsu.nastodon.data.api
 
 import com.nanoyatsu.nastodon.data.api.endpoint.*
+import com.nanoyatsu.nastodon.data.api.entity.NotificationType
 import com.nanoyatsu.nastodon.data.api.entity.Visibility
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.EnumJsonAdapter
@@ -14,12 +15,13 @@ class MastodonApiManager(baseUrl: String) {
     companion object {
         val moshi: Moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
-            .addEnumDefault(Visibility::class.java, Visibility.PUBLIC)
+            .addEnumDefault(Visibility.PUBLIC)
+            .addEnumDefault(NotificationType.UNDEFINED)
             .build()
 
-        private fun <T : Enum<T>> Moshi.Builder.addEnumDefault(
-            type: Class<T>, default: T
-        ): Moshi.Builder {
+        // review 引数(type:Class<T>, default:T)のが使用側でわかりやすいかも（けど冗長）
+        private fun <T : Enum<T>> Moshi.Builder.addEnumDefault(default: T): Moshi.Builder {
+            val type = default.javaClass
             return this.add(type, EnumJsonAdapter.create(type).withUnknownFallback(default))
         }
     }

@@ -12,20 +12,25 @@ import java.util.*
 @JsonClass(generateAdapter = true)
 data class Notification(
     val id: String,
-    val type: String,
+    val type: NotificationType,
     @Json(name = "created_at") val created_at: String,
     val account: Account,
     val status: Status? = null
 ) : Parcelable
 
-// パラメータ文字列以上の情報があり、実装箇所がちょっとつらい todo networkModel, domainModelの分離
 enum class NotificationType(val descriptionId: Int, val icon: NoticeIcon) {
+    @Json(name = "follow")
     FOLLOW(R.string.noticeDescriptionFollow, NoticeIcon.FOLLOW),
+    @Json(name = "favourite")
     FAVOURITE(R.string.noticeDescriptionFavourite, NoticeIcon.FAVOURITE),
+    @Json(name = "reblog")
     REBLOG(R.string.noticeDescriptionReblog, NoticeIcon.REBLOG),
+    @Json(name = "mention")
     MENTION(R.string.noticeDescriptionMention, NoticeIcon.MENTION),
-    POLL(R.string.noticeDescriptionPoll, NoticeIcon.POLL);
-    // UNDEFINED(R.string.noticeDescriptionUndefined) // domainModel化の時にこうしたい
+    @Json(name = "poll")
+    POLL(R.string.noticeDescriptionPoll, NoticeIcon.POLL),
+    @Json(name = "undefined")
+    UNDEFINED(R.string.noticeDescriptionUndefined, NoticeIcon.UNDEFINED);
 
     val value get() = this.name.toLowerCase(Locale.ROOT)
 }

@@ -10,11 +10,11 @@ import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.components.networkState.NetworkStateItemViewHolder
 import com.nanoyatsu.nastodon.components.networkState.NetworkStatus
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.data.entity.Notification
-import com.nanoyatsu.nastodon.data.entity.NotificationType
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
 import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.data.entity.Notification
+import com.nanoyatsu.nastodon.data.entity.NotificationType
 import com.nanoyatsu.nastodon.view.timeline.TimelineItemViewHolder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -41,8 +41,7 @@ class NoticeAdapter(
             return R.layout.item_network_state
 
         val item = requireNotNull(getItem(position))
-        val type = NotificationType.values().firstOrNull { it.value == item.type }
-        if (type == NotificationType.MENTION)
+        if (item.type == NotificationType.MENTION)
             return R.layout.item_toot
         return R.layout.item_notice
     }

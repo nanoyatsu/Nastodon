@@ -2,20 +2,17 @@ package com.nanoyatsu.nastodon.data.api.entity
 
 
 import android.os.Parcelable
-import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.entity.DBNotice
-import com.nanoyatsu.nastodon.resource.NoticeIcon
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
-import java.util.*
 
 @Parcelize
 @JsonClass(generateAdapter = true)
 data class APINotification(
     val id: String,
-    val type: String,
+    val type: NotificationType,
     @Json(name = "created_at") val createdAt: String,
     val account: APIAccount,
     val status: APIStatus? = null
@@ -27,15 +24,18 @@ data class APINotification(
     }
 }
 
-// パラメータ文字列以上の情報があり、実装箇所がちょっとつらい todo networkModel, domainModelの分離
-enum class NotificationType(val descriptionId: Int, val icon: NoticeIcon) {
-    FOLLOW(R.string.noticeDescriptionFollow, NoticeIcon.FOLLOW),
-    FAVOURITE(R.string.noticeDescriptionFavourite, NoticeIcon.FAVOURITE),
-    REBLOG(R.string.noticeDescriptionReblog, NoticeIcon.REBLOG),
-    MENTION(R.string.noticeDescriptionMention, NoticeIcon.MENTION),
-    POLL(R.string.noticeDescriptionPoll, NoticeIcon.POLL);
-    // UNDEFINED(R.string.noticeDescriptionUndefined) // domainModel化の時にこうしたい
-
-    val value get() = this.name.toLowerCase(Locale.ROOT)
+enum class NotificationType {
+    @Json(name = "follow")
+    FOLLOW,
+    @Json(name = "favourite")
+    FAVOURITE,
+    @Json(name = "reblog")
+    REBLOG,
+    @Json(name = "mention")
+    MENTION,
+    @Json(name = "poll")
+    POLL,
+    @Json(name = "undefined")
+    UNDEFINED;
 }
 
