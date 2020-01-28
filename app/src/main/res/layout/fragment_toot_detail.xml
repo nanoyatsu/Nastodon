@@ -130,16 +130,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider_main_under">
 
-        <ImageButton
+        <ImageView
           android:id="@+id/button_reply"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:background="@drawable/ic_reply_white"
-          android:backgroundTint="@color/colorPrimaryDark"
+          android:layout_width="@dimen/icon_button"
+          android:layout_height="@dimen/icon_button"
           android:contentDescription="@string/button_reply"
+          android:onClick="@{() -> vm.onReplyClicked()}"
+          android:src="@drawable/ic_reply_white"
+          android:tint="@{Color.GRAY}"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
+          app:layout_constraintTop_toTopOf="parent"
+          tools:tint="@android:color/darker_gray" />
         <!--  todo カウントを載せる  -->
 
       </androidx.constraintlayout.widget.ConstraintLayout>
@@ -154,18 +156,19 @@
         app:layout_constraintStart_toEndOf="@id/reply_area"
         app:layout_constraintTop_toBottomOf="@id/divider_main_under">
 
-        <ImageButton
+        <ImageView
           android:id="@+id/button_repeat"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:background="@drawable/ic_repeat_white"
-          android:backgroundTint="@{vm.reblogged == true ? @color/colorPrimaryDark : Color.GRAY}"
+          android:layout_width="@dimen/icon_button"
+          android:layout_height="@dimen/icon_button"
           android:contentDescription="@string/button_repeat"
           android:onClick="@{() -> vm.onReblogClicked()}"
+          android:src="@{vm.reblogEvent == true ? @drawable/animation_refresh : @drawable/ic_repeat_white}"
+          android:tint="@{vm.reblogged == true ? @color/reblog_blue : Color.GRAY}"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"
-          tools:backgroundTint="@color/colorPrimaryDark" />
+          tools:src="@drawable/ic_repeat_white"
+          tools:tint="@color/reblog_blue" />
       </androidx.constraintlayout.widget.ConstraintLayout>
 
       <androidx.constraintlayout.widget.ConstraintLayout
@@ -178,19 +181,19 @@
         app:layout_constraintStart_toEndOf="@id/repeat_area"
         app:layout_constraintTop_toBottomOf="@id/divider_main_under">
 
-        <ImageButton
+        <ImageView
           android:id="@+id/button_star"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:background="@drawable/ic_star_white"
-          android:backgroundTint="@{vm.favourited == true ? @color/colorPrimaryDark : Color.GRAY}"
+          android:layout_width="@dimen/icon_button"
+          android:layout_height="@dimen/icon_button"
           android:contentDescription="@string/button_star"
           android:onClick="@{() -> vm.onFavouriteClicked()}"
+          android:src="@{vm.favouriteEvent == true ? @drawable/animation_refresh : @drawable/ic_star_white}"
+          android:tint="@{vm.favourited == true ? @color/fav_yellow : Color.GRAY}"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"
-          app:layout_constraintVertical_bias="0.0"
-          tools:backgroundTint="@color/colorPrimaryDark" />
+          tools:src="@drawable/ic_star_white"
+          tools:tint="@color/fav_yellow" />
       </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

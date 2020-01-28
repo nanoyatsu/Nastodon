@@ -16,6 +16,9 @@
     <action
       android:id="@+id/action_tootDetailFragment_to_imagePagerFragment"
       app:destination="@id/imagePagerFragment" />
+    <action
+      android:id="@+id/action_tootDetailFragment_to_tootEditFragment"
+      app:destination="@id/tootEditFragment" />
   </fragment>
   <fragment
     android:id="@+id/tootEditFragment"

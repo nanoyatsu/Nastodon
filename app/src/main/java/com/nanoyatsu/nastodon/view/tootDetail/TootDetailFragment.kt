@@ -7,11 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.databinding.FragmentTootDetailBinding
+import kotlinx.android.synthetic.main.activity_nav_host.*
 import javax.inject.Inject
 
 class TootDetailFragment : Fragment() {
@@ -24,11 +27,6 @@ class TootDetailFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         (activity!!.application as NastodonApplication).appComponent.inject(this)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -44,7 +42,20 @@ class TootDetailFragment : Fragment() {
     private fun initBinding(binding: FragmentTootDetailBinding) {
         val args = TootDetailFragmentArgs.fromBundle(arguments!!)
         val factory = TootViewModelFactory(args.toot, auth, apiManager)
-        binding.vm = ViewModelProvider(this, factory).get(TootViewModel::class.java)
+
+        val vm = ViewModelProvider(this, factory).get(TootViewModel::class.java)
+        vm.replyEvent.observe(viewLifecycleOwner, Observer { if (it) onReplyClick(vm) })
+        vm.reblogEvent.observe(viewLifecycleOwner, Observer { if (it) vm.doReblog() })
+        vm.favouriteEvent.observe(viewLifecycleOwner, Observer { if (it) vm.doFav() })
+
+        binding.vm = vm
         binding.lifecycleOwner = this
+    }
+
+    private fun onReplyClick(vm: TootViewModel) {
+        val directions =
+            TootDetailFragmentDirections.actionTootDetailFragmentToTootEditFragment(vm.toot.value!!)
+        activity?.main_fragment_container?.findNavController()?.navigate(directions)
+        vm.onReplyClickFinished()
     }
 }

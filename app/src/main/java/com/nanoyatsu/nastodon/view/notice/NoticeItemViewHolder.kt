@@ -25,7 +25,6 @@ class NoticeItemViewHolder(val binding: ItemNoticeBinding, private val navigatio
         val vm = NoticeItemViewModel(notice)
 
         vm.contentClickEvent.observe(context, Observer { if (it) onContentClick(vm) })
-        binding.lifecycleOwner = context
 
         // todo XML側で解決する（必要ならBindingAdapter）
         binding.description.text =
@@ -35,6 +34,7 @@ class NoticeItemViewHolder(val binding: ItemNoticeBinding, private val navigatio
             context.getDrawable(icon.iconId)?.apply { setTint(context.getColor(icon.colorId)) }
 
         binding.vm = vm
+        binding.lifecycleOwner = context
     }
 
     private fun onContentClick(vm: NoticeItemViewModel) {
