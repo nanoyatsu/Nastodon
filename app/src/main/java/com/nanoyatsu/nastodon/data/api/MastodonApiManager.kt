@@ -2,7 +2,7 @@ package com.nanoyatsu.nastodon.data.api
 
 import com.nanoyatsu.nastodon.data.api.endpoint.*
 import com.nanoyatsu.nastodon.data.api.entity.NotificationType
-import com.nanoyatsu.nastodon.data.api.entity.Visibility
+import com.nanoyatsu.nastodon.data.api.entity.APIVisibility
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.EnumJsonAdapter
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -15,7 +15,7 @@ class MastodonApiManager(baseUrl: String) {
     companion object {
         val moshi: Moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
-            .addEnumDefault(Visibility.PUBLIC)
+            .addEnumDefault(APIVisibility.PUBLIC)
             .addEnumDefault(NotificationType.UNDEFINED)
             .build()
 

@@ -3,6 +3,8 @@ package com.nanoyatsu.nastodon.data.api.entity
 import android.os.Parcelable
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.entity.DBStatus
+import com.nanoyatsu.nastodon.data.domain.Status
+import com.nanoyatsu.nastodon.data.domain.Visibility
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
@@ -28,7 +30,7 @@ data class APIStatus(
     val muted: Boolean?,
     val sensitive: Boolean,
     @Json(name = "spoiler_text") val spoilerText: String,
-    val visibility: Visibility,
+    val visibility: APIVisibility,
     @Json(name = "media_attachments") val mediaAttachments: List<APIAttachment>,
 //    val mentions: Array<Mention>,
 //    val tags: Array<Tag>,
@@ -42,9 +44,34 @@ data class APIStatus(
         val status = MastodonApiManager.moshi.adapter<APIStatus>(APIStatus::class.java).toJson(this)
         return DBStatus(0, timelineKind, status)
     }
+
+    fun asDomainModel(): Status = Status(
+        id,
+        uri,
+        url,
+        account.asDomainModel(),
+        inReplyToId,
+        inReplyToAccountId,
+        reblog?.asDomainModel(),
+        content,
+        createdAt,
+        repliesCount,
+        reblogsCount,
+        favouritesCount,
+        reblogged,
+        favourited,
+        muted,
+        sensitive,
+        spoilerText,
+        visibility.asDomainModel(),
+        mediaAttachments.map { it.asDomainModel() },
+        language,
+        pinned
+    )
+
 }
 
-enum class Visibility {
+enum class APIVisibility {
     @Json(name = "public")
     PUBLIC,
     @Json(name = "unlisted")
@@ -52,5 +79,12 @@ enum class Visibility {
     @Json(name = "private")
     PRIVATE,
     @Json(name = "direct")
-    DIRECT,
+    DIRECT;
+
+    fun asDomainModel(): Visibility = when (this) {
+        PUBLIC -> Visibility.PUBLIC
+        UNLISTED -> Visibility.UNLISTED
+        PRIVATE -> Visibility.PRIVATE
+        DIRECT -> Visibility.DIRECT
+    }
 }
