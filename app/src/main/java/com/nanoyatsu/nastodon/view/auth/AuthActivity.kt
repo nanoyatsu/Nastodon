@@ -111,7 +111,7 @@ class AuthActivity : AppCompatActivity() {
 
     private fun getOwnAccount(pref: AuthPreferenceManager): Account? {
         val verify = apiManager.accounts::verifyCredentials
-        return runBlocking { verify(pref.accessToken) }.body()
+        return runBlocking { verify(pref.accessToken) }.body()?.asDomainModel()
     }
 
     private fun setAccountToPref(pref: AuthPreferenceManager, account: Account?) {

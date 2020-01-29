@@ -1,6 +1,8 @@
 package com.nanoyatsu.nastodon.data.api.entity
 
 import android.os.Parcelable
+import com.nanoyatsu.nastodon.data.domain.Account
+import com.nanoyatsu.nastodon.data.domain.Source
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import kotlinx.android.parcel.Parcelize
@@ -27,18 +29,42 @@ data class APIAccount(
     val moved: APIAccount?,
 //    val fields:Array<Hash>?,
     val bot: Boolean?,
-    val source: Source?
+    val APISource: APISource?
 //val token: Token?
-) : Parcelable
+) : Parcelable {
+    fun asDomainModel(): Account = Account(
+        id,
+        username,
+        acct,
+        displayName,
+        locked,
+        createdAt,
+        followersCount,
+        followingCount,
+        statusesCount,
+        note,
+        url,
+        avatar,
+        avatarStatic,
+        header,
+        headerStatic,
+        moved?.asDomainModel(),
+        bot,
+        APISource?.asDomainModel()
+    )
+
+}
 
 @Parcelize
-data class Source(
+data class APISource(
     val privacy: String?,
     val sensitive: Boolean?,
     val language: String?, // v2.4.2
     val note: String
 //    val fields: Array<Hash> // v2.4.0
-) : Parcelable
+) : Parcelable {
+    fun asDomainModel() = Source(privacy, sensitive, language, note)
+}
 
 //"account": {
 //    "id": "45717",
