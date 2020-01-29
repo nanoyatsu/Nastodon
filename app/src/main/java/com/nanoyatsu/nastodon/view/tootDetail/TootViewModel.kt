@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
+import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Status
-import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -44,6 +44,8 @@ class TootViewModel(
         }
     }
 
+    private val _avatarClickEvent = MutableLiveData<Boolean>().apply { value = false }
+    val avatarClickEvent: LiveData<Boolean> get() = _avatarClickEvent
     private val _replyEvent = MutableLiveData<Boolean>().apply { value = false }
     val replyEvent: LiveData<Boolean> get() = _replyEvent
     private val _reblogEvent = MutableLiveData<Boolean>().apply { value = false }
@@ -62,6 +64,8 @@ class TootViewModel(
 
     fun toggleFolding() = run { isFolding.value = isFolding.value?.not() }
 
+    fun onAvatarClicked() = run { _avatarClickEvent.value = true }
+    fun onAvatarClickFinished() = run { _avatarClickEvent.value = false }
     fun onReplyClicked() = run { _replyEvent.value = true }
     fun onReplyClickFinished() = run { _replyEvent.value = false }
     fun onReblogClicked() = run { _reblogEvent.value = true }

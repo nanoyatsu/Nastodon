@@ -46,6 +46,7 @@ class TootDetailFragment : Fragment() {
         val factory = TootViewModelFactory(args.toot, auth, apiManager)
 
         val vm = ViewModelProvider(this, factory).get(TootViewModel::class.java)
+        vm.avatarClickEvent.observe(viewLifecycleOwner, Observer { if (it) onAvatarClick(vm) })
         vm.replyEvent.observe(viewLifecycleOwner, Observer { if (it) onReplyClick(vm) })
         vm.reblogEvent.observe(viewLifecycleOwner, Observer { if (it) vm.doReblog() })
         vm.favouriteEvent.observe(viewLifecycleOwner, Observer { if (it) vm.doFav() })
@@ -56,13 +57,6 @@ class TootDetailFragment : Fragment() {
         binding.lifecycleOwner = this
     }
 
-    private fun onReplyClick(vm: TootViewModel) {
-        val directions =
-            TootDetailFragmentDirections.actionTootDetailFragmentToTootEditFragment(vm.toot.value!!)
-        requireActivity().main_fragment_container.findNavController().navigate(directions)
-        vm.onReplyClickFinished()
-    }
-
     private fun setupAttachments(context: Context, view: RecyclerView, contents: List<Attachment>) {
         view.layoutManager = GridLayoutManager(context, 2)
         view.adapter = MediaAttachmentAdapter(contents.toTypedArray())
@@ -71,6 +65,20 @@ class TootDetailFragment : Fragment() {
                     override val onThumbnailClick = { onAttachmentClick(contents) }
                 }
             }
+    }
+
+    private fun onAvatarClick(vm: TootViewModel) {
+        val directions =
+            TootDetailFragmentDirections.actionTootDetailFragmentToAccountDetailFragment(vm.toot.value!!.account)
+        requireActivity().main_fragment_container.findNavController().navigate(directions)
+        vm.onAvatarClickFinished()
+    }
+
+    private fun onReplyClick(vm: TootViewModel) {
+        val directions =
+            TootDetailFragmentDirections.actionTootDetailFragmentToTootEditFragment(vm.toot.value!!)
+        requireActivity().main_fragment_container.findNavController().navigate(directions)
+        vm.onReplyClickFinished()
     }
 
     private fun onAttachmentClick(contents: List<Attachment>) {

@@ -19,6 +19,9 @@
     <action
       android:id="@+id/action_tootDetailFragment_to_tootEditFragment"
       app:destination="@id/tootEditFragment" />
+    <action
+      android:id="@+id/action_tootDetailFragment_to_accountDetailFragment"
+      app:destination="@id/accountDetailFragment" />
   </fragment>
   <fragment
     android:id="@+id/tootEditFragment"
