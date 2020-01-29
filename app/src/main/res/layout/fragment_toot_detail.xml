@@ -98,6 +98,17 @@
         app:tootText="@{vm.toot.content}"
         tools:text="statusContent" />
 
+      <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/attachments"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:visibility="@{vm.toot.mediaAttachments.empty ? View.GONE : View.VISIBLE }"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/content"
+        tools:itemCount="4" />
+
       <TextView
         android:id="@+id/created_at"
         android:layout_width="0dp"
@@ -106,7 +117,7 @@
         app:createdAt="@{vm.toot.createdAt}"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/content"
+        app:layout_constraintTop_toBottomOf="@id/attachments"
         tools:text="createdAt" />
 
       <View

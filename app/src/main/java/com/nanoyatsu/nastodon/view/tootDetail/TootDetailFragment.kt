@@ -10,9 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.data.domain.Attachment
 import com.nanoyatsu.nastodon.databinding.FragmentTootDetailBinding
 import kotlinx.android.synthetic.main.activity_nav_host.*
 import javax.inject.Inject
@@ -38,7 +41,6 @@ class TootDetailFragment : Fragment() {
         return binding.root
     }
 
-
     private fun initBinding(binding: FragmentTootDetailBinding) {
         val args = TootDetailFragmentArgs.fromBundle(arguments!!)
         val factory = TootViewModelFactory(args.toot, auth, apiManager)
@@ -48,6 +50,8 @@ class TootDetailFragment : Fragment() {
         vm.reblogEvent.observe(viewLifecycleOwner, Observer { if (it) vm.doReblog() })
         vm.favouriteEvent.observe(viewLifecycleOwner, Observer { if (it) vm.doFav() })
 
+        setupAttachments(requireActivity(), binding.attachments, args.toot.mediaAttachments)
+
         binding.vm = vm
         binding.lifecycleOwner = this
     }
@@ -55,7 +59,24 @@ class TootDetailFragment : Fragment() {
     private fun onReplyClick(vm: TootViewModel) {
         val directions =
             TootDetailFragmentDirections.actionTootDetailFragmentToTootEditFragment(vm.toot.value!!)
-        activity?.main_fragment_container?.findNavController()?.navigate(directions)
+        requireActivity().main_fragment_container.findNavController().navigate(directions)
         vm.onReplyClickFinished()
+    }
+
+    private fun setupAttachments(context: Context, view: RecyclerView, contents: List<Attachment>) {
+        view.layoutManager = GridLayoutManager(context, 2)
+        view.adapter = MediaAttachmentAdapter(contents.toTypedArray())
+            .apply {
+                publicListener = object : MediaAttachmentAdapter.ThumbnailClickListener {
+                    override val onThumbnailClick = { onAttachmentClick(contents) }
+                }
+            }
+    }
+
+    private fun onAttachmentClick(contents: List<Attachment>) {
+        val urls = contents.map { it.url }.toTypedArray()
+        val directions =
+            TootDetailFragmentDirections.actionTootDetailFragmentToImagePagerFragment(urls)
+        requireActivity().main_fragment_container.findNavController().navigate(directions)
     }
 }
