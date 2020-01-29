@@ -2,6 +2,7 @@ package com.nanoyatsu.nastodon.di
 
 import android.content.Context
 import com.nanoyatsu.nastodon.view.NavHostActivity
+import com.nanoyatsu.nastodon.view.accountDetail.AccountDetailFragment
 import com.nanoyatsu.nastodon.view.notice.NoticeFragment
 import com.nanoyatsu.nastodon.view.timeline.TimelineFragment
 import com.nanoyatsu.nastodon.view.tootDetail.TootDetailFragment
@@ -21,4 +22,5 @@ interface AppComponent {
     fun inject(fragment: NoticeFragment)
     fun inject(fragment: TootEditFragment)
     fun inject(fragment: TootDetailFragment)
+    fun inject(fragment: AccountDetailFragment)
 }

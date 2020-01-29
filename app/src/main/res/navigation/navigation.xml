@@ -27,9 +27,9 @@
     tools:layout="@layout/fragment_toot_edit">
     <argument
       android:name="replyTo"
+      android:defaultValue="@null"
       app:argType="com.nanoyatsu.nastodon.data.domain.Status"
-      app:nullable="true"
-      android:defaultValue="@null" />
+      app:nullable="true" />
   </fragment>
   <fragment
     android:id="@+id/timelineFrameFragment"
@@ -45,12 +45,15 @@
     <action
       android:id="@+id/action_timelineFrameFragment_to_tootDetailFragment"
       app:destination="@id/tootDetailFragment" />
+    <action
+      android:id="@+id/action_timelineFrameFragment_to_accountDetailFragment"
+      app:destination="@id/accountDetailFragment" />
   </fragment>
   <fragment
     android:id="@+id/noticeFrameFragment"
     android:name="com.nanoyatsu.nastodon.view.notice.NoticeFrameFragment"
     android:label="fragment_notice_frame"
-    tools:layout="@layout/fragment_notice_frame" >
+    tools:layout="@layout/fragment_notice_frame">
     <action
       android:id="@+id/action_noticeFrameFragment_to_tootDetailFragment"
       app:destination="@id/tootDetailFragment" />
@@ -74,6 +77,15 @@
     <argument
       android:name="urls"
       app:argType="string[]" />
+  </fragment>
+  <fragment
+    android:id="@+id/accountDetailFragment"
+    android:name="com.nanoyatsu.nastodon.view.accountDetail.AccountDetailFragment"
+    android:label="AccountDetailFragment"
+    tools:layout="@layout/fragment_account_detail" >
+    <argument
+      android:name="account"
+      app:argType="com.nanoyatsu.nastodon.data.domain.Account" />
   </fragment>
 
 </navigation>

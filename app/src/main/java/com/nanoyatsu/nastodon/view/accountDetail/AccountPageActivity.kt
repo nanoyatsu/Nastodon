@@ -12,7 +12,7 @@ import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.view.accountList.AccountListActivity
-import kotlinx.android.synthetic.main.activity_account_page.*
+import kotlinx.android.synthetic.main.fragment_account_detail.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
@@ -29,7 +29,7 @@ class AccountPageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_account_page)
+        setContentView(R.layout.fragment_account_detail)
 
         val account = intent.getParcelableExtra<Account>(IntentKey.ACCOUNT.name)
 
