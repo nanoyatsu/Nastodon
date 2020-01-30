@@ -19,7 +19,7 @@ class NoticeViewModel(repo: NoticeRepository) : ViewModel() {
     private val refresh = repoResult.refresh
     private val retry = repoResult.retry
 
-    fun refreshNotifications() = refresh.invoke()
+    fun refresh() = refresh.invoke()
     fun retry() = retry.invoke()
 
     companion object {

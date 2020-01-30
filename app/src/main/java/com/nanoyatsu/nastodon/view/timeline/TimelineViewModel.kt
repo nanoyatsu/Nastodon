@@ -22,7 +22,7 @@ class TimelineViewModel(repo: TimelineRepository) : ViewModel() {
     private val refresh = repoResult.refresh
     private val retry = repoResult.retry
 
-    fun refreshTimeline() = refresh.invoke()
+    fun refresh() = refresh.invoke()
     fun retry() = retry.invoke()
 
     companion object {

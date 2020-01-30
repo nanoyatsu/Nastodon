@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.data.domain.Attachment
 import com.nanoyatsu.nastodon.data.database.dao.TimelineDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.data.domain.Attachment
 import com.nanoyatsu.nastodon.data.domain.Status
 import com.nanoyatsu.nastodon.data.repository.timeline.TimelineRepository
 import com.nanoyatsu.nastodon.databinding.FragmentTimelineBinding
@@ -58,27 +58,37 @@ class TimelineFragment : Fragment() {
     }
 
     private fun initBinding(binding: FragmentTimelineBinding) {
-        val repo = TimelineRepository(kind, timelineDao, apiManager.timelines, auth.accessToken)
-        val factory = TimelineViewModelFactory(repo)
-        val context = this.context ?: return
-        val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        binding.timelineView.layoutManager = layoutManager // fixme 画面回転を連続したりするとNPE
-        val adapter = TimelineAdapter(context, navigation)
-        binding.timelineView.adapter = adapter
+        val context = requireContext()
 
-        val vm = ViewModelProvider(this, factory).get(TimelineViewModel::class.java)
-        // Timelineの常時更新
-        vm.statuses.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
-        vm.networkState.observe(viewLifecycleOwner, Observer { adapter.setNetworkState(it) })
+        // 描画設定
+        // RecyclerView
+        binding.timelineView.layoutManager =
+            LinearLayoutManager(context, RecyclerView.VERTICAL, false)// fixme 画面回転を連続したりするとNPE
+        binding.timelineView.adapter = TimelineAdapter(context, navigation)
 
-        // SwipeRefreshLayout 引っ張って初期化する部品
-        binding.swipeRefresh.setOnRefreshListener { vm.refreshTimeline() }
-        vm.isInitialising.observe(
-            viewLifecycleOwner,
-            Observer { binding.swipeRefresh.isRefreshing = it })
-
+        // ViewModel設定
+        val vm = generateViewModel(binding)
         binding.vm = vm
         binding.lifecycleOwner = this
+
+        // イベント設定
+        // SwipeRefresh
+        binding.swipeRefresh.setOnRefreshListener { vm.refresh() }
+    }
+
+    private fun generateViewModel(binding: FragmentTimelineBinding): TimelineViewModel {
+        val repo = TimelineRepository(kind, timelineDao, apiManager.timelines, auth.accessToken)
+        val factory = TimelineViewModelFactory(repo)
+
+        return ViewModelProvider(this, factory).get(TimelineViewModel::class.java).apply {
+            // Timelineの常時更新
+            val adapter = binding.timelineView.adapter as TimelineAdapter
+            statuses.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
+            networkState.observe(viewLifecycleOwner, Observer { adapter.setNetworkState(it) })
+            // SwipeRefreshの表示監視
+            isInitialising
+                .observe(viewLifecycleOwner, Observer { binding.swipeRefresh.isRefreshing = it })
+        }
     }
 
     private val navigation = object : TimelineItemViewHolder.Navigation {

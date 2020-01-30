@@ -58,28 +58,39 @@ class NoticeFragment : Fragment() {
     }
 
     private fun initBinding(binding: FragmentNoticeBinding) {
-        val repo = NoticeRepository(kind, noticeDao, apiManager.notifications, auth.accessToken)
-        val factory = NoticeViewModelFactory(repo)
-        val context = this.context ?: return
-        val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        binding.noticeView.layoutManager = layoutManager
-        val adapter = NoticeAdapter(context, noticeNavigation, tootNavigation)
-        binding.noticeView.adapter = adapter
+        val context = requireContext()
 
-        val vm = ViewModelProvider(this, factory).get(NoticeViewModel::class.java)
-        // リストの常時更新
-        vm.notifications.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
-        vm.networkState.observe(viewLifecycleOwner, Observer { adapter.setNetworkState(it) })
+        // 描画設定
+        // RecyclerView
+        binding.noticeView.layoutManager =
+            LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        binding.noticeView.adapter = NoticeAdapter(context, noticeNavigation, tootNavigation)
 
-        // SwipeRefresh
-        binding.swipeRefresh.setOnRefreshListener { vm.refreshNotifications() }
-        vm.isInitialising.observe(
-            viewLifecycleOwner,
-            Observer { binding.swipeRefresh.isRefreshing = it })
-
+        // ViewModel設定
+        val vm = generateViewModel(binding)
         binding.vm = vm
         binding.lifecycleOwner = this
+
+        // イベント設定
+        // SwipeRefresh
+        binding.swipeRefresh.setOnRefreshListener { vm.refresh() }
     }
+
+    private fun generateViewModel(binding: FragmentNoticeBinding): NoticeViewModel {
+        val repo = NoticeRepository(kind, noticeDao, apiManager.notifications, auth.accessToken)
+        val factory = NoticeViewModelFactory(repo)
+
+        return ViewModelProvider(this, factory).get(NoticeViewModel::class.java).apply {
+            // RecyclerViewの更新監視
+            val adapter = binding.noticeView.adapter as NoticeAdapter
+            notifications.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
+            networkState.observe(viewLifecycleOwner, Observer { adapter.setNetworkState(it) })
+            // SwipeRefreshの表示監視
+            isInitialising
+                .observe(viewLifecycleOwner, Observer { binding.swipeRefresh.isRefreshing = it })
+        }
+    }
+
 
     private val noticeNavigation = object : NoticeItemViewHolder.Navigation {
         override fun transTootDetail(toot: Status) = this@NoticeFragment.transTootDetail(toot)

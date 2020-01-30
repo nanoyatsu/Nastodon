@@ -34,7 +34,7 @@ interface MastodonApiAccounts {
         @Query("limit") limit: Int? = null // default 40
     ): Response<Array<APIAccount>>
 
-    @GET("api/v1/accounts/:id/statuses")
+    @GET("api/v1/accounts/{id}/statuses")
     suspend fun getToots(
         @Header("Authorization") authorization: String,
         @Path("id") id: String,
