@@ -53,6 +53,7 @@ class AccountTootsDataSource(
                 { apiDir.getToots(token, accountId, null, null) },
                 { loadInitial(params, callback) }
             )
+            isRefreshing.postValue(false)
         }
     }
 
