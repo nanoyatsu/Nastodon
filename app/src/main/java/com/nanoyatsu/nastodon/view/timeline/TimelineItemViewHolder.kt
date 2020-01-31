@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Attachment
 import com.nanoyatsu.nastodon.data.domain.Status
 import com.nanoyatsu.nastodon.databinding.ItemTootBinding
@@ -66,6 +67,7 @@ class TimelineItemViewHolder(val binding: ItemTootBinding, private val navigatio
     }
 
     interface Navigation {
+        fun transAccountDetail(account: Account)
         fun transTootEditAsReply(toot: Status)
         fun transTootDetail(toot: Status)
         fun transImagePager(contents: List<Attachment>)

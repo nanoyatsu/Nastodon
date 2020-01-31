@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Notification
 import com.nanoyatsu.nastodon.data.domain.Status
 import com.nanoyatsu.nastodon.databinding.ItemNoticeBinding
@@ -43,6 +44,7 @@ class NoticeItemViewHolder(val binding: ItemNoticeBinding, private val navigatio
     }
 
     interface Navigation {
+        fun transAccountDetail(account: Account)
         fun transTootDetail(toot: Status)
     }
 }

@@ -66,6 +66,9 @@
     <action
       android:id="@+id/action_noticeFrameFragment_to_tootEditFragment"
       app:destination="@id/tootEditFragment" />
+    <action
+      android:id="@+id/action_noticeFrameFragment_to_accountDetailFragment"
+      app:destination="@id/accountDetailFragment" />
   </fragment>
   <fragment
     android:id="@+id/searchFragment"
@@ -89,6 +92,18 @@
     <argument
       android:name="account"
       app:argType="com.nanoyatsu.nastodon.data.domain.Account" />
+    <action
+      android:id="@+id/action_accountDetailFragment_to_imagePagerFragment"
+      app:destination="@id/imagePagerFragment" />
+    <action
+      android:id="@+id/action_accountDetailFragment_to_tootDetailFragment"
+      app:destination="@id/tootDetailFragment" />
+    <action
+      android:id="@+id/action_accountDetailFragment_to_tootEditFragment"
+      app:destination="@id/tootEditFragment" />
+    <action
+      android:id="@+id/action_accountDetailFragment_self"
+      app:destination="@id/accountDetailFragment" />
   </fragment>
 
 </navigation>

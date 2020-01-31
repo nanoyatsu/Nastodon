@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +15,7 @@ import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.dao.TimelineDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Attachment
 import com.nanoyatsu.nastodon.data.domain.Status
 import com.nanoyatsu.nastodon.data.repository.timeline.TimelineRepository
@@ -92,35 +92,29 @@ class TimelineFragment : Fragment() {
     }
 
     private val navigation = object : TimelineItemViewHolder.Navigation {
-        //    // todo : navigation対応
-        //    private fun transAccountPage(v: View, account: Account) {
-        //        val intent = Intent(context, AccountPageActivity::class.java)
-        //            .also { it.putExtra(AccountPageActivity.IntentKey.ACCOUNT.name, account) }
-        //        v.context.startActivity(intent)
-        //    }
-
-        private fun navigate(directions: NavDirections) {
-            val activity = requireNotNull(activity)
-            activity.main_fragment_container.findNavController().navigate(directions)
+        override fun transAccountDetail(account: Account) {
+            val directions = TimelineFrameFragmentDirections
+                .actionTimelineFrameFragmentToAccountDetailFragment(account)
+            requireActivity().main_fragment_container.findNavController().navigate(directions)
         }
 
         override fun transTootEditAsReply(toot: Status) {
             val directions =
                 TimelineFrameFragmentDirections.actionTimelineFrameFragmentToTootEditFragment(toot)
-            navigate(directions)
+            requireActivity().main_fragment_container.findNavController().navigate(directions)
         }
 
         override fun transTootDetail(toot: Status) {
             val directions =
                 TimelineFrameFragmentDirections.actionTimelineFrameFragmentToTootDetailFragment(toot)
-            navigate(directions)
+            requireActivity().main_fragment_container.findNavController().navigate(directions)
         }
 
         override fun transImagePager(contents: List<Attachment>) {
             val urls = contents.map { it.url }.toTypedArray()
             val directions =
                 TimelineFrameFragmentDirections.actionTimelineFrameFragmentToImagePagerFragment(urls)
-            navigate(directions)
+            requireActivity().main_fragment_container.findNavController().navigate(directions)
         }
     }
 

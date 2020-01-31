@@ -8,17 +8,20 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Attachment
 import com.nanoyatsu.nastodon.data.domain.Status
 import com.nanoyatsu.nastodon.data.repository.accountToots.AccountTootsRepository
 import com.nanoyatsu.nastodon.databinding.FragmentAccountDetailBinding
 import com.nanoyatsu.nastodon.view.timeline.TimelineAdapter
 import com.nanoyatsu.nastodon.view.timeline.TimelineItemViewHolder
+import kotlinx.android.synthetic.main.activity_nav_host.*
 import javax.inject.Inject
 
 class AccountDetailFragment : Fragment() {
@@ -76,12 +79,30 @@ class AccountDetailFragment : Fragment() {
     }
 
     private val navigation = object : TimelineItemViewHolder.Navigation {
-        // todo こいつら
-        override fun transTootEditAsReply(toot: Status) {}
+        override fun transAccountDetail(account: Account) {
+            // todo 自分自身のときは遷移しない
+            val directions = AccountDetailFragmentDirections
+                .actionAccountDetailFragmentSelf(account)
+            requireActivity().main_fragment_container.findNavController().navigate(directions)
+        }
 
-        override fun transTootDetail(toot: Status) {}
+        override fun transTootEditAsReply(toot: Status) {
+            val directions =
+                AccountDetailFragmentDirections.actionAccountDetailFragmentToTootEditFragment(toot)
+            requireActivity().main_fragment_container.findNavController().navigate(directions)
+        }
 
-        override fun transImagePager(contents: List<Attachment>) {}
+        override fun transTootDetail(toot: Status) {
+            val directions =
+                AccountDetailFragmentDirections.actionAccountDetailFragmentToTootDetailFragment(toot)
+            requireActivity().main_fragment_container.findNavController().navigate(directions)
+        }
 
+        override fun transImagePager(contents: List<Attachment>) {
+            val urls = contents.map { it.url }.toTypedArray()
+            val directions =
+                AccountDetailFragmentDirections.actionAccountDetailFragmentToImagePagerFragment(urls)
+            requireActivity().main_fragment_container.findNavController().navigate(directions)
+        }
     }
 }

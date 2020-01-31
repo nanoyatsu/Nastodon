@@ -16,6 +16,7 @@ import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.dao.NoticeDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Attachment
 import com.nanoyatsu.nastodon.data.domain.Status
 import com.nanoyatsu.nastodon.data.repository.notice.NoticeRepository
@@ -93,16 +94,15 @@ class NoticeFragment : Fragment() {
 
 
     private val noticeNavigation = object : NoticeItemViewHolder.Navigation {
+        override fun transAccountDetail(account: Account) =
+            this@NoticeFragment.transAccountDetail(account)
+
         override fun transTootDetail(toot: Status) = this@NoticeFragment.transTootDetail(toot)
     }
 
     private val tootNavigation = object : TimelineItemViewHolder.Navigation {
-        //    // todo : navigation対応
-        //    private fun transAccountPage(v: View, account: Account) {
-        //        val intent = Intent(context, AccountPageActivity::class.java)
-        //            .also { it.putExtra(AccountPageActivity.IntentKey.ACCOUNT.name, account) }
-        //        v.context.startActivity(intent)
-        //    }
+        override fun transAccountDetail(account: Account) =
+            this@NoticeFragment.transAccountDetail(account)
 
         override fun transTootEditAsReply(toot: Status) =
             this@NoticeFragment.transTootEditAsReply(toot)
@@ -113,23 +113,29 @@ class NoticeFragment : Fragment() {
             this@NoticeFragment.transImagePager(contents)
     }
 
+    private fun transAccountDetail(account: Account) {
+        val directions = NoticeFrameFragmentDirections
+            .actionNoticeFrameFragmentToAccountDetailFragment(account)
+        requireActivity().main_fragment_container.findNavController().navigate(directions)
+    }
+
     private fun transTootEditAsReply(toot: Status) {
         val directions =
             NoticeFrameFragmentDirections.actionNoticeFrameFragmentToTootEditFragment(toot)
-        activity?.let { main_fragment_container?.findNavController()?.navigate(directions) }
+        requireActivity().main_fragment_container.findNavController().navigate(directions)
     }
 
     private fun transTootDetail(toot: Status) {
         val directions =
             NoticeFrameFragmentDirections.actionNoticeFrameFragmentToTootDetailFragment(toot)
-        activity?.let { main_fragment_container?.findNavController()?.navigate(directions) }
+        requireActivity().main_fragment_container.findNavController().navigate(directions)
     }
 
     private fun transImagePager(contents: List<Attachment>) {
         val urls = contents.map { it.url }.toTypedArray()
         val directions =
             NoticeFrameFragmentDirections.actionNoticeFrameFragmentToImagePagerFragment(urls)
-        activity?.let { main_fragment_container?.findNavController()?.navigate(directions) }
+        requireActivity().main_fragment_container.findNavController().navigate(directions)
     }
 
     companion object {
