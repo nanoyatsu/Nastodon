@@ -39,85 +39,93 @@
           android:id="@+id/linearLayout2"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:layout_marginBottom="12dp"
           android:orientation="vertical">
 
           <ImageView
             android:id="@+id/header"
             android:layout_width="0dp"
-            android:layout_height="180dp"
-            android:alpha="0.7"
-            android:background="#444444"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:alpha="0.3"
+            android:scaleType="centerCrop"
             app:imageUrl="@{vm.account.headerStatic}"
+            app:layout_constraintBottom_toBottomOf="@id/username"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@tools:sample/backgrounds/scenic" />
+          <!--          android:maxHeight="180dp"-->
 
           <ImageView
             android:id="@+id/avatar"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="12dp"
             app:circleImageUrl="@{vm.account.avatar}"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.12"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/header"
+            app:layout_constraintStart_toStartOf="@id/header"
+            app:layout_constraintTop_toTopOf="@id/header"
             tools:srcCompat="@tools:sample/avatars" />
 
           <TextView
             android:id="@+id/displayName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:text="@{vm.account.displayName}"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/avatar"
+            app:layout_constraintStart_toStartOf="@id/avatar"
             app:layout_constraintTop_toBottomOf="@+id/avatar"
             tools:text="なまえ" />
 
           <TextView
             android:id="@+id/username"
             android:layout_width="wrap_content"
-            android:layout_height="16dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="12dp"
             android:text="@{vm.account.acct}"
-            app:layout_constraintBottom_toBottomOf="@+id/displayName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.266"
-            app:layout_constraintStart_toEndOf="@+id/displayName"
-            app:layout_constraintTop_toTopOf="@+id/displayName"
-            app:layout_constraintVertical_bias="0.0"
-            tools:text="namae" />
+            app:layout_constraintEnd_toEndOf="@id/avatar"
+            app:layout_constraintStart_toStartOf="@id/avatar"
+            app:layout_constraintTop_toBottomOf="@+id/displayName"
+            tools:text="namae@instance" />
 
           <TextView
             android:id="@+id/content"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
+            android:layout_marginEnd="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/displayName"
+            app:layout_constraintTop_toBottomOf="@+id/header"
             app:tootText="@{vm.account.note}"
             tools:text="nanraka_no_profile_sentence" />
+
+          <TextView
+            android:id="@+id/statusesCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:text="@{String.format(@string/accountStatusesCountFormat, vm.account.statusesCount)}"
+            app:layout_constraintStart_toEndOf="@+id/avatar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/content"
+            tools:text="x_toots" />
 
           <TextView
             android:id="@+id/followingCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="16dp"
             android:text="@{String.format(@string/accountFollowingCountFormat, vm.account.followingCount)}"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/content"
+            app:layout_constraintBottom_toBottomOf="@+id/statusesCount"
+            app:layout_constraintStart_toEndOf="@+id/statusesCount"
+            app:layout_constraintTop_toTopOf="@+id/statusesCount"
             tools:text="following_x_nin" />
 
           <TextView
@@ -131,17 +139,6 @@
             app:layout_constraintStart_toEndOf="@+id/followingCount"
             app:layout_constraintTop_toTopOf="@+id/followingCount"
             tools:text="follower_x_nin" />
-
-          <TextView
-            android:id="@+id/statusesCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="@{String.format(@string/accountStatusesCountFormat, vm.account.statusesCount)}"
-            app:layout_constraintBottom_toTopOf="@+id/username"
-            app:layout_constraintStart_toEndOf="@+id/avatar"
-            tools:text="x_toots" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
       </com.google.android.material.appbar.CollapsingToolbarLayout>
