@@ -1,7 +1,6 @@
 package com.nanoyatsu.nastodon.view.accountList
 
 import android.content.Context
-import android.content.Intent
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.domain.Account
-import com.nanoyatsu.nastodon.view.accountDetail.AccountPageActivity
 
 class AccountsAdapter(private val context: Context, private val accounts: ArrayList<Account>) :
     RecyclerView.Adapter<AccountsAdapter.ViewHolder>() {
@@ -41,9 +39,9 @@ class AccountsAdapter(private val context: Context, private val accounts: ArrayL
     }
 
     private fun transAccountPage(v: View, account: Account) {
-        val intent = Intent(context, AccountPageActivity::class.java)
-            .also { it.putExtra(AccountPageActivity.IntentKey.ACCOUNT.name, account) }
-        v.context.startActivity(intent)
+//        val intent = Intent(context, AccountPageActivity::class.java)
+//            .also { it.putExtra(AccountPageActivity.IntentKey.ACCOUNT.name, account) }
+//        v.context.startActivity(intent)
     }
 
     class ViewHolder(account: ConstraintLayout) : RecyclerView.ViewHolder(account) {
