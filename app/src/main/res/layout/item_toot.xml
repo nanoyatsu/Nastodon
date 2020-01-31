@@ -61,7 +61,7 @@
           android:layout_height="match_parent"
           android:layout_gravity="top|start"
           android:contentDescription="@string/account_avatar"
-          app:imageUrl="@{vm.toot.account.avatar}"
+          app:circleImageUrl="@{vm.toot.account.avatar}"
           app:layout_height="@{(vm.rebloggedBy == null) ? (float)@dimen/avatar_frame_size : (float)@dimen/avatar_top_start_size}"
           app:layout_width="@{(vm.rebloggedBy == null) ? (float)@dimen/avatar_frame_size : (float)@dimen/avatar_top_start_size}" />
 
@@ -71,7 +71,7 @@
           android:layout_height="@dimen/avatar_bottom_end_size"
           android:layout_gravity="bottom|end"
           android:visibility="@{(vm.rebloggedBy == null) ? View.GONE : View.VISIBLE}"
-          app:imageUrl="@{vm.rebloggedBy.avatar}"
+          app:circleImageUrl="@{vm.rebloggedBy.avatar}"
           tools:background="@drawable/ic_repeat_white"
           tools:backgroundTint="@color/reblog_blue" />
       </FrameLayout>

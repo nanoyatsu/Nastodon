@@ -61,7 +61,7 @@
       app:layout_constraintTop_toBottomOf="@id/cw_content">
 
       <ImageView
-        imageUrl="@{vm.liveReplyTo.account.avatarStatic}"
+        app:circleImageUrl="@{vm.liveReplyTo.account.avatarStatic}"
         android:layout_width="@dimen/avatar_top_start_size"
         android:layout_height="@dimen/avatar_top_start_size"
         android:layout_marginTop="4dp"

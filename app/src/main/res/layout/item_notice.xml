@@ -33,7 +33,7 @@
           android:layout_height="36dp"
           android:layout_gravity="top|start"
           android:contentDescription="@string/account_avatar"
-          app:imageUrl="@{vm.notice.account.avatar}" />
+          app:circleImageUrl="@{vm.notice.account.avatar}" />
 
         <ImageView
           android:id="@+id/type_icon"

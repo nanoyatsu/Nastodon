@@ -30,7 +30,7 @@
         android:layout_height="@dimen/avatar_frame_size"
         android:contentDescription="@string/account_avatar"
         android:onClick="@{() -> vm.onAvatarClicked()}"
-        app:imageUrl="@{vm.toot.account.avatar}"
+        app:circleImageUrl="@{vm.toot.account.avatar}"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />

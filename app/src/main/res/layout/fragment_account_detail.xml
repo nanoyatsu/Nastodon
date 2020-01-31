@@ -47,6 +47,7 @@
             android:layout_height="180dp"
             android:alpha="0.7"
             android:background="#444444"
+            app:imageUrl="@{vm.account.headerStatic}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -58,7 +59,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            app:imageUrl="@{vm.account.avatarStatic}"
+            app:circleImageUrl="@{vm.account.avatar}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.12"
             app:layout_constraintStart_toStartOf="parent"
@@ -101,10 +102,10 @@
             android:layout_marginEnd="8dp"
             android:paddingStart="8dp"
             android:paddingEnd="8dp"
-            android:text="@{vm.account.note}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/displayName"
+            app:tootText="@{vm.account.note}"
             tools:text="nanraka_no_profile_sentence" />
 
           <TextView
@@ -113,6 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
+            android:text="@{String.format(@string/accountFollowingCountFormat, vm.account.followingCount)}"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/content"
@@ -123,6 +125,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:text="@{String.format(@string/accountFollowersCountFormat, vm.account.followersCount)}"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/followingCount"
             app:layout_constraintStart_toEndOf="@+id/followingCount"
@@ -135,6 +138,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
+            android:text="@{String.format(@string/accountStatusesCountFormat, vm.account.statusesCount)}"
             app:layout_constraintBottom_toTopOf="@+id/username"
             app:layout_constraintStart_toEndOf="@+id/avatar"
             tools:text="x_toots" />

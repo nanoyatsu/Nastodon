@@ -30,7 +30,6 @@ class ImageViewerFragment : Fragment() {
     }
 
     fun initBinding(binding: FragmentImageViewerBinding) {
-        // todo 拡縮とか
         Glide.with(binding.image)
             .load(url)
             .apply {
