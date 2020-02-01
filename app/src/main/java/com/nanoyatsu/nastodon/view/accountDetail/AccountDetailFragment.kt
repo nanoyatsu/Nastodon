@@ -31,6 +31,8 @@ class AccountDetailFragment : Fragment() {
     @Inject
     lateinit var apiManager: MastodonApiManager
 
+    lateinit var args: AccountDetailFragmentArgs
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         (activity!!.application as NastodonApplication).appComponent.inject(this)
@@ -39,6 +41,7 @@ class AccountDetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
+        args = AccountDetailFragmentArgs.fromBundle(arguments!!)
         binding = FragmentAccountDetailBinding.inflate(inflater, container, false)
             .also { initBinding(it) }
         return binding.root
@@ -63,7 +66,6 @@ class AccountDetailFragment : Fragment() {
     }
 
     private fun generateViewModel(binding: FragmentAccountDetailBinding): AccountViewModel {
-        val args = AccountDetailFragmentArgs.fromBundle(arguments!!)
         val repo = AccountTootsRepository(apiManager.accounts, auth.accessToken, args.account.id)
         val factory = AccountViewModelFactory(args.account, repo)
 
@@ -80,7 +82,7 @@ class AccountDetailFragment : Fragment() {
 
     private val navigation = object : TimelineItemViewHolder.Navigation {
         override fun transAccountDetail(account: Account) {
-            // todo 自分自身のときは遷移しない
+            if (account.id == this@AccountDetailFragment.args.account.id) return
             val directions = AccountDetailFragmentDirections
                 .actionAccountDetailFragmentSelf(account)
             requireActivity().main_fragment_container.findNavController().navigate(directions)

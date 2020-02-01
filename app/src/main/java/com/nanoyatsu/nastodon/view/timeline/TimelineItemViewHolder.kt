@@ -30,7 +30,8 @@ class TimelineItemViewHolder(val binding: ItemTootBinding, private val navigatio
         require(context is FragmentActivity)
         setupAttachments(context, binding.attachments, toot.mediaAttachments)
 
-        val vm = TootViewModel(toot, auth, apiManager) //
+        val vm = TootViewModel(toot, auth, apiManager)
+        vm.avatarClickEvent.observe(context, Observer { if (it) onAvatarClick(vm) })
         vm.timeClickEvent.observe(context, Observer { if (it) onTimeClick(vm) })
         vm.replyEvent.observe(context, Observer { if (it) onReplyClick(vm) })
         vm.reblogEvent.observe(context, Observer { if (it) vm.doReblog() })
@@ -50,6 +51,11 @@ class TimelineItemViewHolder(val binding: ItemTootBinding, private val navigatio
                     override val onThumbnailClick = { onAttachmentClick(contents) }
                 }
             }
+    }
+
+    private fun onAvatarClick(vm: TootViewModel) {
+        navigation?.transAccountDetail(vm.toot.value!!.account)
+        vm.onAvatarClickFinished()
     }
 
     private fun onTimeClick(vm: TootViewModel) {
