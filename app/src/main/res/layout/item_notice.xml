@@ -24,6 +24,7 @@
         android:id="@+id/icon_frame"
         android:layout_width="@dimen/avatar_frame_size"
         android:layout_height="@dimen/avatar_frame_size"
+        android:onClick="@{() -> vm.onAvatarClicked()}"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -33,15 +34,16 @@
           android:layout_height="36dp"
           android:layout_gravity="top|start"
           android:contentDescription="@string/account_avatar"
-          app:circleImageUrl="@{vm.notice.account.avatar}" />
+          app:circleImageUrl="@{vm.notice.account.avatar}"
+          tools:srcCompat="@tools:sample/avatars" />
 
         <ImageView
           android:id="@+id/type_icon"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="bottom|end"
-          tools:background="@drawable/ic_repeat_white"
-          tools:backgroundTint="@color/reblog_blue" />
+          tools:src="@drawable/ic_repeat_white"
+          tools:tint="@color/reblog_blue" />
       </FrameLayout>
 
       <TextView

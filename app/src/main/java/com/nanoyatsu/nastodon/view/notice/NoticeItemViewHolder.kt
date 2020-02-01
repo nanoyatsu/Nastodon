@@ -25,6 +25,7 @@ class NoticeItemViewHolder(val binding: ItemNoticeBinding, private val navigatio
         require(context is FragmentActivity)
         val vm = NoticeItemViewModel(notice)
 
+        vm.avatarClickEvent.observe(context, Observer { if (it) onAvatarClick(vm) })
         vm.contentClickEvent.observe(context, Observer { if (it) onContentClick(vm) })
 
         // todo XML側で解決する（必要ならBindingAdapter）
@@ -36,6 +37,11 @@ class NoticeItemViewHolder(val binding: ItemNoticeBinding, private val navigatio
 
         binding.vm = vm
         binding.lifecycleOwner = context
+    }
+
+    private fun onAvatarClick(vm: NoticeItemViewModel) {
+        vm.notice.status?.let { navigation?.transAccountDetail(vm.notice.account) }
+        vm.onAvatarClickFinished()
     }
 
     private fun onContentClick(vm: NoticeItemViewModel) {
