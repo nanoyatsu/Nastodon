@@ -9,6 +9,8 @@
 
     <import type="android.view.View" />
 
+    <import type="com.nanoyatsu.nastodon.data.domain.Visibility" />
+
     <variable
       name="vm"
       type="com.nanoyatsu.nastodon.view.tootDetail.TootViewModel" />
@@ -192,20 +194,37 @@
         app:layout_constraintTop_toBottomOf="@id/attachments"
         tools:tint="@android:color/darker_gray" />
 
-      <ImageView
+      <FrameLayout
         android:id="@+id/button_repeat"
-        android:layout_width="@dimen/icon_button"
-        android:layout_height="@dimen/icon_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
-        android:contentDescription="@string/button_repeat"
-        android:onClick="@{() -> vm.onReblogClicked()}"
-        android:src="@{vm.reblogEvent == true ? @drawable/animation_refresh : @drawable/ic_repeat_white}"
-        android:tint="@{vm.reblogged == true ? @color/reblog_blue : Color.GRAY}"
         app:layout_constraintStart_toEndOf="@id/button_reply"
-        app:layout_constraintTop_toBottomOf="@id/attachments"
-        tools:src="@drawable/ic_repeat_white"
-        tools:tint="@color/reblog_blue" />
+        app:layout_constraintTop_toBottomOf="@id/attachments">
+
+        <ImageView
+          android:layout_width="@dimen/icon_button"
+          android:layout_height="@dimen/icon_button"
+          android:contentDescription="@string/button_repeat"
+          android:onClick="@{() -> vm.onReblogClicked()}"
+          android:src="@{vm.reblogEvent == true ? @drawable/animation_refresh : @drawable/ic_repeat_white}"
+          android:tint="@{vm.reblogged == true ? @color/reblog_blue : Color.GRAY}"
+          android:visibility="@{vm.toot.visibility == Visibility.PRIVATE || vm.toot.visibility == Visibility.DIRECT ? View.GONE : View.VISIBLE}"
+          tools:src="@drawable/ic_repeat_white"
+          tools:tint="@color/reblog_blue" />
+
+        <ImageView
+          android:layout_width="@dimen/icon_button"
+          android:layout_height="@dimen/icon_button"
+          android:contentDescription="@string/icon_visibility"
+          android:src="@{vm.toot.visibility == Visibility.PRIVATE ? @drawable/ic_lock_white : @drawable/ic_mail_white}"
+          android:tint="@android:color/background_dark"
+          android:visibility="@{vm.toot.visibility == Visibility.PRIVATE || vm.toot.visibility == Visibility.DIRECT ? View.VISIBLE : View.GONE }"
+          tools:src="@drawable/ic_lock_white"
+          tools:visibility="gone" />
+
+      </FrameLayout>
 
       <ImageView
         android:id="@+id/button_star"

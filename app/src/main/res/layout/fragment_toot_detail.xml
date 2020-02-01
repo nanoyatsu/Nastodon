@@ -9,6 +9,8 @@
 
     <import type="android.graphics.Color" />
 
+    <import type="com.nanoyatsu.nastodon.data.domain.Visibility" />
+
     <variable
       name="vm"
       type="com.nanoyatsu.nastodon.view.tootDetail.TootViewModel" />
@@ -169,18 +171,32 @@
         app:layout_constraintTop_toBottomOf="@id/divider_main_under">
 
         <ImageView
-          android:id="@+id/button_repeat"
           android:layout_width="@dimen/icon_button"
           android:layout_height="@dimen/icon_button"
           android:contentDescription="@string/button_repeat"
           android:onClick="@{() -> vm.onReblogClicked()}"
           android:src="@{vm.reblogEvent == true ? @drawable/animation_refresh : @drawable/ic_repeat_white}"
           android:tint="@{vm.reblogged == true ? @color/reblog_blue : Color.GRAY}"
+          android:visibility="@{vm.toot.visibility == Visibility.PRIVATE || vm.toot.visibility == Visibility.DIRECT ? View.GONE : View.VISIBLE}"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintStart_toStartOf="parent"
           app:layout_constraintTop_toTopOf="parent"
           tools:src="@drawable/ic_repeat_white"
           tools:tint="@color/reblog_blue" />
+
+        <ImageView
+          android:layout_width="@dimen/icon_button"
+          android:layout_height="@dimen/icon_button"
+          android:contentDescription="@string/icon_visibility"
+          android:src="@{vm.toot.visibility == Visibility.PRIVATE ? @drawable/ic_lock_white : @drawable/ic_mail_white}"
+          android:tint="@android:color/background_dark"
+          android:visibility="@{vm.toot.visibility == Visibility.PRIVATE || vm.toot.visibility == Visibility.DIRECT ? View.VISIBLE : View.GONE }"
+          app:layout_constraintBottom_toBottomOf="parent"
+          app:layout_constraintStart_toStartOf="parent"
+          app:layout_constraintTop_toTopOf="parent"
+          tools:src="@drawable/ic_lock_white"
+          tools:visibility="gone" />
+
       </androidx.constraintlayout.widget.ConstraintLayout>
 
       <androidx.constraintlayout.widget.ConstraintLayout
