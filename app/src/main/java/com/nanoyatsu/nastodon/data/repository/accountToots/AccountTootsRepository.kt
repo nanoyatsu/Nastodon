@@ -5,6 +5,7 @@ import androidx.paging.LivePagedListBuilder
 import com.nanoyatsu.nastodon.components.networkState.Listing
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiAccounts
+import com.nanoyatsu.nastodon.data.domain.Relationship
 import com.nanoyatsu.nastodon.data.domain.Status
 
 class AccountTootsRepository(
@@ -31,5 +32,11 @@ class AccountTootsRepository(
             refresh = { factory.source?.invalidate() },
             retry = { factory.source?.retryAllFailed() }
         )
+    }
+
+    suspend fun relationship(): Relationship? {
+        // todo エラー処理
+        val relationships = apiDir.getRelationships(token, accountId)
+        return relationships.body()?.firstOrNull()?.asDomainModel()
     }
 }
