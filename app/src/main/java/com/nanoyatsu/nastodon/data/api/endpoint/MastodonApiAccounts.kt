@@ -1,6 +1,7 @@
 package com.nanoyatsu.nastodon.data.api.endpoint
 
 import com.nanoyatsu.nastodon.data.api.entity.APIAccount
+import com.nanoyatsu.nastodon.data.api.entity.APIRelationship
 import com.nanoyatsu.nastodon.data.api.entity.APIStatus
 import retrofit2.Response
 import retrofit2.http.GET
@@ -47,6 +48,13 @@ interface MastodonApiAccounts {
 
     // todo POST /api/v1/accounts/:id/follow
     // todo POST /api/v1/accounts/:id/unfollow
-    // todo GET /api/v1/accounts/relationships
+
+    //クエリは ?id[]=1&id[]=2 の形で指定する
+    @GET("api/v1/accounts/relationships")
+    suspend fun getRelationships(
+        @Header("Authorization") authorization: String,
+        @Query(value = "id[]") id: String // value暫定
+    ): Response<List<APIRelationship>>
+
     // todo GET /api/v1/accounts/search
 }
