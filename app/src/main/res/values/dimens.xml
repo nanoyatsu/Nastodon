@@ -8,6 +8,7 @@
 
   <!-- 一般 -->
   <dimen name="icon_button">24dp</dimen>
+  <dimen name="text_mini">12sp</dimen>
 
   <!-- ユーザーアイコン -->
   <dimen name="avatar_frame_size">48dp</dimen>

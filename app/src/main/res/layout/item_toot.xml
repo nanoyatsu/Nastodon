@@ -90,7 +90,7 @@
         android:onClick="@{() -> vm.toggleFolding()}"
         android:paddingStart="0dp"
         android:paddingEnd="0dp"
-        android:textSize="12sp"
+        android:textSize="@dimen/text_mini"
         android:tint="#555555"
         android:visibility="@{vm.toot.spoilerText.empty ? View.GONE : View.VISIBLE}"
         app:layout_constraintEnd_toEndOf="@id/icon_frame"
