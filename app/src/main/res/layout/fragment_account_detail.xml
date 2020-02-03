@@ -55,7 +55,50 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:srcCompat="@tools:sample/backgrounds/scenic" />
-          <!--          android:maxHeight="180dp"-->
+
+          <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="@id/header"
+            app:layout_constraintTop_toTopOf="@id/header">
+
+            <TextView
+              android:id="@+id/label_muted"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="4dp"
+              android:background="@drawable/shape_corner_4dp"
+              android:backgroundTint="#88333333"
+              android:padding="4dp"
+              android:textColor="@android:color/white"
+              android:textSize="@dimen/text_mini"
+              tools:text="ミュート中" />
+
+            <TextView
+              android:id="@+id/label_blocked"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="4dp"
+              android:background="@drawable/shape_corner_4dp"
+              android:backgroundTint="#88333333"
+              android:padding="4dp"
+              android:textColor="@android:color/white"
+              android:textSize="@dimen/text_mini"
+              tools:text="ブロック中" />
+          </LinearLayout>
+
+          <ImageView
+            android:layout_width="@dimen/icon_button"
+            android:layout_height="@dimen/icon_button"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="12dp"
+            android:src="@drawable/ic_person_add_white"
+            android:tint="?attr/colorPrimary"
+            app:layout_constraintEnd_toEndOf="@id/header"
+            app:layout_constraintTop_toTopOf="@id/header" />
 
           <ImageView
             android:id="@+id/avatar"
