@@ -86,7 +86,7 @@
         android:layout_width="54dp"
         android:layout_height="32dp"
         android:layout_margin="0dp"
-        android:contentDescription="@string/tootUnFoldButtonDescription"
+        android:contentDescription="@string/toot_un_fold_button_description"
         android:onClick="@{() -> vm.toggleFolding()}"
         android:paddingStart="0dp"
         android:paddingEnd="0dp"

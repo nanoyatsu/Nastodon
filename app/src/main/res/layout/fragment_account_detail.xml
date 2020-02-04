@@ -5,6 +5,10 @@
 
   <data>
 
+    <import type="android.view.View" />
+
+    <import type="android.graphics.Color" />
+
     <variable
       name="vm"
       type="com.nanoyatsu.nastodon.view.accountDetail.AccountViewModel" />
@@ -73,8 +77,10 @@
               android:background="@drawable/shape_corner_4dp"
               android:backgroundTint="#88333333"
               android:padding="4dp"
+              android:text="@string/relationship_muting"
               android:textColor="@android:color/white"
               android:textSize="@dimen/text_mini"
+              android:visibility="@{(vm.muting == true) ? View.VISIBLE : View.GONE}"
               tools:text="ミュート中" />
 
             <TextView
@@ -85,9 +91,10 @@
               android:background="@drawable/shape_corner_4dp"
               android:backgroundTint="#88333333"
               android:padding="4dp"
+              android:text="@string/relationship_blocking"
               android:textColor="@android:color/white"
               android:textSize="@dimen/text_mini"
-              tools:text="ブロック中" />
+              android:visibility="@{(vm.blocking == true) ? View.VISIBLE : View.GONE}" />
           </LinearLayout>
 
           <ImageView
@@ -96,9 +103,10 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="12dp"
             android:src="@drawable/ic_person_add_white"
-            android:tint="?attr/colorPrimary"
+            android:tint="@{(vm.following == true) ? @color/colorPrimary : Color.GRAY}"
             app:layout_constraintEnd_toEndOf="@id/header"
-            app:layout_constraintTop_toTopOf="@id/header" />
+            app:layout_constraintTop_toTopOf="@id/header"
+            tools:tint="@android:color/darker_gray" />
 
           <ImageView
             android:id="@+id/avatar"

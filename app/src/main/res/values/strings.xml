@@ -43,5 +43,9 @@
   <string name="accountStatusesCountFormat">%d トゥート</string>
   <string name="accountFollowingCountFormat">フォロー %d</string>
   <string name="accountFollowersCountFormat">フォロワー %d</string>
-  <string name="tootUnFoldButtonDescription">本文を開く</string>
+  <string name="relationship_muting">ミュート中</string>
+  <string name="relationship_blocking">ブロック中</string>
+
+  <!-- image_description -->
+  <string name="toot_un_fold_button_description">本文を開く</string>
 </resources>

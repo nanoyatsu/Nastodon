@@ -1,7 +1,8 @@
 package com.nanoyatsu.nastodon.view.accountDetail
 
-import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Relationship
@@ -22,17 +23,25 @@ class AccountViewModel(val account: Account, repo: AccountTootsRepository) : Vie
     private val refresh = repoResult.refresh
     private val retry = repoResult.retry
 
-    val relationship = MutableLiveData<Relationship?>().apply { value = null }
+    private val relationship = MutableLiveData<Relationship?>().apply { value = null }
+    val following = Transformations.map(relationship) { it?.following }
+    val muting = Transformations.map(relationship) { it?.muting }
+    val blocking = Transformations.map(relationship) { it?.blocking }
+
+    private val _followEvent = MutableLiveData<Boolean>().apply { value = false }
+    val followEvent: LiveData<Boolean> get() = _followEvent
 
     init {
         ioScope.launch {
             relationship.value = repo.relationship()
-            Log.d("core ha", "test")
         }
     }
 
     fun refresh() = refresh.invoke()
     fun retry() = retry.invoke()
+
+    fun onFollowClicked() = run { _followEvent.value = true }
+    fun onFollowClickFinished() = run { _followEvent.value = false }
 
     override fun onCleared() {
         vmJob.cancel()
