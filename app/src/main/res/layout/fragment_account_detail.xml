@@ -102,6 +102,7 @@
             android:layout_height="@dimen/icon_button"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="12dp"
+            android:onClick="@{() -> vm.onFollowClicked()}"
             android:src="@drawable/ic_person_add_white"
             android:tint="@{(vm.following == true) ? @color/colorPrimary : Color.GRAY}"
             app:layout_constraintEnd_toEndOf="@id/header"

@@ -77,6 +77,13 @@ class AccountDetailFragment : Fragment() {
             // SwipeRefreshの表示監視
             isInitialising
                 .observe(viewLifecycleOwner, Observer { binding.swipeRefresh.isRefreshing = it })
+            // フォロー動作 // review : vm側でcoroutineを投げており、finishedの実施箇所要再考
+            followEvent.observe(viewLifecycleOwner, Observer {
+                if (it) {
+                    this.switchFollow()
+                    this.onFollowClickFinished()
+                }
+            })
         }
     }
 

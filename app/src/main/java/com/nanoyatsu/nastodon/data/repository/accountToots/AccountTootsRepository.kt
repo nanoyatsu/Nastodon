@@ -39,4 +39,14 @@ class AccountTootsRepository(
         val relationships = apiDir.getRelationships(token, accountId)
         return relationships.body()?.firstOrNull()?.asDomainModel()
     }
+
+    suspend fun follow():Relationship? {
+        val relationship = apiDir.follow(token, accountId)
+        return relationship.body()?.asDomainModel()
+    }
+
+    suspend fun unFollow():Relationship? {
+        val relationship = apiDir.unFollow(token, accountId)
+        return relationship.body()?.asDomainModel()
+    }
 }

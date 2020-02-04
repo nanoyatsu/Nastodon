@@ -7,12 +7,9 @@ import androidx.lifecycle.ViewModel
 import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Relationship
 import com.nanoyatsu.nastodon.data.repository.accountToots.AccountTootsRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
-class AccountViewModel(val account: Account, repo: AccountTootsRepository) : ViewModel() {
+class AccountViewModel(val account: Account, val repo: AccountTootsRepository) : ViewModel() {
     val vmJob = Job()
     private val ioScope = CoroutineScope(Dispatchers.Main + vmJob)
 
@@ -42,6 +39,15 @@ class AccountViewModel(val account: Account, repo: AccountTootsRepository) : Vie
 
     fun onFollowClicked() = run { _followEvent.value = true }
     fun onFollowClickFinished() = run { _followEvent.value = false }
+
+    fun switchFollow() = runBlocking(Dispatchers.IO + vmJob) {
+        val res = when (following.value) {
+            true -> repo.unFollow()
+            false -> repo.follow()
+            else -> null
+        }
+        relationship.postValue(res)
+    }
 
     override fun onCleared() {
         vmJob.cancel()
