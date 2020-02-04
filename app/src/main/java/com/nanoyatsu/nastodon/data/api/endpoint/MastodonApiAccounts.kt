@@ -4,10 +4,7 @@ import com.nanoyatsu.nastodon.data.api.entity.APIAccount
 import com.nanoyatsu.nastodon.data.api.entity.APIRelationship
 import com.nanoyatsu.nastodon.data.api.entity.APIStatus
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface MastodonApiAccounts {
     // todo GET/api/v1/accounts/:id
@@ -46,8 +43,18 @@ interface MastodonApiAccounts {
         @Query("limit") limit: Int? = null // default 20
     ): Response<List<APIStatus>>
 
-    // todo POST /api/v1/accounts/:id/follow
-    // todo POST /api/v1/accounts/:id/unfollow
+    @POST("api/v1/accounts/{id}/follow")
+    suspend fun follow(
+        @Header("Authorization") authorization: String,
+        @Path("id") id: String // value暫定
+    ): Response<APIRelationship>
+
+    @POST("api/v1/accounts/{id}/unfollow")
+    suspend fun unFollow(
+        @Header("Authorization") authorization: String,
+        @Path("id") id: String // value暫定
+    ): Response<APIRelationship>
+
 
     //クエリは ?id[]=1&id[]=2 の形で指定する
     @GET("api/v1/accounts/relationships")
