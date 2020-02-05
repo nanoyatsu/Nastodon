@@ -209,7 +209,8 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|center" />
+        app:layout_anchorGravity="bottom|center"
+        tools:listitem="@layout/item_toot" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
   </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
