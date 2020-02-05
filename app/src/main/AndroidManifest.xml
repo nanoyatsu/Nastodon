@@ -34,7 +34,6 @@
           android:scheme="mastodon" />
       </intent-filter>
     </activity>
-    <activity android:name=".view.accountList.AccountListActivity" />
   </application>
 
 </manifest>
