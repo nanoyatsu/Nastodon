@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.data.repository.accountToots
+package com.nanoyatsu.nastodon.data.repository.account
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
@@ -8,7 +8,7 @@ import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiAccounts
 import com.nanoyatsu.nastodon.data.domain.Relationship
 import com.nanoyatsu.nastodon.data.domain.Status
 
-class AccountTootsRepository(
+class AccountRepository(
     private val apiDir: MastodonApiAccounts,
     private val token: String,
     private val accountId: String

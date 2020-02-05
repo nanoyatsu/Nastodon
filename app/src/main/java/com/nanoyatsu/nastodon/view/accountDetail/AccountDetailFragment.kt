@@ -17,7 +17,7 @@ import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Attachment
 import com.nanoyatsu.nastodon.data.domain.Status
-import com.nanoyatsu.nastodon.data.repository.accountToots.AccountTootsRepository
+import com.nanoyatsu.nastodon.data.repository.account.AccountRepository
 import com.nanoyatsu.nastodon.databinding.FragmentAccountDetailBinding
 import com.nanoyatsu.nastodon.view.timeline.TimelineAdapter
 import com.nanoyatsu.nastodon.view.timeline.TimelineItemViewHolder
@@ -66,7 +66,7 @@ class AccountDetailFragment : Fragment() {
     }
 
     private fun generateViewModel(binding: FragmentAccountDetailBinding): AccountViewModel {
-        val repo = AccountTootsRepository(apiManager.accounts, auth.accessToken, args.account.id)
+        val repo = AccountRepository(apiManager.accounts, auth.accessToken, args.account.id)
         val factory = AccountViewModelFactory(args.account, repo)
 
         return ViewModelProvider(this, factory).get(AccountViewModel::class.java).apply {

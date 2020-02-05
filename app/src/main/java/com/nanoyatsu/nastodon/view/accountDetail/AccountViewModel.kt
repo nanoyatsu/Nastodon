@@ -6,10 +6,10 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Relationship
-import com.nanoyatsu.nastodon.data.repository.accountToots.AccountTootsRepository
+import com.nanoyatsu.nastodon.data.repository.account.AccountRepository
 import kotlinx.coroutines.*
 
-class AccountViewModel(val account: Account, val repo: AccountTootsRepository) : ViewModel() {
+class AccountViewModel(val account: Account, val repo: AccountRepository) : ViewModel() {
     val vmJob = Job()
     private val ioScope = CoroutineScope(Dispatchers.Main + vmJob)
 

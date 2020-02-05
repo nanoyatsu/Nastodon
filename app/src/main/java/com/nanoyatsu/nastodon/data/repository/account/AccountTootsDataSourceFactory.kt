@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.data.repository.accountToots
+package com.nanoyatsu.nastodon.data.repository.account
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
