@@ -27,6 +27,10 @@ class AccountViewModel(val account: Account, val repo: AccountRepository) : View
 
     private val _followEvent = MutableLiveData<Boolean>().apply { value = false }
     val followEvent: LiveData<Boolean> get() = _followEvent
+    private val _followingsEvent = MutableLiveData<Boolean>().apply { value = false }
+    val followingsEvent: LiveData<Boolean> get() = _followingsEvent
+    private val _followersEvent = MutableLiveData<Boolean>().apply { value = false }
+    val followersEvent: LiveData<Boolean> get() = _followersEvent
 
     init {
         ioScope.launch {
@@ -39,6 +43,10 @@ class AccountViewModel(val account: Account, val repo: AccountRepository) : View
 
     fun onFollowClicked() = run { _followEvent.value = true }
     fun onFollowClickFinished() = run { _followEvent.value = false }
+    fun onFollowingsClicked() = run { _followingsEvent.value = true }
+    fun onFollowingsClickFinished() = run { _followingsEvent.value = false }
+    fun onFollowersClicked() = run { _followersEvent.value = true }
+    fun onFollowersClickFinished() = run { _followersEvent.value = false }
 
     fun switchFollow() = runBlocking(Dispatchers.IO + vmJob) {
         val res = when (following.value) {

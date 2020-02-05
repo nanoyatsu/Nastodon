@@ -22,7 +22,7 @@ class AccountsAdapter(private val context: Context, private val accounts: ArrayL
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val account = LayoutInflater.from(context)
-            .inflate(R.layout.card_account, parent, false) as ConstraintLayout
+            .inflate(R.layout.item_account, parent, false) as ConstraintLayout
         return ViewHolder(
             account
         )

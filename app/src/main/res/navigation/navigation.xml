@@ -88,7 +88,7 @@
     android:id="@+id/accountDetailFragment"
     android:name="com.nanoyatsu.nastodon.view.accountDetail.AccountDetailFragment"
     android:label="AccountDetailFragment"
-    tools:layout="@layout/fragment_account_detail" >
+    tools:layout="@layout/fragment_account_detail">
     <argument
       android:name="account"
       app:argType="com.nanoyatsu.nastodon.data.domain.Account" />
@@ -104,6 +104,14 @@
     <action
       android:id="@+id/action_accountDetailFragment_self"
       app:destination="@id/accountDetailFragment" />
+    <action
+      android:id="@+id/action_accountDetailFragment_to_accountListFragment"
+      app:destination="@id/accountListFragment" />
   </fragment>
+  <fragment
+    android:id="@+id/accountListFragment"
+    android:name="com.nanoyatsu.nastodon.view.accountList.AccountListFragment"
+    android:label="AccountListFragment"
+    tools:layout="@layout/fragment_account_list" />
 
 </navigation>

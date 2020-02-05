@@ -84,7 +84,16 @@ class AccountDetailFragment : Fragment() {
                     this.onFollowClickFinished()
                 }
             })
+            // 遷移
+            followingsEvent.observe(viewLifecycleOwner, Observer { if (it) transAccountList() })
+            followersEvent.observe(viewLifecycleOwner, Observer { if (it) transAccountList() })
         }
+    }
+
+    private fun transAccountList() { // todo 引数
+        val directions = AccountDetailFragmentDirections
+            .actionAccountDetailFragmentToAccountListFragment()
+        requireActivity().main_fragment_container.findNavController().navigate(directions)
     }
 
     private val navigation = object : TimelineItemViewHolder.Navigation {
