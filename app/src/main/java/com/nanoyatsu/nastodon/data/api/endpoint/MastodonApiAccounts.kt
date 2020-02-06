@@ -21,16 +21,20 @@ interface MastodonApiAccounts {
     suspend fun getFollowersById(
         @Header("Authorization") authorization: String,
         @Path("id") id: String,
+        @Query("max_id") maxId: String? = null, // returns are older than ID
+        @Query("since_id") sinceId: String? = null, // returns are newer than ID
         @Query("limit") limit: Int? = null // default 40
-    ): Response<Array<APIAccount>>
+    ): Response<List<APIAccount>>
 
     // GET /api/v1/accounts/:id/following
     @GET("api/v1/accounts/{id}/following")
     suspend fun getFollowingById(
         @Header("Authorization") authorization: String,
         @Path("id") id: String,
+        @Query("max_id") maxId: String? = null, // returns are older than ID
+        @Query("since_id") sinceId: String? = null, // returns are newer than ID
         @Query("limit") limit: Int? = null // default 40
-    ): Response<Array<APIAccount>>
+    ): Response<List<APIAccount>>
 
     @GET("api/v1/accounts/{id}/statuses")
     suspend fun getToots(
