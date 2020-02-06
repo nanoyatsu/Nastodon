@@ -3,7 +3,7 @@ package com.nanoyatsu.nastodon.view.timeline
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,7 +27,7 @@ class TimelineItemViewHolder(val binding: ItemTootBinding, private val navigatio
     }
 
     fun bind(context: Context, toot: Status, apiManager: MastodonApiManager, auth: AuthInfo) {
-        require(context is FragmentActivity)
+        require(context is LifecycleOwner) { "context is not LifecycleOwner" }
         setupAttachments(context, binding.attachments, toot.mediaAttachments)
 
         val vm = TootViewModel(toot, auth, apiManager)

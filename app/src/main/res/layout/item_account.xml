@@ -3,7 +3,12 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools">
 
-  <data />
+  <data>
+
+    <variable
+      name="vm"
+      type="com.nanoyatsu.nastodon.view.accountDetail.AccountViewModel" />
+  </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
@@ -12,8 +17,9 @@
 
     <ImageView
       android:id="@+id/accountAvatar"
-      android:layout_width="48dp"
-      android:layout_height="48dp"
+      android:layout_width="@dimen/avatar_frame_size"
+      android:layout_height="@dimen/avatar_frame_size"
+      app:circleImageUrl="@{vm.account.avatar}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
@@ -24,9 +30,11 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginStart="8dp"
+      android:text="@{vm.account.displayName}"
+      android:textStyle="bold"
       app:layout_constraintStart_toEndOf="@+id/accountAvatar"
       app:layout_constraintTop_toTopOf="parent"
-      tools:text="tootUsername" />
+      tools:text="@tools:sample/full_names" />
 
     <TextView
       android:id="@+id/username"
@@ -34,10 +42,11 @@
       android:layout_height="wrap_content"
       android:layout_marginStart="8dp"
       android:layout_marginEnd="4dp"
+      android:text="@{vm.account.acct}"
       app:layout_constraintEnd_toEndOf="@+id/barrier"
       app:layout_constraintStart_toEndOf="@+id/displayName"
       app:layout_constraintTop_toTopOf="parent"
-      tools:text="accountId" />
+      tools:text="namae@instance" />
 
     <TextView
       android:id="@+id/content"
@@ -50,7 +59,8 @@
       app:layout_constraintEnd_toEndOf="@+id/barrier"
       app:layout_constraintStart_toEndOf="@+id/accountAvatar"
       app:layout_constraintTop_toBottomOf="@+id/displayName"
-      tools:text="statusContent" />
+      app:tootText="@{vm.account.note}"
+      tools:text="profile" />
 
     <TextView
       android:id="@+id/buttonFollow"

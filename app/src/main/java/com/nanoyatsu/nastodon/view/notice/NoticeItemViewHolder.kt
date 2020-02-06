@@ -3,7 +3,7 @@ package com.nanoyatsu.nastodon.view.notice
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.data.domain.Account
@@ -22,7 +22,7 @@ class NoticeItemViewHolder(val binding: ItemNoticeBinding, private val navigatio
     }
 
     fun bind(context: Context, notice: Notification) {
-        require(context is FragmentActivity)
+        require(context is LifecycleOwner) { "context is not LifecycleOwner" }
         val vm = NoticeItemViewModel(notice)
 
         vm.avatarClickEvent.observe(context, Observer { if (it) onAvatarClick(vm) })
