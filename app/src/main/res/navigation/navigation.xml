@@ -112,6 +112,14 @@
     android:id="@+id/accountListFragment"
     android:name="com.nanoyatsu.nastodon.view.accountList.AccountListFragment"
     android:label="AccountListFragment"
-    tools:layout="@layout/fragment_account_list" />
+    tools:layout="@layout/fragment_account_list" >
+    <argument
+      android:name="accountId"
+      app:argType="string" />
+    <argument
+      android:name="kind"
+      app:argType="com.nanoyatsu.nastodon.view.accountList.AccountListViewModel$Kind"
+      android:defaultValue="FOLLOWING" />
+  </fragment>
 
 </navigation>

@@ -19,6 +19,7 @@ import com.nanoyatsu.nastodon.data.domain.Attachment
 import com.nanoyatsu.nastodon.data.domain.Status
 import com.nanoyatsu.nastodon.data.repository.account.AccountRepository
 import com.nanoyatsu.nastodon.databinding.FragmentAccountDetailBinding
+import com.nanoyatsu.nastodon.view.accountList.AccountListViewModel
 import com.nanoyatsu.nastodon.view.timeline.TimelineAdapter
 import com.nanoyatsu.nastodon.view.timeline.TimelineItemViewHolder
 import kotlinx.android.synthetic.main.activity_nav_host.*
@@ -85,14 +86,24 @@ class AccountDetailFragment : Fragment() {
                 }
             })
             // 遷移
-            followingsEvent.observe(viewLifecycleOwner, Observer { if (it) transAccountList() })
-            followersEvent.observe(viewLifecycleOwner, Observer { if (it) transAccountList() })
+            followingsEvent.observe(viewLifecycleOwner, Observer {
+                if (it) {
+                    transAccountList(args.account.id, AccountListViewModel.Kind.FOLLOWING)
+                    onFollowingsClickFinished()
+                }
+            })
+            followersEvent.observe(viewLifecycleOwner, Observer {
+                if (it) {
+                    transAccountList(args.account.id, AccountListViewModel.Kind.FOLLOWER)
+                    onFollowersClickFinished()
+                }
+            })
         }
     }
 
-    private fun transAccountList() { // todo 引数
+    private fun transAccountList(accountId: String, kind: AccountListViewModel.Kind) {
         val directions = AccountDetailFragmentDirections
-            .actionAccountDetailFragmentToAccountListFragment()
+            .actionAccountDetailFragmentToAccountListFragment(accountId, kind)
         requireActivity().main_fragment_container.findNavController().navigate(directions)
     }
 

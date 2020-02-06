@@ -13,12 +13,12 @@ class AccountViewModel(val account: Account, val repo: AccountRepository) : View
     val vmJob = Job()
     private val ioScope = CoroutineScope(Dispatchers.Main + vmJob)
 
-    private val repoResult = repo.posts()
-    val toots = repoResult.pagedList
-    val networkState = repoResult.networkState
-    val isInitialising = repoResult.isRefreshing
-    private val refresh = repoResult.refresh
-    private val retry = repoResult.retry
+    private val repoResult by lazy { repo.posts() }
+    val toots get() = repoResult.pagedList
+    val networkState get() = repoResult.networkState
+    val isInitialising get() = repoResult.isRefreshing
+    private val refresh get() = repoResult.refresh
+    private val retry get() = repoResult.retry
 
     private val relationship = MutableLiveData<Relationship?>().apply { value = null }
     val following = Transformations.map(relationship) { it?.following }
