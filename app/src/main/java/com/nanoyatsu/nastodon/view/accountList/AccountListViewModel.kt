@@ -24,6 +24,9 @@ class AccountListViewModel(
     private val refresh = repoResult.refresh
     private val retry = repoResult.retry
 
+    fun refresh() = refresh.invoke()
+    fun retry() = retry.invoke()
+
     companion object {
         suspend fun followingApiProvider(
             apiDir: MastodonApiAccounts,

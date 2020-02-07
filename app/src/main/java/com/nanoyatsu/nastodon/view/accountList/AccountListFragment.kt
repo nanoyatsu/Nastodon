@@ -26,7 +26,7 @@ class AccountListFragment : Fragment() {
     @Inject
     lateinit var apiManager: MastodonApiManager
 
-    lateinit var args: AccountListFragmentArgs
+    private lateinit var args: AccountListFragmentArgs
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -58,7 +58,7 @@ class AccountListFragment : Fragment() {
 
         // イベント設定
         // SwipeRefresh
-        binding.swipeRefresh.setOnRefreshListener { }
+        binding.swipeRefresh.setOnRefreshListener { vm.refresh() }
     }
 
     private fun generateViewModel(binding: FragmentAccountListBinding): AccountListViewModel {
