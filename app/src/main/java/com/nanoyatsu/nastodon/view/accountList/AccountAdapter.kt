@@ -4,7 +4,10 @@ import android.content.Context
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
+import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
+import com.nanoyatsu.nastodon.components.networkState.NetworkStateItemViewHolder
 import com.nanoyatsu.nastodon.components.networkState.NetworkStatus
 import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiAccounts
 import com.nanoyatsu.nastodon.data.domain.Account
@@ -17,19 +20,40 @@ class AccountAdapter(
     private val token: String,
     private val navigation: AccountItemViewHolder.Navigation? = null
 ) :
-    PagedListAdapter<Account, AccountItemViewHolder>(DiffCallback()) {
+    PagedListAdapter<Account, RecyclerView.ViewHolder>(DiffCallback()) {
 
     private var networkState: NetworkState? = NetworkState.LOADED
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AccountItemViewHolder {
-        return AccountItemViewHolder.from(parent, navigation)
+    override fun getItemCount(): Int =
+        super.getItemCount() + if (hasExtraRow(networkState)) 1 else 0
+
+    override fun getItemViewType(position: Int): Int {
+        return if (!hasExtraRow(networkState) || position < super.getItemCount())
+            R.layout.item_account
+        else
+            R.layout.item_network_state
     }
 
-    override fun onBindViewHolder(holder: AccountItemViewHolder, position: Int) {
-        val account = requireNotNull(getItem(position))
-        // todo AccountIdをメソッド引数にしてインスタンス都度生成不要にする
-        val repo = AccountRepository(apiDir, token, account.id)
-        holder.bind(context, account, repo)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            R.layout.item_toot -> AccountItemViewHolder.from(parent, navigation)
+            R.layout.item_network_state -> NetworkStateItemViewHolder.from(parent, {})
+            else -> throw IllegalArgumentException("unknown view type $viewType")
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is AccountItemViewHolder -> {
+                val account = requireNotNull(getItem(position))
+                // todo AccountIdをメソッド引数にしてインスタンス都度生成不要にする
+                val repo = AccountRepository(apiDir, token, account.id)
+                holder.bind(context, account, repo)
+            }
+            is NetworkStateItemViewHolder -> {
+                holder.bind(networkState)
+            }
+        }
     }
 
     fun setNetworkState(newNetworkState: NetworkState?) {
