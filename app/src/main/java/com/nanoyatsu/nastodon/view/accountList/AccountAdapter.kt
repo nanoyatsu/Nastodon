@@ -36,7 +36,7 @@ class AccountAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            R.layout.item_toot -> AccountItemViewHolder.from(parent, navigation)
+            R.layout.item_account -> AccountItemViewHolder.from(parent, navigation)
             R.layout.item_network_state -> NetworkStateItemViewHolder.from(parent, {})
             else -> throw IllegalArgumentException("unknown view type $viewType")
         }

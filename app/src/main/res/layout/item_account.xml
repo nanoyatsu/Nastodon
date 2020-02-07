@@ -19,6 +19,7 @@
       android:id="@+id/accountAvatar"
       android:layout_width="@dimen/avatar_frame_size"
       android:layout_height="@dimen/avatar_frame_size"
+      android:onClick="@{() -> vm.onAvatarClicked()}"
       app:circleImageUrl="@{vm.account.avatar}"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintStart_toStartOf="parent"

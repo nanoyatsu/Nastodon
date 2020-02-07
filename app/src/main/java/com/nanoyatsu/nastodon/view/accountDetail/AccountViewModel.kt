@@ -25,6 +25,8 @@ class AccountViewModel(val account: Account, val repo: AccountRepository) : View
     val muting = Transformations.map(relationship) { it?.muting }
     val blocking = Transformations.map(relationship) { it?.blocking }
 
+    private val _avatarClickEvent = MutableLiveData<Boolean>().apply { value = false }
+    val avatarClickEvent: LiveData<Boolean> get() = _avatarClickEvent
     private val _followEvent = MutableLiveData<Boolean>().apply { value = false }
     val followEvent: LiveData<Boolean> get() = _followEvent
     private val _followingsEvent = MutableLiveData<Boolean>().apply { value = false }
@@ -41,6 +43,8 @@ class AccountViewModel(val account: Account, val repo: AccountRepository) : View
     fun refresh() = refresh.invoke()
     fun retry() = retry.invoke()
 
+    fun onAvatarClicked() = run { _avatarClickEvent.value = true }
+    fun onAvatarClickFinished() = run { _avatarClickEvent.value = false }
     fun onFollowClicked() = run { _followEvent.value = true }
     fun onFollowClickFinished() = run { _followEvent.value = false }
     fun onFollowingsClicked() = run { _followingsEvent.value = true }

@@ -4,12 +4,13 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.repository.account.AccountRepository
 import com.nanoyatsu.nastodon.databinding.ItemAccountBinding
 
-class AccountItemViewHolder(val binding: ItemAccountBinding, navigation: Navigation?) :
+class AccountItemViewHolder(val binding: ItemAccountBinding, val navigation: Navigation?) :
     RecyclerView.ViewHolder(binding.root) {
     companion object {
         fun from(parent: ViewGroup, navigation: Navigation?): AccountItemViewHolder {
@@ -22,11 +23,17 @@ class AccountItemViewHolder(val binding: ItemAccountBinding, navigation: Navigat
     fun bind(context: Context, account: Account, repo: AccountRepository) {
         require(context is LifecycleOwner) { "context is not LifecycleOwner" }
         val vm = AccountViewModel(account, repo)
+        vm.avatarClickEvent.observe(context, Observer { if (it) onAvatarClick(vm) })
 
         binding.vm = vm
         binding.lifecycleOwner = context
 
         binding.executePendingBindings()
+    }
+
+    private fun onAvatarClick(vm: AccountViewModel) {
+        navigation?.transAccountDetail(vm.account)
+        vm.onAvatarClickFinished()
     }
 
     interface Navigation {

@@ -120,6 +120,9 @@
       android:name="kind"
       app:argType="com.nanoyatsu.nastodon.view.accountList.AccountListViewModel$Kind"
       android:defaultValue="FOLLOWING" />
+    <action
+      android:id="@+id/action_accountListFragment_to_accountDetailFragment"
+      app:destination="@id/accountDetailFragment" />
   </fragment>
 
 </navigation>

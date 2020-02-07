@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
@@ -17,6 +18,7 @@ import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.repository.account.AccountRepository
 import com.nanoyatsu.nastodon.databinding.FragmentAccountListBinding
 import com.nanoyatsu.nastodon.view.accountDetail.AccountItemViewHolder
+import kotlinx.android.synthetic.main.activity_nav_host.*
 import javax.inject.Inject
 
 class AccountListFragment : Fragment() {
@@ -79,8 +81,9 @@ class AccountListFragment : Fragment() {
 
     val navigation = object : AccountItemViewHolder.Navigation {
         override fun transAccountDetail(account: Account) {
-//            val directions =
-
+            val directions = AccountListFragmentDirections
+                .actionAccountListFragmentToAccountDetailFragment(account)
+            requireActivity().main_fragment_container.findNavController().navigate(directions)
         }
     }
 }
