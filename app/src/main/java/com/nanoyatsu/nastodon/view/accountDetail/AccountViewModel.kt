@@ -20,10 +20,15 @@ class AccountViewModel(val account: Account, val repo: AccountRepository) : View
     private val refresh get() = repoResult.refresh
     private val retry get() = repoResult.retry
 
-    private val relationship = MutableLiveData<Relationship?>().apply { value = null }
-    val following = Transformations.map(relationship) { it?.following }
-    val muting = Transformations.map(relationship) { it?.muting }
-    val blocking = Transformations.map(relationship) { it?.blocking }
+    private val relationship by lazy {
+        MutableLiveData<Relationship?>().also {
+            it.value = null
+            ioScope.launch { it.value = repo.relationship() }
+        }
+    }
+    val following by lazy { Transformations.map(relationship) { it?.following } }
+    val muting by lazy { Transformations.map(relationship) { it?.muting } }
+    val blocking by lazy { Transformations.map(relationship) { it?.blocking } }
 
     private val _avatarClickEvent = MutableLiveData<Boolean>().apply { value = false }
     val avatarClickEvent: LiveData<Boolean> get() = _avatarClickEvent
@@ -36,7 +41,7 @@ class AccountViewModel(val account: Account, val repo: AccountRepository) : View
 
     init {
         ioScope.launch {
-            relationship.value = repo.relationship()
+
         }
     }
 
