@@ -24,6 +24,7 @@ class AccountItemViewHolder(val binding: ItemAccountBinding, val navigation: Nav
         require(context is LifecycleOwner) { "context is not LifecycleOwner" }
         val vm = AccountViewModel(account, repo)
         vm.avatarClickEvent.observe(context, Observer { if (it) onAvatarClick(vm) })
+        vm.followEvent.observe(context, Observer { if (it) onFollowButton(vm) })
 
         binding.vm = vm
         binding.lifecycleOwner = context
@@ -34,6 +35,11 @@ class AccountItemViewHolder(val binding: ItemAccountBinding, val navigation: Nav
     private fun onAvatarClick(vm: AccountViewModel) {
         navigation?.transAccountDetail(vm.account)
         vm.onAvatarClickFinished()
+    }
+
+    private fun onFollowButton(vm: AccountViewModel) {
+        vm.switchFollow()
+        vm.onFollowClickFinished()
     }
 
     interface Navigation {
