@@ -14,69 +14,84 @@
 
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:layout_height="wrap_content">
 
-    <ImageView
-      android:id="@+id/accountAvatar"
-      android:layout_width="@dimen/avatar_frame_size"
-      android:layout_height="@dimen/avatar_frame_size"
-      android:onClick="@{() -> vm.onAvatarClicked()}"
-      app:circleImageUrl="@{vm.account.avatar}"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      tools:src="@tools:sample/avatars" />
 
-    <TextView
-      android:id="@+id/displayName"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="8dp"
-      android:layout_marginEnd="4dp"
-      android:text="@{vm.account.displayName}"
-      android:textStyle="bold"
-      app:layout_constraintEnd_toStartOf="@id/button_follow"
-      app:layout_constraintStart_toEndOf="@+id/accountAvatar"
-      app:layout_constraintTop_toTopOf="parent"
-      tools:text="@tools:sample/full_names" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginBottom="2dp"
+      android:padding="8dp">
 
-    <TextView
-      android:id="@+id/username"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="8dp"
-      android:layout_marginEnd="4dp"
-      android:text="@{vm.account.acct}"
+      <ImageView
+        android:id="@+id/accountAvatar"
+        android:layout_width="@dimen/avatar_frame_size"
+        android:layout_height="@dimen/avatar_frame_size"
+        android:onClick="@{() -> vm.onAvatarClicked()}"
+        app:circleImageUrl="@{vm.account.avatar}"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+      <TextView
+        android:id="@+id/displayName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="4dp"
+        android:text="@{vm.account.displayName}"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/button_follow"
+        app:layout_constraintStart_toEndOf="@+id/accountAvatar"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@tools:sample/full_names" />
+
+      <TextView
+        android:id="@+id/username"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="4dp"
+        android:text="@{vm.account.acct}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/button_follow"
+        app:layout_constraintStart_toEndOf="@+id/accountAvatar"
+        app:layout_constraintTop_toBottomOf="@+id/displayName"
+        tools:text="namae@instance" />
+
+      <TextView
+        android:id="@+id/content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="4dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/accountAvatar"
+        app:layout_constraintTop_toBottomOf="@+id/username"
+        app:tootText="@{vm.account.note}"
+        tools:text="profile-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long-long" />
+
+      <ImageView
+        android:id="@+id/button_follow"
+        android:layout_width="@dimen/icon_button"
+        android:layout_height="@dimen/icon_button"
+        android:onClick="@{() -> vm.onFollowClicked()}"
+        android:src="@drawable/ic_person_add_white"
+        android:tint="@{(vm.following == true) ? @color/colorPrimary : Color.GRAY}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:tint="@android:color/darker_gray" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:background="@drawable/shape_divider"
+      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintEnd_toStartOf="@id/button_follow"
-      app:layout_constraintStart_toEndOf="@+id/accountAvatar"
-      app:layout_constraintTop_toBottomOf="@+id/displayName"
-      tools:text="namae@instance" />
-
-    <TextView
-      android:id="@+id/content"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="8dp"
-      android:layout_marginEnd="4dp"
-      android:ellipsize="marquee"
-      android:singleLine="true"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toEndOf="@+id/accountAvatar"
-      app:layout_constraintTop_toBottomOf="@+id/username"
-      app:tootText="@{vm.account.note}"
-      tools:text="profile" />
-
-    <ImageView
-      android:id="@+id/button_follow"
-      android:layout_width="@dimen/icon_button"
-      android:layout_height="@dimen/icon_button"
-      android:onClick="@{() -> vm.onFollowClicked()}"
-      android:src="@drawable/ic_person_add_white"
-      android:tint="@{(vm.following == true) ? @color/colorPrimary : Color.GRAY}"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toTopOf="parent"
-      tools:tint="@android:color/darker_gray" />
-
+      app:layout_constraintStart_toStartOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
