@@ -8,15 +8,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
+import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.components.ZoomOutPageTransformer
 import com.nanoyatsu.nastodon.databinding.FragmentTimelineFrameBinding
 
 /**
- * this -> TimelineFragment
+ * TimelineFragmentを覆うViewPagerを持つFragment
  */
 class TimelineFrameFragment : Fragment() {
 
@@ -30,7 +30,10 @@ class TimelineFrameFragment : Fragment() {
     }
 
     private fun initBinding(binding: FragmentTimelineFrameBinding) {
-        binding.vm = ViewModelProvider(this).get(TimelineFrameViewModel::class.java)
+        val appComponent = (requireActivity().application as NastodonApplication).appComponent
+        val vm = appComponent.viewModelFactory().create(TimelineFrameViewModel::class.java)
+
+        binding.vm = vm
         val pagerAdapter = TimelinePagerAdapter(activity!!)
         binding.pager.adapter = pagerAdapter
         binding.pager.setPageTransformer(ZoomOutPageTransformer())
