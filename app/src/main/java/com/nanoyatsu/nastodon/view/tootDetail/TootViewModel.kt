@@ -13,8 +13,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import javax.inject.Inject
 
-class TootViewModel(
+class TootViewModel @Inject constructor(
     initToot: Status,
     private val auth: AuthInfo,
     apiManager: MastodonApiManager

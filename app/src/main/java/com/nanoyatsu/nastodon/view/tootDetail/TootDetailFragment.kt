@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -43,9 +42,10 @@ class TootDetailFragment : Fragment() {
 
     private fun initBinding(binding: FragmentTootDetailBinding) {
         val args = TootDetailFragmentArgs.fromBundle(arguments!!)
-        val factory = TootViewModelFactory(args.toot, auth, apiManager)
+        val tootComponent = (requireActivity().application as NastodonApplication).appComponent
+            .tootComponent().create(args.toot)
+        val vm = tootComponent.viewModelFactory().create(TootViewModel::class.java)
 
-        val vm = ViewModelProvider(this, factory).get(TootViewModel::class.java)
         vm.avatarClickEvent.observe(viewLifecycleOwner, Observer { if (it) onAvatarClick(vm) })
         vm.replyEvent.observe(viewLifecycleOwner, Observer { if (it) onReplyClick(vm) })
         vm.reblogEvent.observe(viewLifecycleOwner, Observer { if (it) vm.doReblog() })
