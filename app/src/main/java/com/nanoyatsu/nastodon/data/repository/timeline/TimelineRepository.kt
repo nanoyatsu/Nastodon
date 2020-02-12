@@ -4,8 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import com.nanoyatsu.nastodon.components.networkState.Listing
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
-import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiTimelines
+import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.dao.TimelineDao
+import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.data.domain.Status
 import com.nanoyatsu.nastodon.view.timeline.TimelineViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -16,12 +17,11 @@ import java.io.IOException
 class TimelineRepository(
     private val kind: TimelineViewModel.Kind,
     private val dao: TimelineDao,
-    private val apiDir: MastodonApiTimelines,
-    private val token: String
+    apiManager: MastodonApiManager,
+    auth: AuthInfo
 ) {
-    companion object {
-        const val TIMELINE_PAGE_SIZE = 20
-    }
+    val apiDir = apiManager.timelines
+    val token = auth.accessToken
 
     fun posts(): Listing<Status> {
         val networkState = MutableLiveData<NetworkState>().apply { NetworkState.LOADED }
@@ -63,5 +63,9 @@ class TimelineRepository(
                 isRefreshing.postValue(false)
             }
         }
+    }
+
+    companion object {
+        const val TIMELINE_PAGE_SIZE = 20
     }
 }

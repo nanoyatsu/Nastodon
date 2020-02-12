@@ -77,7 +77,7 @@ class TimelineFragment : Fragment() {
     }
 
     private fun generateViewModel(binding: FragmentTimelineBinding): TimelineViewModel {
-        val repo = TimelineRepository(kind, timelineDao, apiManager.timelines, auth.accessToken)
+        val repo = TimelineRepository(kind, timelineDao, apiManager, auth)
         val factory = TimelineViewModelFactory(repo)
 
         return ViewModelProvider(this, factory).get(TimelineViewModel::class.java).apply {
