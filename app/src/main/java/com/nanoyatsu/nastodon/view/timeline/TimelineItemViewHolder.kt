@@ -28,6 +28,7 @@ class TimelineItemViewHolder(val binding: ItemTootBinding, private val navigatio
     fun bind(context: Context, toot: Status) {
         require(context is LifecycleOwner) { "context is not LifecycleOwner" }
         // 描画設定
+        // Attachments-RecyclerView
         setupAttachments(context, binding.attachments, toot.mediaAttachments)
 
         // ViewModel設定

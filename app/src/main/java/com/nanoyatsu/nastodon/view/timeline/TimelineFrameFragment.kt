@@ -20,31 +20,30 @@ import com.nanoyatsu.nastodon.databinding.FragmentTimelineFrameBinding
  */
 class TimelineFrameFragment : Fragment() {
 
-    lateinit var binding: FragmentTimelineFrameBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentTimelineFrameBinding.inflate(inflater, container, false)
+        val binding = FragmentTimelineFrameBinding.inflate(inflater, container, false)
             .also { initBinding(it) }
         return binding.root
     }
 
     private fun initBinding(binding: FragmentTimelineFrameBinding) {
-        val appComponent = (requireActivity().application as NastodonApplication).appComponent
-        val vm = appComponent.viewModelFactory().create(TimelineFrameViewModel::class.java)
-
-        binding.vm = vm
-        val pagerAdapter = TimelinePagerAdapter(activity!!)
-        binding.pager.adapter = pagerAdapter
+        // 描画設定
+        // ViewPager, ViewPagerTab
+        binding.pager.adapter = TimelinePagerAdapter(requireActivity())
         binding.pager.setPageTransformer(ZoomOutPageTransformer())
-
         TabLayoutMediator(binding.pagerTab, binding.pager) { tab, pos ->
             tab.text = TimelineViewModel.Kind.values()[pos].name
-        }
-            .attach()
+        }.attach()
 
-        // FloatingButton
-        binding.vm!!.tootEvent.observe(viewLifecycleOwner, Observer { if (it) transTootEdit() })
+        // ViewModel設定
+        val appComponent = (requireActivity().application as NastodonApplication).appComponent
+        val vm = appComponent.viewModelFactory().create(TimelineFrameViewModel::class.java)
+        vm.tootEvent.observe(viewLifecycleOwner, Observer { if (it) transTootEdit(vm) })
+
+        binding.vm = vm
+        binding.lifecycleOwner = viewLifecycleOwner
     }
 
     private inner class TimelinePagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
@@ -56,8 +55,8 @@ class TimelineFrameFragment : Fragment() {
         }
     }
 
-    private fun transTootEdit() {
+    private fun transTootEdit(vm: TimelineFrameViewModel) {
         findNavController().navigate(TimelineFrameFragmentDirections.actionTimelineFrameFragmentToTootEditFragment())
-        binding.vm!!.onTootClickFinished()
+        vm.onTootClickFinished()
     }
 }

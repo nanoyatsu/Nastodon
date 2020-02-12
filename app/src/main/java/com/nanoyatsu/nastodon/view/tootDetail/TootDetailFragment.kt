@@ -12,30 +12,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
-import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.data.domain.Attachment
 import com.nanoyatsu.nastodon.databinding.FragmentTootDetailBinding
 import kotlinx.android.synthetic.main.activity_nav_host.*
-import javax.inject.Inject
 
 class TootDetailFragment : Fragment() {
-    lateinit var binding: FragmentTootDetailBinding
-    @Inject
-    lateinit var auth: AuthInfo
-    @Inject
-    lateinit var apiManager: MastodonApiManager
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (activity!!.application as NastodonApplication).appComponent.inject(this)
-    }
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentTootDetailBinding.inflate(inflater, container, false)
+        val binding = FragmentTootDetailBinding.inflate(inflater, container, false)
             .also { initBinding(it) }
         return binding.root
     }
