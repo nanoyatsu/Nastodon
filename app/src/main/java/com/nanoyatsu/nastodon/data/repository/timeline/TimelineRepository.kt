@@ -13,8 +13,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
+import javax.inject.Inject
 
-class TimelineRepository(
+class TimelineRepository @Inject constructor(
     private val kind: TimelineViewModel.Kind,
     private val dao: TimelineDao,
     apiManager: MastodonApiManager,

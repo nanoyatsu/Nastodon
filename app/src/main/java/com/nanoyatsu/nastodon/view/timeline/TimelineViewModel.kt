@@ -5,10 +5,11 @@ import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiTimelines
 import com.nanoyatsu.nastodon.data.api.entity.APIStatus
 import com.nanoyatsu.nastodon.data.repository.timeline.TimelineRepository
 import retrofit2.Response
+import javax.inject.Inject
 
 typealias TimelineGetter = (suspend (MastodonApiTimelines, String, String?, String?) -> Response<List<APIStatus>>)
 
-class TimelineViewModel(repo: TimelineRepository) : ViewModel() {
+class TimelineViewModel @Inject constructor(repo: TimelineRepository) : ViewModel() {
     enum class Kind(val getter: TimelineGetter) {
         HOME(::homeTimelineApiProvider),
         LOCAL(::localTimelineApiProvider),
