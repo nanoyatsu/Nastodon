@@ -42,16 +42,18 @@ class TootDetailFragment : Fragment() {
 
     private fun initBinding(binding: FragmentTootDetailBinding) {
         val args = TootDetailFragmentArgs.fromBundle(arguments!!)
+
+        // 描画設定
+        setupAttachments(requireActivity(), binding.attachments, args.toot.mediaAttachments)
+
+        // ViewModel設定
         val tootComponent = (requireActivity().application as NastodonApplication).appComponent
             .tootComponent().create(args.toot)
         val vm = tootComponent.viewModelFactory().create(TootViewModel::class.java)
-
         vm.avatarClickEvent.observe(viewLifecycleOwner, Observer { if (it) onAvatarClick(vm) })
         vm.replyEvent.observe(viewLifecycleOwner, Observer { if (it) onReplyClick(vm) })
         vm.reblogEvent.observe(viewLifecycleOwner, Observer { if (it) vm.doReblog() })
         vm.favouriteEvent.observe(viewLifecycleOwner, Observer { if (it) vm.doFav() })
-
-        setupAttachments(requireActivity(), binding.attachments, args.toot.mediaAttachments)
 
         binding.vm = vm
         binding.lifecycleOwner = this

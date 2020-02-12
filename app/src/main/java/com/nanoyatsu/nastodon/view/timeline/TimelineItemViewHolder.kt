@@ -7,8 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Attachment
 import com.nanoyatsu.nastodon.data.domain.Status
@@ -26,11 +25,15 @@ class TimelineItemViewHolder(val binding: ItemTootBinding, private val navigatio
         }
     }
 
-    fun bind(context: Context, toot: Status, apiManager: MastodonApiManager, auth: AuthInfo) {
+    fun bind(context: Context, toot: Status) {
         require(context is LifecycleOwner) { "context is not LifecycleOwner" }
+        // 描画設定
         setupAttachments(context, binding.attachments, toot.mediaAttachments)
 
-        val vm = TootViewModel(toot, auth, apiManager)
+        // ViewModel設定
+        val tootComponent = (context.applicationContext as NastodonApplication).appComponent
+            .tootComponent().create(toot)
+        val vm = tootComponent.viewModelFactory().create(TootViewModel::class.java)
         vm.avatarClickEvent.observe(context, Observer { if (it) onAvatarClick(vm) })
         vm.timeClickEvent.observe(context, Observer { if (it) onTimeClick(vm) })
         vm.replyEvent.observe(context, Observer { if (it) onReplyClick(vm) })

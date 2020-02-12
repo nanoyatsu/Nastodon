@@ -9,15 +9,9 @@ import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.components.networkState.NetworkStateItemViewHolder
 import com.nanoyatsu.nastodon.components.networkState.NetworkStatus
-import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.data.database.NastodonDataBase
-import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
-import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.data.domain.Notification
 import com.nanoyatsu.nastodon.data.domain.NotificationType
 import com.nanoyatsu.nastodon.view.timeline.TimelineItemViewHolder
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 
 class NoticeAdapter(
     private val context: Context,
@@ -25,16 +19,8 @@ class NoticeAdapter(
     private val tootNavigation: TimelineItemViewHolder.Navigation? = null
 ) :
     PagedListAdapter<Notification, RecyclerView.ViewHolder>(DiffCallback()) {
-    private var authInfoDao: AuthInfoDao = NastodonDataBase.getInstance().authInfoDao()
-    private lateinit var auth: AuthInfo
-    private var apiManager: MastodonApiManager
 
     private var networkState: NetworkState? = NetworkState.LOADED
-
-    init {
-        runBlocking(context = Dispatchers.IO) { auth = authInfoDao.getAll().first() }
-        apiManager = MastodonApiManager(auth.instanceUrl)
-    }
 
     override fun getItemViewType(position: Int): Int {
         if (hasExtraRow(networkState) && position >= super.getItemCount())
@@ -64,7 +50,7 @@ class NoticeAdapter(
         when (getItemViewType(position)) {
             R.layout.item_toot -> {
                 val toot = requireNotNull(getItem(position)?.status)
-                (holder as TimelineItemViewHolder).bind(context, toot, apiManager, auth)
+                (holder as TimelineItemViewHolder).bind(context, toot)
             }
             R.layout.item_notice -> {
                 val notice = requireNotNull(getItem(position))

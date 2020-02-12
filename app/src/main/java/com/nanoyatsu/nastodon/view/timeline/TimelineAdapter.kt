@@ -9,29 +9,15 @@ import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.components.networkState.NetworkStateItemViewHolder
 import com.nanoyatsu.nastodon.components.networkState.NetworkStatus
-import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.domain.Status
-import com.nanoyatsu.nastodon.data.database.NastodonDataBase
-import com.nanoyatsu.nastodon.data.database.dao.AuthInfoDao
-import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 
 class TimelineAdapter(
     private val context: Context,
     private val navigation: TimelineItemViewHolder.Navigation? = null
 ) :
     PagedListAdapter<Status, RecyclerView.ViewHolder>(DiffCallback()) {
-    private var authInfoDao: AuthInfoDao = NastodonDataBase.getInstance().authInfoDao()
-    private lateinit var auth: AuthInfo
-    private var apiManager: MastodonApiManager
 
     private var networkState: NetworkState? = NetworkState.LOADED
-
-    init {
-        runBlocking(context = Dispatchers.IO) { auth = authInfoDao.getAll().first() }
-        apiManager = MastodonApiManager(auth.instanceUrl)
-    }
 
     override fun getItemViewType(position: Int): Int {
         return if (!hasExtraRow(networkState) || position < super.getItemCount())
@@ -57,7 +43,7 @@ class TimelineAdapter(
         when (getItemViewType(position)) {
             R.layout.item_toot -> {
                 val toot = getItem(position)
-                (holder as TimelineItemViewHolder).bind(context, toot!!, apiManager, auth)
+                (holder as TimelineItemViewHolder).bind(context, toot!!)
             }
             R.layout.item_network_state -> {
                 (holder as NetworkStateItemViewHolder).bind(networkState)
