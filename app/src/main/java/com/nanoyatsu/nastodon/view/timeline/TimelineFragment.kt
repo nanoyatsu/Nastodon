@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +17,6 @@ import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Attachment
 import com.nanoyatsu.nastodon.data.domain.Status
-import com.nanoyatsu.nastodon.data.repository.timeline.TimelineRepository
 import com.nanoyatsu.nastodon.databinding.FragmentTimelineBinding
 import kotlinx.android.synthetic.main.activity_nav_host.*
 import javax.inject.Inject
@@ -77,10 +75,12 @@ class TimelineFragment : Fragment() {
     }
 
     private fun generateViewModel(binding: FragmentTimelineBinding): TimelineViewModel {
-        val repo = TimelineRepository(kind, timelineDao, apiManager, auth)
-        val factory = TimelineViewModelFactory(repo)
-
-        return ViewModelProvider(this, factory).get(TimelineViewModel::class.java).apply {
+        //        val repo = TimelineRepository(kind, timelineDao, apiManager, auth)
+        //        val factory = TimelineViewModelFactory(repo)
+        val timelineComponent = (requireActivity().application as NastodonApplication).appComponent
+            .timelineComponent().create(kind)
+        //        return ViewModelProvider(this, factory).get(TimelineViewModel::class.java).apply {
+        return timelineComponent.viewModelFactory().create(TimelineViewModel::class.java).apply {
             // Timelineの常時更新
             val adapter = binding.timelineView.adapter as TimelineAdapter
             statuses.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })

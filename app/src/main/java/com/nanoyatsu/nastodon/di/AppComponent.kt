@@ -2,6 +2,8 @@ package com.nanoyatsu.nastodon.di
 
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
+import com.nanoyatsu.nastodon.di.module.timeline.TimelineComponent
+import com.nanoyatsu.nastodon.di.module.timeline.TimelineComponentModule
 import com.nanoyatsu.nastodon.di.module.toot.TootComponent
 import com.nanoyatsu.nastodon.di.module.toot.TootComponentModule
 import com.nanoyatsu.nastodon.view.NavHostActivity
@@ -14,7 +16,14 @@ import com.nanoyatsu.nastodon.view.tootEdit.TootEditFragment
 import dagger.BindsInstance
 import dagger.Component
 
-@Component(modules = [AccountModule::class, BindModule::class, TootComponentModule::class])
+@Component(
+    modules = [
+        AccountModule::class,
+        BindModule::class,
+        TootComponentModule::class,
+        TimelineComponentModule::class
+    ]
+)
 interface AppComponent {
     @Component.Factory
     interface Factory {
@@ -22,6 +31,7 @@ interface AppComponent {
     }
 
     fun tootComponent(): TootComponent.Factory
+    fun timelineComponent(): TimelineComponent.Factory
 
     fun viewModelFactory(): ViewModelProvider.Factory
 
