@@ -14,9 +14,10 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import retrofit2.Response
 import java.util.*
+import javax.inject.Inject
 
 
-class TootEditViewModel(
+class TootEditViewModel @Inject constructor(
     replyTo: Status?,
     private val auth: AuthInfo,
     private val apiManager: MastodonApiManager
