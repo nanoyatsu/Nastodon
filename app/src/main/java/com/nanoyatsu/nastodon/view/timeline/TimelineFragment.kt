@@ -1,6 +1,5 @@
 package com.nanoyatsu.nastodon.view.timeline
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,39 +10,23 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
-import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.data.database.dao.TimelineDao
-import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Attachment
 import com.nanoyatsu.nastodon.data.domain.Status
 import com.nanoyatsu.nastodon.databinding.FragmentTimelineBinding
 import kotlinx.android.synthetic.main.activity_nav_host.*
-import javax.inject.Inject
 
 class TimelineFragment : Fragment() {
 
     private lateinit var binding: FragmentTimelineBinding
-    lateinit var kind: TimelineViewModel.Kind
-
-    @Inject
-    lateinit var auth: AuthInfo
-    @Inject
-    lateinit var timelineDao: TimelineDao
-    @Inject
-    lateinit var apiManager: MastodonApiManager
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (activity!!.application as NastodonApplication).appComponent.inject(this)
-    }
+    var args = Args()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (auth.instanceUrl == "") return // todo 認証に行く
         arguments?.let {
-            kind = TimelineViewModel.Kind.values().getOrNull(it.getInt(ARG_KEY_KIND))
+            val kind = TimelineViewModel.Kind.values().getOrNull(it.getInt(ARG_KEY_KIND))
                 ?: TimelineViewModel.Kind.HOME
+            args = Args(kind)
         }
     }
 
@@ -75,11 +58,9 @@ class TimelineFragment : Fragment() {
     }
 
     private fun generateViewModel(binding: FragmentTimelineBinding): TimelineViewModel {
-        //        val repo = TimelineRepository(kind, timelineDao, apiManager, auth)
-        //        val factory = TimelineViewModelFactory(repo)
         val timelineComponent = (requireActivity().application as NastodonApplication).appComponent
-            .timelineComponent().create(kind)
-        //        return ViewModelProvider(this, factory).get(TimelineViewModel::class.java).apply {
+            .timelineComponent().create(args.kind)
+
         return timelineComponent.viewModelFactory().create(TimelineViewModel::class.java).apply {
             // Timelineの常時更新
             val adapter = binding.timelineView.adapter as TimelineAdapter
@@ -130,5 +111,9 @@ class TimelineFragment : Fragment() {
                     putInt(ARG_KEY_KIND, kind.ordinal)
                 }
             }
+
+        data class Args(
+            val kind: TimelineViewModel.Kind = TimelineViewModel.Kind.HOME
+        )
     }
 }
