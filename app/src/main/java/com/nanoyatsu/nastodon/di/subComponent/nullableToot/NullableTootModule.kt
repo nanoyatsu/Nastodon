@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.di.module.nullableToot
+package com.nanoyatsu.nastodon.di.subComponent.nullableToot
 
 import androidx.lifecycle.ViewModel
 import com.nanoyatsu.nastodon.di.annotation.ViewModelKey

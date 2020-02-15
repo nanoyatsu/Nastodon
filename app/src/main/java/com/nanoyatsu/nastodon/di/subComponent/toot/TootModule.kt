@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.di.module.toot
+package com.nanoyatsu.nastodon.di.subComponent.toot
 
 import androidx.lifecycle.ViewModel
 import com.nanoyatsu.nastodon.di.annotation.ViewModelKey

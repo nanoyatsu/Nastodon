@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.di.module.toot
+package com.nanoyatsu.nastodon.di.subComponent.toot
 
 import com.nanoyatsu.nastodon.data.domain.Status
 import com.nanoyatsu.nastodon.view.common.ViewModelFactory

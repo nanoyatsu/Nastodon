@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.di.module.timeline
+package com.nanoyatsu.nastodon.di.subComponent.timeline
 
 import androidx.lifecycle.ViewModel
 import com.nanoyatsu.nastodon.di.annotation.ViewModelKey

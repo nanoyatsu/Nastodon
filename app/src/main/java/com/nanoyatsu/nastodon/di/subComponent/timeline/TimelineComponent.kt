@@ -1,4 +1,4 @@
-package com.nanoyatsu.nastodon.di.module.timeline
+package com.nanoyatsu.nastodon.di.subComponent.timeline
 
 import com.nanoyatsu.nastodon.view.common.ViewModelFactory
 import com.nanoyatsu.nastodon.view.timeline.TimelineViewModel

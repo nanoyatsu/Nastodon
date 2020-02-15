@@ -2,9 +2,9 @@ package com.nanoyatsu.nastodon.di
 
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
-import com.nanoyatsu.nastodon.di.module.nullableToot.NullableTootComponent
-import com.nanoyatsu.nastodon.di.module.timeline.TimelineComponent
-import com.nanoyatsu.nastodon.di.module.toot.TootComponent
+import com.nanoyatsu.nastodon.di.subComponent.nullableToot.NullableTootComponent
+import com.nanoyatsu.nastodon.di.subComponent.timeline.TimelineComponent
+import com.nanoyatsu.nastodon.di.subComponent.toot.TootComponent
 import com.nanoyatsu.nastodon.view.NavHostActivity
 import com.nanoyatsu.nastodon.view.accountDetail.AccountDetailFragment
 import com.nanoyatsu.nastodon.view.accountList.AccountListFragment
