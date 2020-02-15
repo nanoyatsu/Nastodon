@@ -6,8 +6,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.domain.Account
-import com.nanoyatsu.nastodon.data.repository.account.AccountRepository
 import com.nanoyatsu.nastodon.databinding.ItemAccountBinding
 
 class AccountItemViewHolder(val binding: ItemAccountBinding, val navigation: Navigation?) :
@@ -20,9 +20,13 @@ class AccountItemViewHolder(val binding: ItemAccountBinding, val navigation: Nav
         }
     }
 
-    fun bind(context: Context, account: Account, repo: AccountRepository) {
+    fun bind(context: Context, account: Account) {
         require(context is LifecycleOwner) { "context is not LifecycleOwner" }
-        val vm = AccountViewModel(account, repo)
+
+        // ViewModel設定
+        val accountComponent = (context.applicationContext as NastodonApplication).appComponent
+            .accountComponent().create(account)
+        val vm = accountComponent.viewModelFactory().create(AccountViewModel::class.java)
         vm.avatarClickEvent.observe(context, Observer { if (it) onAvatarClick(vm) })
         vm.followEvent.observe(context, Observer { if (it) onFollowButton(vm) })
 

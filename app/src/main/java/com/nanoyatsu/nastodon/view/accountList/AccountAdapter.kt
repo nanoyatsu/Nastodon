@@ -9,16 +9,11 @@ import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.components.networkState.NetworkStateItemViewHolder
 import com.nanoyatsu.nastodon.components.networkState.NetworkStatus
-import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.data.domain.Account
-import com.nanoyatsu.nastodon.data.repository.account.AccountRepository
 import com.nanoyatsu.nastodon.view.accountDetail.AccountItemViewHolder
 
 class AccountAdapter(
     private val context: Context,
-    private val apiManager: MastodonApiManager,
-    private val auth: AuthInfo,
     private val navigation: AccountItemViewHolder.Navigation? = null
 ) :
     PagedListAdapter<Account, RecyclerView.ViewHolder>(DiffCallback()) {
@@ -48,8 +43,7 @@ class AccountAdapter(
             is AccountItemViewHolder -> {
                 val account = requireNotNull(getItem(position))
                 // todo AccountIdをメソッド引数にしてインスタンス都度生成不要にする
-                val repo = AccountRepository(apiManager, auth)
-                holder.bind(context, account, repo)
+                holder.bind(context, account)
             }
             is NetworkStateItemViewHolder -> {
                 holder.bind(networkState)

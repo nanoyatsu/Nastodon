@@ -50,8 +50,7 @@ class AccountListFragment : Fragment() {
         // 描画設定
         binding.accountList.layoutManager =
             LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        binding.accountList.adapter =
-            AccountAdapter(context, apiManager, auth, navigation)
+        binding.accountList.adapter = AccountAdapter(context, navigation)
 
         // ViewModel設定
         val vm = generateViewModel(binding)

@@ -2,6 +2,7 @@ package com.nanoyatsu.nastodon.di
 
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
+import com.nanoyatsu.nastodon.di.subComponent.account.AccountComponent
 import com.nanoyatsu.nastodon.di.subComponent.nullableToot.NullableTootComponent
 import com.nanoyatsu.nastodon.di.subComponent.timeline.TimelineComponent
 import com.nanoyatsu.nastodon.di.subComponent.toot.TootComponent
@@ -30,6 +31,7 @@ interface AppComponent {
     fun tootComponent(): TootComponent.Factory
     fun nullableTootComponent(): NullableTootComponent.Factory
     fun timelineComponent(): TimelineComponent.Factory
+    fun accountComponent(): AccountComponent.Factory
 
     fun viewModelFactory(): ViewModelProvider.Factory
 

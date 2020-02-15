@@ -41,6 +41,7 @@ class AccountTootsDataSource(
             this.retry = retry
             networkState.postValue(NetworkState.error(ioException.message ?: "unknown error"))
         }
+        // todo タイムアウトで落ちる java.net.SocketTimeoutException 継承環境調べる HttpExceptionでカバーできるやつかも)
         // todo } catch (e: HttpException) {
     }
 

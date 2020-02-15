@@ -10,11 +10,9 @@ import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Relationship
 import com.nanoyatsu.nastodon.data.domain.Status
 import com.nanoyatsu.nastodon.view.accountList.AccountListViewModel
+import javax.inject.Inject
 
-class AccountRepository(
-    apiManager: MastodonApiManager,
-    auth: AuthInfo
-) {
+class AccountRepository @Inject constructor(apiManager: MastodonApiManager, auth: AuthInfo) {
     val apiDir = apiManager.accounts
     val token = auth.accessToken
 
