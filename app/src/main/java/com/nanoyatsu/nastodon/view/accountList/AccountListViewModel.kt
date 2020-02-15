@@ -3,13 +3,11 @@ package com.nanoyatsu.nastodon.view.accountList
 import androidx.lifecycle.ViewModel
 import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiAccounts
 import com.nanoyatsu.nastodon.data.api.entity.APIAccount
+import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.repository.account.AccountRepository
 import retrofit2.Response
 
-class AccountListViewModel(
-    private val kind: Kind,
-    private val repo: AccountRepository
-) : ViewModel() {
+class AccountListViewModel(kind: Kind, account: Account, repo: AccountRepository) : ViewModel() {
     enum class Kind(val getter: (suspend (MastodonApiAccounts, String, String, String?, String?) -> Response<List<APIAccount>>)) {
         FOLLOWING(::followingApiProvider),
         FOLLOWER(::followerApiProvider),
@@ -17,7 +15,7 @@ class AccountListViewModel(
         BLOCKING(::followingApiProvider) // 仮
     }
 
-    private val repoResult = repo.accounts(kind)
+    private val repoResult = repo.accounts(account.id, kind)
     val accounts = repoResult.pagedList
     val networkState = repoResult.networkState
     val isInitialising = repoResult.isRefreshing

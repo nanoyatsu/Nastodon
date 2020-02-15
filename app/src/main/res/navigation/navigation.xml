@@ -114,8 +114,8 @@
     android:label="AccountListFragment"
     tools:layout="@layout/fragment_account_list" >
     <argument
-      android:name="accountId"
-      app:argType="string" />
+      android:name="account"
+      app:argType="com.nanoyatsu.nastodon.data.domain.Account" />
     <argument
       android:name="kind"
       app:argType="com.nanoyatsu.nastodon.view.accountList.AccountListViewModel$Kind"

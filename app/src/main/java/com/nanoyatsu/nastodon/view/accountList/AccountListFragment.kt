@@ -51,7 +51,7 @@ class AccountListFragment : Fragment() {
         binding.accountList.layoutManager =
             LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         binding.accountList.adapter =
-            AccountAdapter(context, apiManager.accounts, auth.accessToken, navigation)
+            AccountAdapter(context, apiManager, auth, navigation)
 
         // ViewModel設定
         val vm = generateViewModel(binding)
@@ -64,8 +64,8 @@ class AccountListFragment : Fragment() {
     }
 
     private fun generateViewModel(binding: FragmentAccountListBinding): AccountListViewModel {
-        val repo = AccountRepository(apiManager.accounts, auth.accessToken, args.accountId)
-        val factory = AccountListViewModelFactory(args.kind, repo)
+        val repo = AccountRepository(apiManager, auth)
+        val factory = AccountListViewModelFactory(args.kind, args.account, repo)
 
         return ViewModelProvider(this, factory).get(AccountListViewModel::class.java).apply {
             // RecyclerViewの更新監視

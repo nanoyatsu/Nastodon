@@ -4,22 +4,21 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import com.nanoyatsu.nastodon.components.networkState.Listing
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
-import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiAccounts
+import com.nanoyatsu.nastodon.data.api.MastodonApiManager
+import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Relationship
 import com.nanoyatsu.nastodon.data.domain.Status
 import com.nanoyatsu.nastodon.view.accountList.AccountListViewModel
 
 class AccountRepository(
-    private val apiDir: MastodonApiAccounts,
-    private val token: String,
-    private val accountId: String
+    apiManager: MastodonApiManager,
+    auth: AuthInfo
 ) {
-    companion object {
-        const val ACCOUNT_STATUSES_PAGE_SIZE = 20
-    }
+    val apiDir = apiManager.accounts
+    val token = auth.accessToken
 
-    fun posts(): Listing<Status> {
+    fun posts(accountId: String): Listing<Status> {
         val networkState = MutableLiveData<NetworkState>().apply { NetworkState.LOADED }
         val isRefreshing = MutableLiveData<Boolean>().apply { value = false }
         val factory =
@@ -36,23 +35,23 @@ class AccountRepository(
         )
     }
 
-    suspend fun relationship(): Relationship? {
+    suspend fun relationship(accountId: String): Relationship? {
         // todo エラー処理
         val relationships = apiDir.getRelationships(token, accountId)
         return relationships.body()?.firstOrNull()?.asDomainModel()
     }
 
-    suspend fun follow(): Relationship? {
+    suspend fun follow(accountId: String): Relationship? {
         val relationship = apiDir.follow(token, accountId)
         return relationship.body()?.asDomainModel()
     }
 
-    suspend fun unFollow(): Relationship? {
+    suspend fun unFollow(accountId: String): Relationship? {
         val relationship = apiDir.unFollow(token, accountId)
         return relationship.body()?.asDomainModel()
     }
 
-    fun accounts(kind: AccountListViewModel.Kind): Listing<Account> {
+    fun accounts(accountId: String, kind: AccountListViewModel.Kind): Listing<Account> {
         val networkState = MutableLiveData<NetworkState>().apply { NetworkState.LOADED }
         val isRefreshing = MutableLiveData<Boolean>().apply { value = false }
         val factory =
@@ -68,4 +67,9 @@ class AccountRepository(
             retry = { factory.source?.retryAllFailed() }
         )
     }
+
+    companion object {
+        const val ACCOUNT_STATUSES_PAGE_SIZE = 20
+    }
+
 }

@@ -8,12 +8,15 @@ import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Relationship
 import com.nanoyatsu.nastodon.data.repository.account.AccountRepository
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
-class AccountViewModel(val account: Account, val repo: AccountRepository) : ViewModel() {
+// fixme : AccountDetail, AccountItemViewHolder(AccountList) それぞれとの関係が複雑になっている 再考
+class AccountViewModel @Inject constructor(val account: Account, val repo: AccountRepository) :
+    ViewModel() {
     val vmJob = Job()
     private val ioScope = CoroutineScope(Dispatchers.Main + vmJob)
 
-    private val repoResult by lazy { repo.posts() }
+    private val repoResult by lazy { repo.posts(account.id) }
     val toots get() = repoResult.pagedList
     val networkState get() = repoResult.networkState
     val isInitialising get() = repoResult.isRefreshing
@@ -23,7 +26,7 @@ class AccountViewModel(val account: Account, val repo: AccountRepository) : View
     private val relationship by lazy {
         MutableLiveData<Relationship?>().also {
             it.value = null
-            ioScope.launch { it.value = repo.relationship() }
+            ioScope.launch { it.value = repo.relationship(account.id) }
         }
     }
     val following by lazy { Transformations.map(relationship) { it?.following } }
@@ -39,12 +42,6 @@ class AccountViewModel(val account: Account, val repo: AccountRepository) : View
     private val _followersEvent = MutableLiveData<Boolean>().apply { value = false }
     val followersEvent: LiveData<Boolean> get() = _followersEvent
 
-    init {
-        ioScope.launch {
-
-        }
-    }
-
     fun refresh() = refresh.invoke()
     fun retry() = retry.invoke()
 
@@ -59,8 +56,8 @@ class AccountViewModel(val account: Account, val repo: AccountRepository) : View
 
     fun switchFollow() = runBlocking(Dispatchers.IO + vmJob) {
         val res = when (following.value) {
-            true -> repo.unFollow()
-            false -> repo.follow()
+            true -> repo.unFollow(account.id)
+            false -> repo.follow(account.id)
             else -> null
         }
         relationship.postValue(res)

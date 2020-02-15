@@ -67,7 +67,7 @@ class AccountDetailFragment : Fragment() {
     }
 
     private fun generateViewModel(binding: FragmentAccountDetailBinding): AccountViewModel {
-        val repo = AccountRepository(apiManager.accounts, auth.accessToken, args.account.id)
+        val repo = AccountRepository(apiManager, auth)
         val factory = AccountViewModelFactory(args.account, repo)
 
         return ViewModelProvider(this, factory).get(AccountViewModel::class.java).apply {
@@ -88,22 +88,22 @@ class AccountDetailFragment : Fragment() {
             // 遷移
             followingsEvent.observe(viewLifecycleOwner, Observer {
                 if (it) {
-                    transAccountList(args.account.id, AccountListViewModel.Kind.FOLLOWING)
+                    transAccountList(args.account, AccountListViewModel.Kind.FOLLOWING)
                     onFollowingsClickFinished()
                 }
             })
             followersEvent.observe(viewLifecycleOwner, Observer {
                 if (it) {
-                    transAccountList(args.account.id, AccountListViewModel.Kind.FOLLOWER)
+                    transAccountList(args.account, AccountListViewModel.Kind.FOLLOWER)
                     onFollowersClickFinished()
                 }
             })
         }
     }
 
-    private fun transAccountList(accountId: String, kind: AccountListViewModel.Kind) {
+    private fun transAccountList(account: Account, kind: AccountListViewModel.Kind) {
         val directions = AccountDetailFragmentDirections
-            .actionAccountDetailFragmentToAccountListFragment(accountId, kind)
+            .actionAccountDetailFragmentToAccountListFragment(account, kind)
         requireActivity().main_fragment_container.findNavController().navigate(directions)
     }
 
