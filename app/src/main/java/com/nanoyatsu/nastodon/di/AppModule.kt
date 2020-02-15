@@ -11,7 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
 @Module
-class AccountModule {
+class AppModule {
     @Provides // todo たぶんアプリケーションレベルの範囲のModuleに移動したほうがよい
     fun provideDB(): NastodonDataBase = NastodonDataBase.getInstance()
 

@@ -3,11 +3,8 @@ package com.nanoyatsu.nastodon.di
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import com.nanoyatsu.nastodon.di.module.nullableToot.NullableTootComponent
-import com.nanoyatsu.nastodon.di.module.nullableToot.NullableTootComponentModule
 import com.nanoyatsu.nastodon.di.module.timeline.TimelineComponent
-import com.nanoyatsu.nastodon.di.module.timeline.TimelineComponentModule
 import com.nanoyatsu.nastodon.di.module.toot.TootComponent
-import com.nanoyatsu.nastodon.di.module.toot.TootComponentModule
 import com.nanoyatsu.nastodon.view.NavHostActivity
 import com.nanoyatsu.nastodon.view.accountDetail.AccountDetailFragment
 import com.nanoyatsu.nastodon.view.accountList.AccountListFragment
@@ -20,11 +17,8 @@ import dagger.Component
 
 @Component(
     modules = [
-        AccountModule::class,
-        BindModule::class,
-        TootComponentModule::class,
-        NullableTootComponentModule::class,
-        TimelineComponentModule::class
+        AppModule::class,
+        BindModule::class
     ]
 )
 interface AppComponent {
