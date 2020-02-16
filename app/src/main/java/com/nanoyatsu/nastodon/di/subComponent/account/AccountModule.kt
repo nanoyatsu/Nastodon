@@ -13,9 +13,4 @@ interface AccountModule {
     @IntoMap
     @ViewModelKey(AccountViewModel::class)
     fun bindAccountViewModel(viewModel: AccountViewModel): ViewModel
-
-//    @Binds
-//    @IntoMap
-//    @ViewModelKey(AccountListViewModel::class)
-//    fun bindAccountListViewModel(viewModel: AccountListViewModel): ViewModel
 }

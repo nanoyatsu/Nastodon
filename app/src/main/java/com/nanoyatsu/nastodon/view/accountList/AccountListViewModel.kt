@@ -6,8 +6,13 @@ import com.nanoyatsu.nastodon.data.api.entity.APIAccount
 import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.repository.account.AccountRepository
 import retrofit2.Response
+import javax.inject.Inject
 
-class AccountListViewModel(kind: Kind, account: Account, repo: AccountRepository) : ViewModel() {
+class AccountListViewModel @Inject constructor(
+    kind: Kind,
+    account: Account,
+    repo: AccountRepository
+) : ViewModel() {
     enum class Kind(val getter: (suspend (MastodonApiAccounts, String, String, String?, String?) -> Response<List<APIAccount>>)) {
         FOLLOWING(::followingApiProvider),
         FOLLOWER(::followerApiProvider),

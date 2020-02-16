@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +14,6 @@ import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.data.domain.Account
-import com.nanoyatsu.nastodon.data.repository.account.AccountRepository
 import com.nanoyatsu.nastodon.databinding.FragmentAccountListBinding
 import com.nanoyatsu.nastodon.view.accountDetail.AccountItemViewHolder
 import kotlinx.android.synthetic.main.activity_nav_host.*
@@ -63,10 +61,11 @@ class AccountListFragment : Fragment() {
     }
 
     private fun generateViewModel(binding: FragmentAccountListBinding): AccountListViewModel {
-        val repo = AccountRepository(apiManager, auth)
-        val factory = AccountListViewModelFactory(args.kind, args.account, repo)
+        val component = (requireActivity().application as NastodonApplication).appComponent
+            .accountComponent().create(args.account).accountListComponent().create(args.kind)
+        val vm = component.viewModelFactory().create(AccountListViewModel::class.java)
 
-        return ViewModelProvider(this, factory).get(AccountListViewModel::class.java).apply {
+        return vm.apply {
             // RecyclerViewの更新監視
             val adapter = binding.accountList.adapter as AccountAdapter
             accounts.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
