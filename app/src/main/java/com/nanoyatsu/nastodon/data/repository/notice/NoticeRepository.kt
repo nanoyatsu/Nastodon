@@ -4,8 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import com.nanoyatsu.nastodon.components.networkState.Listing
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
-import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiNotifications
+import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.dao.NoticeDao
+import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.data.domain.Notification
 import com.nanoyatsu.nastodon.view.notice.NoticeViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -16,12 +17,11 @@ import java.io.IOException
 class NoticeRepository(
     private val kind: NoticeViewModel.Kind,
     private val dao: NoticeDao,
-    private val apiDir: MastodonApiNotifications,
-    private val token: String
+    apiManager: MastodonApiManager,
+    auth: AuthInfo
 ) {
-    companion object {
-        const val NOTICE_PAGE_SIZE = 20
-    }
+    val apiDir = apiManager.notifications
+    val token = auth.accessToken
 
     fun posts(): Listing<Notification> {
         val networkState = MutableLiveData<NetworkState>().apply { NetworkState.LOADED }
@@ -63,5 +63,9 @@ class NoticeRepository(
                 isRefreshing.postValue(false)
             }
         }
+    }
+
+    companion object {
+        const val NOTICE_PAGE_SIZE = 20
     }
 }

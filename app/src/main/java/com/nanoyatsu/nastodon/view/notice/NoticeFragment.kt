@@ -78,7 +78,7 @@ class NoticeFragment : Fragment() {
     }
 
     private fun generateViewModel(binding: FragmentNoticeBinding): NoticeViewModel {
-        val repo = NoticeRepository(kind, noticeDao, apiManager.notifications, auth.accessToken)
+        val repo = NoticeRepository(kind, noticeDao, apiManager, auth)
         val factory = NoticeViewModelFactory(repo)
 
         return ViewModelProvider(this, factory).get(NoticeViewModel::class.java).apply {
