@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +18,6 @@ import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Attachment
 import com.nanoyatsu.nastodon.data.domain.Status
-import com.nanoyatsu.nastodon.data.repository.notice.NoticeRepository
 import com.nanoyatsu.nastodon.databinding.FragmentNoticeBinding
 import com.nanoyatsu.nastodon.view.timeline.TimelineItemViewHolder
 import kotlinx.android.synthetic.main.activity_nav_host.*
@@ -78,10 +76,11 @@ class NoticeFragment : Fragment() {
     }
 
     private fun generateViewModel(binding: FragmentNoticeBinding): NoticeViewModel {
-        val repo = NoticeRepository(kind, noticeDao, apiManager, auth)
-        val factory = NoticeViewModelFactory(repo)
+        val component = (requireActivity().application as NastodonApplication).appComponent
+            .noticeComponent().create(kind)
+        val vm = component.viewModelFactory().create(NoticeViewModel::class.java)
 
-        return ViewModelProvider(this, factory).get(NoticeViewModel::class.java).apply {
+        return vm.apply {
             // RecyclerViewの更新監視
             val adapter = binding.noticeView.adapter as NoticeAdapter
             notifications.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })

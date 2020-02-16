@@ -13,8 +13,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
+import javax.inject.Inject
 
-class NoticeRepository(
+class NoticeRepository @Inject constructor(
     private val kind: NoticeViewModel.Kind,
     private val dao: NoticeDao,
     apiManager: MastodonApiManager,

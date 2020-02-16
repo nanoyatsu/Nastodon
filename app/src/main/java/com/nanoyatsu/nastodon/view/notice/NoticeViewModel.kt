@@ -6,10 +6,11 @@ import com.nanoyatsu.nastodon.data.api.entity.APINotification
 import com.nanoyatsu.nastodon.data.domain.NotificationType
 import com.nanoyatsu.nastodon.data.repository.notice.NoticeRepository
 import retrofit2.Response
+import javax.inject.Inject
 
 typealias NotificationsGetter = (suspend (MastodonApiNotifications, String, String?, String?) -> Response<List<APINotification>>)
 
-class NoticeViewModel(repo: NoticeRepository) : ViewModel() {
+class NoticeViewModel @Inject constructor(repo: NoticeRepository) : ViewModel() {
     enum class Kind(val getter: NotificationsGetter) { ALL(::allNoticeApiProvider), REPLY(::replyNoticeApiProvider) }
 
     private val repoResult = repo.posts()
