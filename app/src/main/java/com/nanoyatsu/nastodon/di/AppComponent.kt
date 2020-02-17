@@ -8,12 +8,6 @@ import com.nanoyatsu.nastodon.di.subComponent.nullableToot.NullableTootComponent
 import com.nanoyatsu.nastodon.di.subComponent.timeline.TimelineComponent
 import com.nanoyatsu.nastodon.di.subComponent.toot.TootComponent
 import com.nanoyatsu.nastodon.view.NavHostActivity
-import com.nanoyatsu.nastodon.view.accountDetail.AccountDetailFragment
-import com.nanoyatsu.nastodon.view.accountList.AccountListFragment
-import com.nanoyatsu.nastodon.view.notice.NoticeFragment
-import com.nanoyatsu.nastodon.view.timeline.TimelineFragment
-import com.nanoyatsu.nastodon.view.tootDetail.TootDetailFragment
-import com.nanoyatsu.nastodon.view.tootEdit.TootEditFragment
 import dagger.BindsInstance
 import dagger.Component
 
@@ -38,11 +32,4 @@ interface AppComponent {
     fun viewModelFactory(): ViewModelProvider.Factory
 
     fun inject(activity: NavHostActivity)
-    fun inject(fragment: TimelineFragment)
-    fun inject(fragment: NoticeFragment)
-    fun inject(fragment: TootEditFragment)
-    fun inject(fragment: TootDetailFragment)
-    fun inject(fragment: AccountDetailFragment)
-    fun inject(fragment: AccountListFragment)
-
 }

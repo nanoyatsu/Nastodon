@@ -1,6 +1,5 @@
 package com.nanoyatsu.nastodon.view.accountList
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,27 +10,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
-import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.databinding.FragmentAccountListBinding
 import com.nanoyatsu.nastodon.view.accountDetail.AccountItemViewHolder
 import kotlinx.android.synthetic.main.activity_nav_host.*
-import javax.inject.Inject
 
 class AccountListFragment : Fragment() {
     private lateinit var binding: FragmentAccountListBinding
-    @Inject
-    lateinit var auth: AuthInfo
-    @Inject
-    lateinit var apiManager: MastodonApiManager
-
     private lateinit var args: AccountListFragmentArgs
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (requireActivity().application as NastodonApplication).appComponent.inject(this)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
