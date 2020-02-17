@@ -1,5 +1,6 @@
 package com.nanoyatsu.nastodon.di.subComponent.notice
 
+import com.nanoyatsu.nastodon.data.repository.notice.NoticeRepository
 import com.nanoyatsu.nastodon.view.common.ViewModelFactory
 import com.nanoyatsu.nastodon.view.notice.NoticeViewModel
 import dagger.BindsInstance
@@ -13,4 +14,6 @@ interface NoticeComponent {
     }
 
     fun viewModelFactory(): ViewModelFactory
+
+    fun inject(repo: NoticeRepository)
 }

@@ -2,6 +2,7 @@ package com.nanoyatsu.nastodon.data.repository.notice
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
+import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.components.networkState.Listing
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
@@ -24,12 +25,16 @@ class NoticeRepository @Inject constructor(
     val apiDir = apiManager.notifications
     val token = auth.accessToken
 
-    fun posts(): Listing<Notification> {
-        val networkState = MutableLiveData<NetworkState>().apply { NetworkState.LOADED }
-        val isRefreshing = MutableLiveData<Boolean>().apply { value = false }
-        val boundaryCallback =
-            NoticeBoundaryCallback(dao, kind, apiDir, token, networkState, isRefreshing)
+    @Inject
+    lateinit var boundaryCallback: NoticeBoundaryCallback
 
+    init {
+        val component = (NastodonApplication.appContext as NastodonApplication).appComponent
+            .noticeComponent().create(kind)
+        component.inject(this)
+    }
+
+    fun posts(): Listing<Notification> {
         val dataSourceFactory = dao.getNotice(kind.ordinal).map { it.asDomainModel() }
         val livePagedList = LivePagedListBuilder(dataSourceFactory, NOTICE_PAGE_SIZE)
             .setBoundaryCallback(boundaryCallback)
@@ -37,9 +42,9 @@ class NoticeRepository @Inject constructor(
 
         return Listing(
             pagedList = livePagedList,
-            networkState = networkState,
-            isRefreshing = isRefreshing,
-            refresh = { refresh(networkState, isRefreshing) },
+            networkState = boundaryCallback.networkState,
+            isRefreshing = boundaryCallback.isRefreshing,
+            refresh = { refresh(boundaryCallback.networkState, boundaryCallback.isRefreshing) },
             retry = { boundaryCallback.retryAllFailed() }
         )
     }

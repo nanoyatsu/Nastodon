@@ -3,9 +3,10 @@ package com.nanoyatsu.nastodon.data.repository.notice
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
-import com.nanoyatsu.nastodon.data.api.endpoint.MastodonApiNotifications
+import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.entity.APINotification
 import com.nanoyatsu.nastodon.data.database.dao.NoticeDao
+import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.data.domain.Notification
 import com.nanoyatsu.nastodon.view.notice.NoticeViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -13,15 +14,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException
+import javax.inject.Inject
 
-class NoticeBoundaryCallback(
+class NoticeBoundaryCallback @Inject constructor(
     private val dao: NoticeDao,
     private val kind: NoticeViewModel.Kind,
-    private val apiDir: MastodonApiNotifications,
-    private val token: String,
-    private val networkState: MutableLiveData<NetworkState>,
-    private val isRefreshing: MutableLiveData<Boolean>
+    apiManager: MastodonApiManager,
+    auth: AuthInfo,
+    val networkState: MutableLiveData<NetworkState>,
+    val isRefreshing: MutableLiveData<Boolean>
 ) : PagedList.BoundaryCallback<Notification>() {
+    val apiDir = apiManager.notifications
+    val token = auth.accessToken
+
     private var retry: (() -> Unit)? = null
 
     // 通信処理の共通部品
