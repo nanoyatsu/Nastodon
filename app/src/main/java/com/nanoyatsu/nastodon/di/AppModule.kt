@@ -42,6 +42,4 @@ class AppModule {
     @Provides
     fun provideMutableLiveBoolean(): MutableLiveData<Boolean> =
         MutableLiveData<Boolean>().apply { value = false }
-
-
 }

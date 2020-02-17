@@ -12,6 +12,7 @@ import com.nanoyatsu.nastodon.data.domain.Status
 import com.nanoyatsu.nastodon.view.accountList.AccountListViewModel
 import javax.inject.Inject
 
+// todo DataSourceをDI accountId(Account)を持つ必要がある(IDしか持っていないclassを先に調整する)
 class AccountRepository @Inject constructor(apiManager: MastodonApiManager, auth: AuthInfo) {
     val apiDir = apiManager.accounts
     val token = auth.accessToken
