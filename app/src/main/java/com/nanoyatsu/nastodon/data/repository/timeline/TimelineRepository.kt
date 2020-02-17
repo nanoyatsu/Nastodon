@@ -2,6 +2,7 @@ package com.nanoyatsu.nastodon.data.repository.timeline
 
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
+import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.components.networkState.Listing
 import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
@@ -24,12 +25,16 @@ class TimelineRepository @Inject constructor(
     val apiDir = apiManager.timelines
     val token = auth.accessToken
 
-    fun posts(): Listing<Status> {
-        val networkState = MutableLiveData<NetworkState>().apply { NetworkState.LOADED }
-        val isRefreshing = MutableLiveData<Boolean>().apply { value = false }
-        val boundaryCallback =
-            TimelineBoundaryCallback(dao, kind, apiDir, token, networkState, isRefreshing)
+    @Inject
+    lateinit var boundaryCallback: TimelineBoundaryCallback
 
+    init {
+        val component = (NastodonApplication.appContext as NastodonApplication).appComponent
+            .timelineComponent().create(kind)
+        component.inject(this)
+    }
+
+    fun posts(): Listing<Status> {
         val dataSourceFactory = dao.getTimeline(kind.ordinal).map { it.asDomainModel() }
         val livePagedList = LivePagedListBuilder(dataSourceFactory, TIMELINE_PAGE_SIZE)
             .setBoundaryCallback(boundaryCallback)
@@ -37,16 +42,15 @@ class TimelineRepository @Inject constructor(
 
         return Listing(
             pagedList = livePagedList,
-            networkState = networkState,
-            isRefreshing = isRefreshing,
-            refresh = { refresh(networkState, isRefreshing) },
+            networkState = boundaryCallback.networkState,
+            isRefreshing = boundaryCallback.isRefreshing,
+            refresh = { refresh(boundaryCallback.networkState, boundaryCallback.isRefreshing) },
             retry = { boundaryCallback.retryAllFailed() }
         )
     }
 
     private fun refresh(
-        networkState: MutableLiveData<NetworkState>,
-        isRefreshing: MutableLiveData<Boolean>
+        networkState: MutableLiveData<NetworkState>, isRefreshing: MutableLiveData<Boolean>
     ) {
         isRefreshing.postValue(true)
         CoroutineScope(context = Dispatchers.IO).launch {

@@ -1,5 +1,7 @@
 package com.nanoyatsu.nastodon.di
 
+import androidx.lifecycle.MutableLiveData
+import com.nanoyatsu.nastodon.components.networkState.NetworkState
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.database.NastodonDataBase
 import com.nanoyatsu.nastodon.data.database.dao.NoticeDao
@@ -30,4 +32,16 @@ class AppModule {
 //    fun provideApiManager(authInfo: AuthInfo?): MastodonApiManager = MastodonApiManager("https://qiitadon.com")
     fun provideApiManager(authInfo: AuthInfo?): MastodonApiManager =
         MastodonApiManager(authInfo?.instanceUrl ?: "")
+
+
+    // 実装箇所が怪しい xxRepository向け
+    @Provides
+    fun provideMutableLiveNetworkState(): MutableLiveData<NetworkState> =
+        MutableLiveData<NetworkState>().apply { NetworkState.LOADED }
+
+    @Provides
+    fun provideMutableLiveBoolean(): MutableLiveData<Boolean> =
+        MutableLiveData<Boolean>().apply { value = false }
+
+
 }

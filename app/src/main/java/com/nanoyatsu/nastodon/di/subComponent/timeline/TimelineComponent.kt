@@ -1,5 +1,6 @@
 package com.nanoyatsu.nastodon.di.subComponent.timeline
 
+import com.nanoyatsu.nastodon.data.repository.timeline.TimelineRepository
 import com.nanoyatsu.nastodon.view.common.ViewModelFactory
 import com.nanoyatsu.nastodon.view.timeline.TimelineViewModel
 import dagger.BindsInstance
@@ -14,4 +15,6 @@ interface TimelineComponent {
     }
 
     fun viewModelFactory(): ViewModelFactory
+
+    fun inject(repo: TimelineRepository)
 }
