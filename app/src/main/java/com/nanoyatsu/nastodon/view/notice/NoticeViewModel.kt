@@ -25,19 +25,15 @@ class NoticeViewModel @Inject constructor(repo: NoticeRepository) : ViewModel() 
 
     companion object {
         const val NOTICE_PAGE_SIZE = 20
-        private val excludeReply =
-            NotificationType.values().filterNot { it == NotificationType.MENTION }.map { it.value }
+        private val excludeReply = NotificationType.values()
+            .filterNot { it == NotificationType.MENTION }.map { it.value }.toTypedArray()
 
         suspend fun allNoticeApiProvider(
             apiDir: MastodonApiNotifications, token: String, maxId: String?, sinceId: String?
         ) = apiDir.getAllNotifications(token, maxId, sinceId, null, null, null, null)
 
-        // fixme excludeTypesとaccountIdが機能していない
-        //  excludeReplyは配列の表現方法が不明(retrofit任せだと同じ名前のパラメータがたくさん出来る、"[\"mention\"]"とか試したけどダメ)
-        //  accountIdはなんで機能してないのかよくわからない
-        //  Notifications系AP自体の使い方に問題があるかもしれない ../clearとかがあるところから考えてもイメージと違うところがありそう
         suspend fun replyNoticeApiProvider(
             apiDir: MastodonApiNotifications, token: String, maxId: String?, sinceId: String?
-        ) = apiDir.getAllNotifications(token, maxId, sinceId, null, null, excludeReply, null)
+        ) = apiDir.getAllNotifications(token, maxId, sinceId, null, null, null, *excludeReply)
     }
 }

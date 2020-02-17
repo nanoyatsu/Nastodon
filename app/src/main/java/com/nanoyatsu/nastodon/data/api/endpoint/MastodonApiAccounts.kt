@@ -64,7 +64,7 @@ interface MastodonApiAccounts {
     @GET("api/v1/accounts/relationships")
     suspend fun getRelationships(
         @Header("Authorization") authorization: String,
-        @Query(value = "id[]") id: String // value暫定
+        @Query(value = "id[]") vararg id: String  // value暫定
     ): Response<List<APIRelationship>>
 
     // todo GET /api/v1/accounts/search

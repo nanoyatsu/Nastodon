@@ -14,8 +14,8 @@ interface MastodonApiNotifications {
         @Query("since_id") sinceId: String? = null,
         @Query("min_id") minId: String? = null,
         @Query("limit") limit: String? = null,
-        @Query("exclude_types") excludeTypes: List<String>? = null,
-        @Query("account_id") accountId: String? = null
+        @Query("account_id") accountId: String? = null,
+        @Query("exclude_types[]") vararg excludeTypes: String? = arrayOf()
     ): Response<List<APINotification>>
 
     // todo GET /api/v1/notifications/:id
