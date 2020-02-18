@@ -3,11 +3,13 @@ package com.nanoyatsu.nastodon.view.timeline
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
+import com.nanoyatsu.nastodon.R
 import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Attachment
 import com.nanoyatsu.nastodon.data.domain.Status
@@ -40,6 +42,7 @@ class TimelineItemViewHolder(val binding: ItemTootBinding, private val navigatio
         vm.replyEvent.observe(context, Observer { if (it) onReplyClick(vm) })
         vm.reblogEvent.observe(context, Observer { if (it) vm.doReblog() })
         vm.favouriteEvent.observe(context, Observer { if (it) vm.doFav() })
+        vm.moreClickEvent.observe(context, Observer { if (it) onMoreClick(context, vm) })
 
         binding.vm = vm
         binding.lifecycleOwner = context
@@ -71,6 +74,13 @@ class TimelineItemViewHolder(val binding: ItemTootBinding, private val navigatio
         navigation?.transTootEditAsReply(vm.toot.value!!)
         vm.onReplyClickFinished()
     }
+
+    private fun onMoreClick(context: Context, vm: TootViewModel) =
+        PopupMenu(context, binding.buttonMore).apply {
+            menuInflater.inflate(R.menu.toot_more, this@apply.menu)
+            show()
+            vm.onMoreClickFinished()
+        }
 
     private fun onAttachmentClick(contents: List<Attachment>) {
         navigation?.transImagePager(contents)

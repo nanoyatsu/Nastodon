@@ -55,6 +55,8 @@ class TootViewModel @Inject constructor(
     val favouriteEvent: LiveData<Boolean> get() = _favouriteEvent
     private val _timeClickEvent = MutableLiveData<Boolean>().apply { value = false }
     val timeClickEvent: LiveData<Boolean> get() = _timeClickEvent
+    private val _moreClickEvent = MutableLiveData<Boolean>().apply { value = false }
+    val moreClickEvent: LiveData<Boolean> get() = _moreClickEvent
 
     // Toot:Statusのうち、変動する値
     val repliesCount = Transformations.map(toot) { it.repliesCount }
@@ -75,7 +77,8 @@ class TootViewModel @Inject constructor(
     private fun onFavouriteFinished() = run { _favouriteEvent.value = false }
     fun onTimeClicked() = run { _timeClickEvent.value = true }
     fun onTimeClickFinished() = run { _timeClickEvent.value = false }
-
+    fun onMoreClicked() = run { _moreClickEvent.value = true }
+    fun onMoreClickFinished() = run { _moreClickEvent.value = false }
 
     fun doReblog() {
         val api = if (reblogged.value!!) apiStatuses::unReblog else apiStatuses::reblog

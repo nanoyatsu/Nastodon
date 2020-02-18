@@ -26,6 +26,7 @@
   <string name="button_repeat">button_repeat</string>
   <string name="icon_visibility">icon_visibility</string>
   <string name="button_star">button_star</string>
+  <string name="button_more">button_more_action</string>
 
   <!-- send_toot -->
   <string name="inputContentWarningTextHint">警告文を入力</string>
