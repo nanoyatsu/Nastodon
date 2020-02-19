@@ -2,6 +2,7 @@ package com.nanoyatsu.nastodon.view.timeline
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.lifecycle.LifecycleOwner
@@ -75,12 +76,25 @@ class TimelineItemViewHolder(val binding: ItemTootBinding, private val navigatio
         vm.onReplyClickFinished()
     }
 
-    private fun onMoreClick(context: Context, vm: TootViewModel) =
+    private fun onMoreClick(context: Context, vm: TootViewModel) = // viewModelにつっこむ
         PopupMenu(context, binding.buttonMore).apply {
-            menuInflater.inflate(R.menu.toot_more, this@apply.menu)
+            setOnMenuItemClickListener { onMenuItemClick(it) }
+            inflate(R.menu.toot_more)
+            menu.setGroupVisible(R.id.toot_more_group_others, false)
             show()
             vm.onMoreClickFinished()
         }
+
+    private fun onMenuItemClick(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.toot_more_pin -> {
+                true
+            }
+            else -> {
+                false
+            }
+        }
+    }
 
     private fun onAttachmentClick(contents: List<Attachment>) {
         navigation?.transImagePager(contents)
@@ -92,4 +106,5 @@ class TimelineItemViewHolder(val binding: ItemTootBinding, private val navigatio
         fun transTootDetail(toot: Status)
         fun transImagePager(contents: List<Attachment>)
     }
+
 }
