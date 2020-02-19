@@ -65,19 +65,20 @@ class TootViewModel @Inject constructor(
     val reblogged = Transformations.map(toot) { it.reblogged }
     val favourited = Transformations.map(toot) { it.favourited }
 
+    fun isMyToot() = (auth.accountId == toot.value?.account?.id)
     fun toggleFolding() = run { isFolding.value = isFolding.value?.not() }
 
-    fun onAvatarClicked() = run { _avatarClickEvent.value = true }
+    fun onAvatarClicked() = run { if (!_avatarClickEvent.value!!) _avatarClickEvent.value = true }
     fun onAvatarClickFinished() = run { _avatarClickEvent.value = false }
-    fun onReplyClicked() = run { _replyEvent.value = true }
+    fun onReplyClicked() = run { if (!_replyEvent.value!!) _replyEvent.value = true }
     fun onReplyClickFinished() = run { _replyEvent.value = false }
-    fun onReblogClicked() = run { _reblogEvent.value = true }
+    fun onReblogClicked() = run { if (!_reblogEvent.value!!) _reblogEvent.value = true }
     private fun onReblogFinished() = run { _reblogEvent.value = false }
-    fun onFavouriteClicked() = run { _favouriteEvent.value = true }
+    fun onFavouriteClicked() = run { if (!_favouriteEvent.value!!) _favouriteEvent.value = true }
     private fun onFavouriteFinished() = run { _favouriteEvent.value = false }
-    fun onTimeClicked() = run { _timeClickEvent.value = true }
+    fun onTimeClicked() = run { if (!_timeClickEvent.value!!) _timeClickEvent.value = true }
     fun onTimeClickFinished() = run { _timeClickEvent.value = false }
-    fun onMoreClicked() = run { _moreClickEvent.value = true }
+    fun onMoreClicked() = run { if (!_moreClickEvent.value!!) _moreClickEvent.value = true }
     fun onMoreClickFinished() = run { _moreClickEvent.value = false }
 
     fun doReblog() {
@@ -88,6 +89,11 @@ class TootViewModel @Inject constructor(
     fun doFav() {
         val api = if (favourited.value!!) apiFavourites::unFavourite else apiFavourites::favourite
         doStatusApi(suspend { api(auth.accessToken, toot.value!!.id) }, ::onFavouriteFinished)
+    }
+
+    fun doPin() {
+        val api = if (toot.value!!.pinned == true) apiStatuses::unPin else apiStatuses::pin
+        doStatusApi(suspend { api(auth.accessToken, toot.value!!.id) }, {})
     }
 
     private fun doStatusApi(api: suspend () -> Response<Status>, onFinished: () -> Unit) {

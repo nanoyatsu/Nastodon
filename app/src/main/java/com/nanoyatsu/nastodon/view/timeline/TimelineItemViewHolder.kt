@@ -2,6 +2,7 @@ package com.nanoyatsu.nastodon.view.timeline
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
@@ -76,23 +77,39 @@ class TimelineItemViewHolder(val binding: ItemTootBinding, private val navigatio
         vm.onReplyClickFinished()
     }
 
-    private fun onMoreClick(context: Context, vm: TootViewModel) = // viewModelにつっこむ
+    private fun onMoreClick(context: Context, vm: TootViewModel) {
+        fun setMenuVisibility(menu: Menu) {
+            if (vm.isMyToot()) {
+                menu.setGroupVisible(R.id.toot_more_group_others, false)
+
+                val pinned = (vm.toot.value!!.pinned == true)
+                menu.findItem(R.id.toot_more_pin).isVisible = !pinned
+                menu.findItem(R.id.toot_more_un_pin).isVisible = pinned
+            } else {
+                menu.setGroupVisible(R.id.toot_more_group_own, false)
+            }
+        }
+
         PopupMenu(context, binding.buttonMore).apply {
-            setOnMenuItemClickListener { onMenuItemClick(it) }
+            setOnMenuItemClickListener { onMenuItemClick(it, vm) }
             inflate(R.menu.toot_more)
-            menu.setGroupVisible(R.id.toot_more_group_others, false)
+            setMenuVisibility(menu)
             show()
             vm.onMoreClickFinished()
         }
+    }
 
-    private fun onMenuItemClick(item: MenuItem?): Boolean {
+    private fun onMenuItemClick(item: MenuItem?, vm: TootViewModel): Boolean {
         return when (item?.itemId) {
-            R.id.toot_more_pin -> {
+            R.id.toot_more_pin,
+            R.id.toot_more_un_pin -> {
+                vm.doPin()
                 true
             }
-            else -> {
-                false
-            }
+            // relationshipが必要 AccountDetailで対応するほうがいいかも
+            R.id.toot_more_block -> true
+            R.id.toot_more_mute -> true
+            else -> false
         }
     }
 
