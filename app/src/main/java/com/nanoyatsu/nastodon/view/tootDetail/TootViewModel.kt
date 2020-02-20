@@ -1,5 +1,7 @@
 package com.nanoyatsu.nastodon.view.tootDetail
 
+import android.content.Intent
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -95,6 +97,14 @@ class TootViewModel @Inject constructor(
         val api = if (toot.value!!.pinned == true) apiStatuses::unPin else apiStatuses::pin
         doStatusApi(suspend { api(auth.accessToken, toot.value!!.id) }, {})
     }
+
+    val tootUriIntent: Intent
+        get() {
+            val uri = Uri.parse(toot.value!!.uri)
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            return intent
+        }
 
     private fun doStatusApi(api: suspend () -> Response<Status>, onFinished: () -> Unit) {
         ioScope.launch {

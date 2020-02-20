@@ -101,15 +101,28 @@ class TimelineItemViewHolder(val binding: ItemTootBinding, private val navigatio
 
     private fun onMenuItemClick(item: MenuItem?, vm: TootViewModel): Boolean {
         return when (item?.itemId) {
+            // 共有...
+            R.id.toot_more_share -> true
+            // ブラウザで開く
+            R.id.toot_more_on_browser -> {
+                NastodonApplication.appContext.startActivity(vm.tootUriIntent)
+                true
+            }
+            // ピン止め
             R.id.toot_more_pin,
             R.id.toot_more_un_pin -> {
                 vm.doPin()
+                true
+            }
+            // ツイートを削除
+            R.id.toot_more_delete -> {
                 true
             }
             // relationshipが必要 AccountDetailで対応するほうがいいかも
             R.id.toot_more_block -> true
             R.id.toot_more_mute -> true
             else -> false
+            // DMを送る
         }
     }
 

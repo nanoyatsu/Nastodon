@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item
+    android:id="@+id/toot_more_share"
+    android:title="toot_more_share" />
+  <item
+    android:id="@+id/toot_more_on_browser"
+    android:title="toot_more_on_browser" />
   <group android:id="@+id/toot_more_group_own">
     <item
       android:id="@+id/toot_more_pin"
@@ -7,6 +13,9 @@
     <item
       android:id="@+id/toot_more_un_pin"
       android:title="toot_more_un_pin" />
+    <item
+      android:id="@+id/toot_more_delete"
+      android:title="toot_more_delete" />
   </group>
   <group android:id="@+id/toot_more_group_others">
     <item
