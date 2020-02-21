@@ -98,12 +98,26 @@ class TootViewModel @Inject constructor(
         doStatusApi(suspend { api(auth.accessToken, toot.value!!.id) }, {})
     }
 
+    val shareIntent: Intent
+        get() {
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                // fixme タグ除去
+                val extraText = "${toot.value!!.content}\n${toot.value!!.uri}"
+                putExtra(Intent.EXTRA_TEXT, extraText)
+                type = "text/plain"
+            }
+            return Intent.createChooser(sendIntent, null).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+        }
+
     val tootUriIntent: Intent
         get() {
             val uri = Uri.parse(toot.value!!.uri)
-            val intent = Intent(Intent.ACTION_VIEW, uri)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            return intent
+            return Intent(Intent.ACTION_VIEW, uri).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
         }
 
     private fun doStatusApi(api: suspend () -> Response<Status>, onFinished: () -> Unit) {

@@ -102,7 +102,10 @@ class TimelineItemViewHolder(val binding: ItemTootBinding, private val navigatio
     private fun onMenuItemClick(item: MenuItem?, vm: TootViewModel): Boolean {
         return when (item?.itemId) {
             // 共有...
-            R.id.toot_more_share -> true
+            R.id.toot_more_share -> {
+                NastodonApplication.appContext.startActivity(vm.shareIntent)
+                true
+            }
             // ブラウザで開く
             R.id.toot_more_on_browser -> {
                 NastodonApplication.appContext.startActivity(vm.tootUriIntent)
