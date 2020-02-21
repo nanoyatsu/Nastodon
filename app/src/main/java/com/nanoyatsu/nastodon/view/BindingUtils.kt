@@ -1,11 +1,11 @@
 package com.nanoyatsu.nastodon.view
 
 import android.os.Build
-import android.text.Html
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.net.toUri
+import androidx.core.text.HtmlCompat
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -69,9 +69,9 @@ fun bindCircleImage(imgView: ImageView, imgUrl: String?) {
 @BindingAdapter("tootText")
 fun bindTootText(view: TextView, text: String?) {
     text?.let {
-        // todo <p>タグの除去
-        // todo androidx.htmlCompat
-        view.text = Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT)
+        val plainText = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_SEPARATOR_LINE_BREAK_DIV)
+        val replaced = plainText.replace("""(\n)+$""".toRegex(), "") // 全体を覆うPタグによる改行が要らない
+        view.text = replaced
     }
 }
 

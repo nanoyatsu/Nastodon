@@ -2,6 +2,7 @@ package com.nanoyatsu.nastodon.view.tootDetail
 
 import android.content.Intent
 import android.net.Uri
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -102,9 +103,11 @@ class TootViewModel @Inject constructor(
         get() {
             val sendIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
-                // fixme タグ除去
-                val extraText = "${toot.value!!.content}\n${toot.value!!.uri}"
-                putExtra(Intent.EXTRA_TEXT, extraText)
+                val plainText = HtmlCompat
+                    .fromHtml(toot.value!!.content, HtmlCompat.FROM_HTML_SEPARATOR_LINE_BREAK_DIV)
+                    .toString()
+                val replaced = plainText.replace("""(\n)+$""".toRegex(), "")
+                putExtra(Intent.EXTRA_TEXT, "${replaced}\n${toot.value!!.uri}")
                 type = "text/plain"
             }
             return Intent.createChooser(sendIntent, null).apply {
