@@ -27,6 +27,11 @@
   <string name="icon_visibility">icon_visibility</string>
   <string name="button_star">button_star</string>
   <string name="button_more">button_more_action</string>
+  <string name="toot_more_share">共有する</string>
+  <string name="toot_more_on_browser">ブラウザで開く</string>
+  <string name="toot_more_pin">ピン止めする</string>
+  <string name="toot_more_un_pin">ピン止めを外す</string>
+  <string name="toot_more_delete">トゥートを削除</string>
 
   <!-- send_toot -->
   <string name="inputContentWarningTextHint">警告文を入力</string>

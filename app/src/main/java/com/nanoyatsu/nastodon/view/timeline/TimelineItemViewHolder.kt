@@ -80,8 +80,6 @@ class TimelineItemViewHolder(val binding: ItemTootBinding, private val navigatio
     private fun onMoreClick(context: Context, vm: TootViewModel) {
         fun setMenuVisibility(menu: Menu) {
             if (vm.isMyToot()) {
-                menu.setGroupVisible(R.id.toot_more_group_others, false)
-
                 val pinned = (vm.toot.value!!.pinned == true)
                 menu.findItem(R.id.toot_more_pin).isVisible = !pinned
                 menu.findItem(R.id.toot_more_un_pin).isVisible = pinned
@@ -121,9 +119,9 @@ class TimelineItemViewHolder(val binding: ItemTootBinding, private val navigatio
             R.id.toot_more_delete -> {
                 true
             }
-            // relationshipが必要 AccountDetailで対応するほうがいいかも
-            R.id.toot_more_block -> true
-            R.id.toot_more_mute -> true
+            // relationshipが必要 todo ミュート・ブロック AccountDetailで対応
+            // R.id.toot_more_block -> true
+            // R.id.toot_more_mute -> true
             else -> false
             // DMを送る
         }

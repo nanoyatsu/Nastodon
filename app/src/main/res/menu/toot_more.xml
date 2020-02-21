@@ -2,33 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
   <item
     android:id="@+id/toot_more_share"
-    android:title="toot_more_share" />
+    android:title="@string/toot_more_share" />
   <item
     android:id="@+id/toot_more_on_browser"
-    android:title="toot_more_on_browser" />
+    android:title="@string/toot_more_on_browser" />
   <group android:id="@+id/toot_more_group_own">
     <item
       android:id="@+id/toot_more_pin"
-      android:title="toot_more_pin" />
+      android:title="@string/toot_more_pin" />
     <item
       android:id="@+id/toot_more_un_pin"
-      android:title="toot_more_un_pin" />
+      android:title="@string/toot_more_un_pin" />
     <item
       android:id="@+id/toot_more_delete"
-      android:title="toot_more_delete" />
-  </group>
-  <group android:id="@+id/toot_more_group_others">
-    <item
-      android:id="@+id/toot_more_mute"
-      android:title="toot_more_mute" />
-    <item
-      android:id="@+id/toot_more_un_mute"
-      android:title="toot_more_un_mute" />
-    <item
-      android:id="@+id/toot_more_block"
-      android:title="toot_more_block" />
-    <item
-      android:id="@+id/toot_more_un_block"
-      android:title="toot_more_un_block" />
+      android:title="@string/toot_more_delete" />
   </group>
 </menu>
