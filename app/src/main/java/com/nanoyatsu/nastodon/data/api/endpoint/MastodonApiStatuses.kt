@@ -33,7 +33,11 @@ interface MastodonApiStatuses {
         @Query("language") language: String? = null
     ): Response<Status>
 
-    // todo DELETE /api/v1/statuses/:id
+    @DELETE("/api/v1/statuses/{id}")
+    suspend fun deleteToot(
+        @Header("Authorization") authorization: String,
+        @Path("id") id: String
+    ): Response<Status>
 
     // POST /api/v1/statuses/:id/reblog
     @POST("api/v1/statuses/{id}/reblog")

@@ -99,6 +99,10 @@ class TootViewModel @Inject constructor(
         doStatusApi(suspend { api(auth.accessToken, toot.value!!.id) }, {})
     }
 
+    fun doDelete() {
+        doStatusApi(suspend { apiStatuses.deleteToot(auth.accessToken, toot.value!!.id) }, {})
+    }
+
     val shareIntent: Intent
         get() {
             val sendIntent: Intent = Intent().apply {

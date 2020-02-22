@@ -115,8 +115,9 @@ class TimelineItemViewHolder(val binding: ItemTootBinding, private val navigatio
                 vm.doPin()
                 true
             }
-            // ツイートを削除
+            // トゥートを削除
             R.id.toot_more_delete -> {
+                vm.doDelete()
                 true
             }
             // relationshipが必要 todo ミュート・ブロック AccountDetailで対応
