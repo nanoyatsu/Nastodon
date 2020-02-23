@@ -59,7 +59,7 @@ class TimelineRepository @Inject constructor(
                 val status = response.body()?.map { it.asDatabaseModel(kind.ordinal) }
                     ?: throw IOException("response.body() is null") // todo レスポンスエラー処理
 
-                dao.deleteAll()
+                dao.deleteByTimelineKind(kind.ordinal)
                 dao.insertAll(status)
                 networkState.postValue(NetworkState.LOADED)
             } catch (ioException: IOException) {

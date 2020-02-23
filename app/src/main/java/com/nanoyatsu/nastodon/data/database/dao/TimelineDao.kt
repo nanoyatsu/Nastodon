@@ -12,8 +12,11 @@ interface TimelineDao {
     @Query("select * from db_status WHERE timeline_kind = :timelineKind")
     fun getTimeline(timelineKind: Int): DataSource.Factory<Int, DBStatus>
 
+    @Query("UPDATE db_status SET status = :status WHERE id = :id")
+    fun update(status: String, id: String)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(videos: List<DBStatus>)
+    fun insertAll(statuses: List<DBStatus>)
 
     @Query("DELETE FROM db_status")
     fun deleteAll()
