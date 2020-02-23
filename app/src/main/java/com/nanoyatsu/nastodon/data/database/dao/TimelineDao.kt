@@ -20,4 +20,7 @@ interface TimelineDao {
 
     @Query("DELETE FROM db_status WHERE timeline_kind = :timelineKind")
     fun deleteByTimelineKind(timelineKind: Int)
+
+    @Query("DELETE FROM db_status WHERE id = :id")
+    fun deleteById(id: String)
 }

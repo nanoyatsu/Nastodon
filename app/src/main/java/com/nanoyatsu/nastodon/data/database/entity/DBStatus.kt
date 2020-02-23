@@ -10,7 +10,7 @@ import com.nanoyatsu.nastodon.data.domain.Status
 // todo (feature) アカウント区分
 @Entity(tableName = "db_status")
 data class DBStatus(
-    @PrimaryKey(autoGenerate = true) val index: Int = 0,
+    @PrimaryKey val id: String,
     @ColumnInfo(name = "timeline_kind") val timelineKind: Int,
     val status: String
 ) {
