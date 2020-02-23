@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
+import com.nanoyatsu.nastodon.data.api.entity.APIStatus
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.data.domain.Status
 import com.nanoyatsu.nastodon.data.domain.Visibility
@@ -62,7 +63,7 @@ class TootEditViewModel @Inject constructor(
         }
     }
 
-    private fun returnArgSetPostToot(): suspend () -> Response<Status> {
+    private fun returnArgSetPostToot(): suspend () -> Response<APIStatus> {
         return suspend {
             apiManager.statuses.postToot(
                 authorization = auth.accessToken,

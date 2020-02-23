@@ -1,6 +1,6 @@
 package com.nanoyatsu.nastodon.data.api.endpoint
 
-import com.nanoyatsu.nastodon.data.domain.Status
+import com.nanoyatsu.nastodon.data.api.entity.APIStatus
 import retrofit2.Response
 import retrofit2.http.Header
 import retrofit2.http.POST
@@ -14,7 +14,7 @@ interface MastodonApiFavourites {
     suspend fun favourite(
         @Header("Authorization") authorization: String,
         @Path("id") id: String
-    ): Response<Status>
+    ): Response<APIStatus>
 
 
     // POST /api/v1/statuses/:id/unfavourite
@@ -22,5 +22,5 @@ interface MastodonApiFavourites {
     suspend fun unFavourite(
         @Header("Authorization") authorization: String,
         @Path("id") id: String
-    ): Response<Status>
+    ): Response<APIStatus>
 }

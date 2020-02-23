@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
+import com.nanoyatsu.nastodon.data.api.entity.APIStatus
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Status
@@ -127,14 +128,14 @@ class TootViewModel @Inject constructor(
             }
         }
 
-    private fun doStatusApi(api: suspend () -> Response<Status>, onFinished: () -> Unit) {
+    private fun doStatusApi(api: suspend () -> Response<APIStatus>, onFinished: () -> Unit) {
         ioScope.launch {
             try {
                 val res = api()
                 if (res.body() == null) {
                     // todo res.errorBody()（JSONパース失敗かと思うので、ここに来る時はたぶん実装ミス）（下位互換切り仕様変更も無いと思いたい）
                 }
-                _toot.value = res.body()!!
+                _toot.value = res.body()!!.asDomainModel()
             } catch (e: Exception) {
                 // todo エラー表示
             } finally {
