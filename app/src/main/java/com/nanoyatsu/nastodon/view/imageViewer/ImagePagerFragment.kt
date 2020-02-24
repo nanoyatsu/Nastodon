@@ -10,7 +10,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.nanoyatsu.nastodon.databinding.FragmentImagePagerBinding
 
 class ImagePagerFragment : Fragment() {
-
+    private val args by lazy { ImagePagerFragmentArgs.fromBundle(arguments!!) }
     lateinit var binding: FragmentImagePagerBinding
 
     override fun onCreateView(
@@ -22,7 +22,6 @@ class ImagePagerFragment : Fragment() {
     }
 
     private fun initBinding(binding: FragmentImagePagerBinding) {
-        val args = ImagePagerFragmentArgs.fromBundle(arguments!!)
         binding.pager.adapter = ImagePagerAdapter(args.urls, activity!!)
     }
 

@@ -21,12 +21,11 @@ import kotlinx.android.synthetic.main.activity_nav_host.*
 
 class AccountDetailFragment : Fragment() {
     lateinit var binding: FragmentAccountDetailBinding
-    lateinit var args: AccountDetailFragmentArgs
+    val args by lazy { AccountDetailFragmentArgs.fromBundle(arguments!!) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        args = AccountDetailFragmentArgs.fromBundle(arguments!!)
         binding = FragmentAccountDetailBinding.inflate(inflater, container, false)
             .also { initBinding(it) }
         return binding.root

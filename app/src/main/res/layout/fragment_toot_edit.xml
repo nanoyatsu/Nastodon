@@ -107,6 +107,15 @@
       app:layout_constraintTop_toBottomOf="@id/frame_reply"
       tool:text="\@nastodon いろはにほへとちりぬるをわかよたれそぬねならむういのおくやまけふこへてあさきゆめみしえひもせす\nいろはにほへと" />
 
+    <Button
+      android:id="@+id/button_media"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:onClick="@{() -> vm.onMediaAddClicked()}"
+      android:text="media"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/content" />
+
     <Spinner
       android:id="@+id/visibilitySpinner"
       android:layout_width="wrap_content"
@@ -114,9 +123,9 @@
       android:layout_margin="8dp"
       android:entries="@{vm.visibilitySpinnerEntries}"
       android:selectedItemPosition="@={vm.visibilityIdx}"
-      app:layout_constraintBottom_toBottomOf="@+id/buttonSend"
-      app:layout_constraintEnd_toStartOf="@+id/buttonSend"
-      app:layout_constraintTop_toTopOf="@+id/buttonSend" />
+      app:layout_constraintBottom_toBottomOf="@id/buttonSend"
+      app:layout_constraintEnd_toStartOf="@id/buttonSend"
+      app:layout_constraintTop_toTopOf="@id/buttonSend" />
 
     <Button
       android:id="@+id/buttonSend"
@@ -128,7 +137,7 @@
       android:onClick="@{() -> vm.onTootSendClicked()}"
       android:text="Button"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/content" />
+      app:layout_constraintTop_toBottomOf="@id/content" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

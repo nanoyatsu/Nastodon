@@ -1,6 +1,7 @@
 package com.nanoyatsu.nastodon.view.tootEdit
 
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,8 @@ import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.databinding.FragmentTootEditBinding
 
 class TootEditFragment : Fragment() {
+    private val args by lazy { TootEditFragmentArgs.fromBundle(arguments!!) }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -21,18 +24,18 @@ class TootEditFragment : Fragment() {
     }
 
     private fun initBinding(binding: FragmentTootEditBinding) {
-        val args = TootEditFragmentArgs.fromBundle(arguments!!)
-
         // ViewModel設定
         val tootComponent = (requireActivity().application as NastodonApplication).appComponent
             .nullableTootComponent().create(args.replyTo)
         val vm = tootComponent.viewModelFactory().create(TootEditViewModel::class.java)
+
         // 警告投稿 review : Switch値のVisibilityへの反映がXML側だけで対応出来ない？
         vm.isContentWarning.observe(viewLifecycleOwner, Observer
         { binding.cwContent.visibility = if (it) View.VISIBLE else View.GONE })
         vm.liveReplyTo.observe(viewLifecycleOwner, Observer
         { binding.frameReply.visibility = if (it != null) View.VISIBLE else View.GONE })
-
+        // 画像追加
+        vm.mediaAddEvent.observe(viewLifecycleOwner, Observer { if (it) addMedia(vm) })
         // トゥート送信イベント
         vm.tootSendEvent.observe(viewLifecycleOwner, Observer { if (it) sendToot(vm) })
 
@@ -40,6 +43,12 @@ class TootEditFragment : Fragment() {
         binding.lifecycleOwner = this
     }
 
+    private fun addMedia(vm: TootEditViewModel) {
+        val i = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            type = "image/*"
+        }
+        startActivity(i)
+    }
 
     private fun sendToot(vm: TootEditViewModel) {
         // todo キーボードをしまう

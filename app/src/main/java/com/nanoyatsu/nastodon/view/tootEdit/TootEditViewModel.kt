@@ -39,10 +39,15 @@ class TootEditViewModel @Inject constructor(
     private val _tootSendEvent = MutableLiveData<Boolean>().apply { value = false }
     val tootSendEvent: LiveData<Boolean>
         get() = _tootSendEvent
+    private val _mediaAddEvent = MutableLiveData<Boolean>().apply { value = false }
+    val mediaAddEvent: LiveData<Boolean>
+        get() = _mediaAddEvent
 
-    fun onTootSendClicked() = run { _tootSendEvent.value = true }
-    fun onTootSendFinished() = run { _tootSendEvent.value = false }
-    fun onReplyToClearClicked() = run { _liveReplyTo.value = null }
+    fun onTootSendClicked() = run { _tootSendEvent.postValue(true) }
+    fun onTootSendFinished() = run { _tootSendEvent.postValue(false) }
+    fun onMediaAddClicked() = run { _mediaAddEvent.postValue(true) }
+    fun onMediaAddFinished() = run { _mediaAddEvent.postValue(false) }
+    fun onReplyToClearClicked() = run { _liveReplyTo.postValue(null) }
 
     fun sendToot(messenger: (String) -> Unit) {
         CoroutineScope(context = Dispatchers.Main).launch {

@@ -17,6 +17,8 @@ import com.nanoyatsu.nastodon.databinding.FragmentTootDetailBinding
 import kotlinx.android.synthetic.main.activity_nav_host.*
 
 class TootDetailFragment : Fragment() {
+    val args by lazy { TootDetailFragmentArgs.fromBundle(arguments!!) }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -26,8 +28,6 @@ class TootDetailFragment : Fragment() {
     }
 
     private fun initBinding(binding: FragmentTootDetailBinding) {
-        val args = TootDetailFragmentArgs.fromBundle(arguments!!)
-
         // 描画設定
         setupAttachments(requireActivity(), binding.attachments, args.toot.mediaAttachments)
 
