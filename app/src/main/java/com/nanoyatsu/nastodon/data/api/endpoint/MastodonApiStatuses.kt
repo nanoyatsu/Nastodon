@@ -37,7 +37,7 @@ interface MastodonApiStatuses {
     suspend fun deleteToot(
         @Header("Authorization") authorization: String,
         @Path("id") id: String
-    ): Response<APIStatus>
+    ): Response<Unit> // v2.9.0 で返りが変則Statusになった
 
     // POST /api/v1/statuses/:id/reblog
     @POST("api/v1/statuses/{id}/reblog")

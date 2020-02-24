@@ -7,27 +7,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
-import com.nanoyatsu.nastodon.data.api.MastodonApiManager
-import com.nanoyatsu.nastodon.data.api.entity.APIStatus
-import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
 import com.nanoyatsu.nastodon.data.domain.Account
 import com.nanoyatsu.nastodon.data.domain.Status
+import com.nanoyatsu.nastodon.data.repository.toot.TootRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import retrofit2.Response
 import javax.inject.Inject
 
 class TootViewModel @Inject constructor(
     initToot: Status,
-    private val auth: AuthInfo,
-    apiManager: MastodonApiManager
+    val repo: TootRepository
 ) : ViewModel() {
     val vmJob = Job()
-    private val ioScope = CoroutineScope(Dispatchers.Main + vmJob)
-    private val apiStatuses = apiManager.statuses
-    private val apiFavourites = apiManager.favourites
+    private val ioScope = CoroutineScope(Dispatchers.IO + vmJob)
 
     // 双方向binding対象
     val isFolding = MutableLiveData<Boolean>().apply { value = true }
@@ -49,8 +43,8 @@ class TootViewModel @Inject constructor(
         }
     }
 
-    private val _avatarClickEvent = MutableLiveData<Boolean>().apply { value = false }
-    val avatarClickEvent: LiveData<Boolean> get() = _avatarClickEvent
+    private val _avatarEvent = MutableLiveData<Boolean>().apply { value = false }
+    val avatarClickEvent: LiveData<Boolean> get() = _avatarEvent
     private val _replyEvent = MutableLiveData<Boolean>().apply { value = false }
     val replyEvent: LiveData<Boolean> get() = _replyEvent
     private val _reblogEvent = MutableLiveData<Boolean>().apply { value = false }
@@ -69,40 +63,35 @@ class TootViewModel @Inject constructor(
     val reblogged = Transformations.map(toot) { it.reblogged }
     val favourited = Transformations.map(toot) { it.favourited }
 
-    fun isMyToot() = (auth.accountId == toot.value?.account?.id)
+    fun isMyToot() = repo.isMyToot(toot.value!!.account.id)
     fun toggleFolding() = run { isFolding.value = isFolding.value?.not() }
 
-    fun onAvatarClicked() = run { if (!_avatarClickEvent.value!!) _avatarClickEvent.value = true }
-    fun onAvatarClickFinished() = run { _avatarClickEvent.value = false }
-    fun onReplyClicked() = run { if (!_replyEvent.value!!) _replyEvent.value = true }
-    fun onReplyClickFinished() = run { _replyEvent.value = false }
-    fun onReblogClicked() = run { if (!_reblogEvent.value!!) _reblogEvent.value = true }
-    private fun onReblogFinished() = run { _reblogEvent.value = false }
-    fun onFavouriteClicked() = run { if (!_favouriteEvent.value!!) _favouriteEvent.value = true }
-    private fun onFavouriteFinished() = run { _favouriteEvent.value = false }
-    fun onTimeClicked() = run { if (!_timeClickEvent.value!!) _timeClickEvent.value = true }
-    fun onTimeClickFinished() = run { _timeClickEvent.value = false }
-    fun onMoreClicked() = run { if (!_moreClickEvent.value!!) _moreClickEvent.value = true }
-    fun onMoreClickFinished() = run { _moreClickEvent.value = false }
+    fun onAvatarClicked() = run { if (!_avatarEvent.value!!) _avatarEvent.postValue(true) }
+    fun onAvatarClickFinished() = run { _avatarEvent.postValue(false) }
+    fun onReplyClicked() = run { if (!_replyEvent.value!!) _replyEvent.postValue(true) }
+    fun onReplyClickFinished() = run { _replyEvent.postValue(false) }
+    fun onReblogClicked() = run { if (!_reblogEvent.value!!) _reblogEvent.postValue(true) }
+    private fun onReblogFinished() = run { _reblogEvent.postValue(false) }
+    fun onFavouriteClicked() = run { if (!_favouriteEvent.value!!) _favouriteEvent.postValue(true) }
+    private fun onFavouriteFinished() = run { _favouriteEvent.postValue(false) }
+    fun onTimeClicked() = run { if (!_timeClickEvent.value!!) _timeClickEvent.postValue(true) }
+    fun onTimeClickFinished() = run { _timeClickEvent.postValue(false) }
+    fun onMoreClicked() = run { if (!_moreClickEvent.value!!) _moreClickEvent.postValue(true) }
+    fun onMoreClickFinished() = run { _moreClickEvent.postValue(false) }
 
-    fun doReblog() {
-        val api = if (reblogged.value!!) apiStatuses::unReblog else apiStatuses::reblog
-        doStatusApi(suspend { api(auth.accessToken, toot.value!!.id) }, ::onReblogFinished)
+    fun doReblog() = ioScope.launch {
+        repo.doReblog(toot.value!!.id, reblogged.value!!)
+        onReblogFinished()
     }
 
-    fun doFav() {
-        val api = if (favourited.value!!) apiFavourites::unFavourite else apiFavourites::favourite
-        doStatusApi(suspend { api(auth.accessToken, toot.value!!.id) }, ::onFavouriteFinished)
+    fun doFav() = ioScope.launch {
+        repo.doFav(toot.value!!.id, favourited.value!!)
+        onFavouriteFinished()
     }
 
-    fun doPin() {
-        val api = if (toot.value!!.pinned == true) apiStatuses::unPin else apiStatuses::pin
-        doStatusApi(suspend { api(auth.accessToken, toot.value!!.id) }, {})
-    }
+    fun doPin() = ioScope.launch { repo.doPin(toot.value!!.id, toot.value!!.pinned) }
 
-    fun doDelete() {
-        doStatusApi(suspend { apiStatuses.deleteToot(auth.accessToken, toot.value!!.id) }, {})
-    }
+    fun doDelete() = ioScope.launch { repo.doDelete(toot.value!!.id) }
 
     val shareIntent: Intent
         get() {
@@ -127,20 +116,4 @@ class TootViewModel @Inject constructor(
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
         }
-
-    private fun doStatusApi(api: suspend () -> Response<APIStatus>, onFinished: () -> Unit) {
-        ioScope.launch {
-            try {
-                val res = api()
-                if (res.body() == null) {
-                    // todo res.errorBody()（JSONパース失敗かと思うので、ここに来る時はたぶん実装ミス）（下位互換切り仕様変更も無いと思いたい）
-                }
-                _toot.value = res.body()!!.asDomainModel()
-            } catch (e: Exception) {
-                // todo エラー表示
-            } finally {
-                onFinished()
-            }
-        }
-    }
 }

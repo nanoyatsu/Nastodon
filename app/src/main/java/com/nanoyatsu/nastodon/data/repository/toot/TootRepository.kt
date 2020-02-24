@@ -4,7 +4,7 @@ import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.entity.APIStatus
 import com.nanoyatsu.nastodon.data.database.dao.TimelineDao
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
-import kotlinx.coroutines.Job
+import retrofit2.HttpException
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -13,7 +13,6 @@ class TootRepository @Inject constructor(
     val apiManager: MastodonApiManager,
     val auth: AuthInfo
 ) {
-    private val vmJob = Job()
     private val apiStatuses = apiManager.statuses
     private val apiFavourites = apiManager.favourites
     val token = auth.accessToken
@@ -35,11 +34,6 @@ class TootRepository @Inject constructor(
         doStatusApi(suspend { api(auth.accessToken, id) }, { dao.update(it, id) })
     }
 
-    suspend fun doDelete(id: String) {
-        val api = apiStatuses::deleteToot
-        doStatusApi(suspend { api(auth.accessToken, id) }, { dao.deleteById(id) })
-    }
-
     private suspend fun doStatusApi(
         api: suspend () -> Response<APIStatus>,
         updater: (String) -> Unit
@@ -52,8 +46,20 @@ class TootRepository @Inject constructor(
             val dbModel = requireNotNull(res.body()).asDatabaseModel(0)
             updater(dbModel.status)
         } catch (e: Exception) {
+            e.printStackTrace()
             // todo エラー表示
         }
     }
 
+    suspend fun doDelete(id: String) {
+        try {
+            val res = apiStatuses.deleteToot(auth.accessToken, id)
+            requireNotNull(res.body())
+            dao.deleteById(id)
+        } catch (e: HttpException) {
+            TODO("エラー表示")
+        } catch (e: IllegalArgumentException) {
+            TODO("エラー表示")
+        }
+    }
 }
