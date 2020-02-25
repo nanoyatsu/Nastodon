@@ -1,8 +1,10 @@
 package com.nanoyatsu.nastodon.view.tootEdit
 
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -47,7 +49,7 @@ class TootEditFragment : Fragment() {
         val i = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             type = "image/*"
         }
-        startActivity(i)
+        startActivityForResult(i, Request.MEDIA_PICKER.ordinal)
     }
 
     private fun sendToot(vm: TootEditViewModel) {
@@ -55,5 +57,18 @@ class TootEditFragment : Fragment() {
         val applicationContext = activity?.applicationContext
         vm.sendToot { Toast.makeText(applicationContext, it, Toast.LENGTH_LONG).show() }
         activity?.onBackPressed() // todo ナビゲーションで遷移
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (Request.values()[requestCode]) {
+            Request.MEDIA_PICKER -> if (resultCode == Activity.RESULT_OK) {
+                Log.d("test", "msg")
+            }
+        }
+    }
+
+
+    companion object {
+        enum class Request { MEDIA_PICKER }
     }
 }
