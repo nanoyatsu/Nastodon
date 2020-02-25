@@ -31,18 +31,13 @@ class TootEditFragment : Fragment() {
             .nullableTootComponent().create(args.replyTo)
         val vm = tootComponent.viewModelFactory().create(TootEditViewModel::class.java)
 
-        // 警告投稿 review : Switch値のVisibilityへの反映がXML側だけで対応出来ない？
-        vm.isContentWarning.observe(viewLifecycleOwner, Observer
-        { binding.cwContent.visibility = if (it) View.VISIBLE else View.GONE })
-        vm.liveReplyTo.observe(viewLifecycleOwner, Observer
-        { binding.frameReply.visibility = if (it != null) View.VISIBLE else View.GONE })
         // 画像追加
         vm.mediaAddEvent.observe(viewLifecycleOwner, Observer { if (it) addMedia(vm) })
         // トゥート送信イベント
         vm.tootSendEvent.observe(viewLifecycleOwner, Observer { if (it) sendToot(vm) })
 
         binding.vm = vm
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
     }
 
     private fun addMedia(vm: TootEditViewModel) {
