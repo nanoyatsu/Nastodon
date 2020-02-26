@@ -1,9 +1,12 @@
 package com.nanoyatsu.nastodon.view.tootEdit
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.nanoyatsu.nastodon.NastodonApplication
+import com.nanoyatsu.nastodon.components.ContentSchemeParser
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.entity.APIStatus
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
@@ -12,12 +15,17 @@ import com.nanoyatsu.nastodon.data.domain.Visibility
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.HttpException
 import retrofit2.Response
+import java.io.File
 import java.util.*
 import javax.inject.Inject
 
 
+// todo リポジトリ実装
 class TootEditViewModel @Inject constructor(
     replyTo: Status?,
     private val auth: AuthInfo,
@@ -80,4 +88,20 @@ class TootEditViewModel @Inject constructor(
         }
     }
 
+    fun addAttachment(uri: Uri) {
+        val path = ContentSchemeParser.getPathFromUri(NastodonApplication.appContext, uri) ?: return
+        val file = File(path)
+        val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
+        val part = MultipartBody.Part.createFormData("file", file.name, requestBody)
+        CoroutineScope(context = Dispatchers.IO).launch {
+            try {
+                val apiDir = apiManager.media
+                val res = apiDir.media(auth.accessToken, part)
+                Log.d("tuusin", "sita")
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.d("tuusin", "eratta")
+            }
+        }
+    }
 }

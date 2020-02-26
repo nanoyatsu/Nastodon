@@ -15,6 +15,11 @@ import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.databinding.FragmentTootEditBinding
 
 class TootEditFragment : Fragment() {
+    private val vm by lazy {
+        val tootComponent = (requireActivity().application as NastodonApplication).appComponent
+            .nullableTootComponent().create(args.replyTo)
+        tootComponent.viewModelFactory().create(TootEditViewModel::class.java)
+    }
     private val args by lazy { TootEditFragmentArgs.fromBundle(arguments!!) }
 
     override fun onCreateView(
@@ -27,10 +32,6 @@ class TootEditFragment : Fragment() {
 
     private fun initBinding(binding: FragmentTootEditBinding) {
         // ViewModel設定
-        val tootComponent = (requireActivity().application as NastodonApplication).appComponent
-            .nullableTootComponent().create(args.replyTo)
-        val vm = tootComponent.viewModelFactory().create(TootEditViewModel::class.java)
-
         // 画像追加
         vm.mediaAddEvent.observe(viewLifecycleOwner, Observer { if (it) addMedia(vm) })
         // トゥート送信イベント
@@ -55,13 +56,17 @@ class TootEditFragment : Fragment() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (data == null) return
         when (Request.values()[requestCode]) {
-            Request.MEDIA_PICKER -> if (resultCode == Activity.RESULT_OK) {
-                Log.d("test", "msg")
-            }
+            Request.MEDIA_PICKER -> if (resultCode == Activity.RESULT_OK) receiveMedia(data)
         }
     }
 
+    private fun receiveMedia(intent: Intent) {
+        Log.d("test", "msg")
+        val uri = intent.data ?: return
+        vm.addAttachment(uri)
+    }
 
     companion object {
         enum class Request { MEDIA_PICKER }
