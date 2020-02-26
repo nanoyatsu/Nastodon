@@ -1,8 +1,8 @@
 package com.nanoyatsu.nastodon.data.api
 
 import com.nanoyatsu.nastodon.data.api.endpoint.*
-import com.nanoyatsu.nastodon.data.api.entity.NotificationType
 import com.nanoyatsu.nastodon.data.api.entity.APIVisibility
+import com.nanoyatsu.nastodon.data.api.entity.NotificationType
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.EnumJsonAdapter
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -78,8 +78,8 @@ class MastodonApiManager(baseUrl: String) {
         get() = retrofit.create(MastodonApiInstance::class.java)
     // val lists: MastodonApilists
 //    get() = retrofit.create(MastodonApilists::class.java)
-// val media: MastodonApimedia
-//    get() = retrofit.create(MastodonApimedia::class.java)
+    val media: MastodonApiMedia
+        get() = retrofit.create(MastodonApiMedia::class.java)
 // val mutes: MastodonApimutes
 //    get() = retrofit.create(MastodonApimutes::class.java)
     val notifications: MastodonApiNotifications
