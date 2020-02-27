@@ -24,13 +24,13 @@ interface MastodonApiStatuses {
         @Header("Authorization") authorization: String,
         @Query("status") status: String,
         @Query("in_reply_to_id") inReplyToId: String? = null,
-        @Query("media_ids") mediaIds: String? = null,
-        @Query("poll") poll: String? = null,
+        @Query("poll") poll: String? = null, // added 2.8.0
         @Query("sensitive") sensitive: String? = null,
         @Query("spoiler_text") spoilerText: String? = null,
         @Query("visibility") visibility: String, // direct, private, unlisted, public
         @Query("scheduled_at") scheduledAt: String? = null,
-        @Query("language") language: String? = null
+        @Query("language") language: String? = null,
+        @Query("media_ids[]") vararg mediaIds: String? = arrayOf()
     ): Response<APIStatus>
 
     @DELETE("/api/v1/statuses/{id}")

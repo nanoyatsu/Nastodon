@@ -10,6 +10,7 @@ import com.nanoyatsu.nastodon.components.ContentSchemeParser
 import com.nanoyatsu.nastodon.data.api.MastodonApiManager
 import com.nanoyatsu.nastodon.data.api.entity.APIStatus
 import com.nanoyatsu.nastodon.data.database.entity.AuthInfo
+import com.nanoyatsu.nastodon.data.domain.Attachment
 import com.nanoyatsu.nastodon.data.domain.Status
 import com.nanoyatsu.nastodon.data.domain.Visibility
 import kotlinx.coroutines.CoroutineScope
@@ -35,6 +36,8 @@ class TootEditViewModel @Inject constructor(
 
     private val _liveReplyTo = MutableLiveData<Status?>().apply { value = replyTo }
     val liveReplyTo: LiveData<Status?> get() = _liveReplyTo
+    // とりあえず１つ対応（ todo 最大４）
+    private val _attachment = MutableLiveData<Attachment?>().apply { value = null }
 
     // 双方向binding対象
     val isContentWarning =
@@ -83,12 +86,13 @@ class TootEditViewModel @Inject constructor(
                 status = sendContent.value!!,
                 inReplyToId = liveReplyTo.value?.id,
                 spoilerText = if (cwContent.value == "") null else cwContent.value,
-                visibility = Visibility.values()[this.visibilityIdx.value!!].name.toLowerCase(Locale.ROOT)
+                visibility = Visibility.values()[this.visibilityIdx.value!!].name.toLowerCase(Locale.ROOT),
+                mediaIds = *arrayOf(_attachment.value?.id)
             )
         }
     }
 
-    fun addAttachment(uri: Uri) {
+    fun uploadAttachment(uri: Uri) {
         val path = ContentSchemeParser.getPathFromUri(NastodonApplication.appContext, uri) ?: return
         val file = File(path)
         val requestBody = file.asRequestBody("image/*".toMediaTypeOrNull())
@@ -97,6 +101,7 @@ class TootEditViewModel @Inject constructor(
             try {
                 val apiDir = apiManager.media
                 val res = apiDir.media(auth.accessToken, part)
+                _attachment.postValue(res.body()?.asDomainModel())
                 Log.d("tuusin", "sita")
             } catch (e: Exception) {
                 e.printStackTrace()

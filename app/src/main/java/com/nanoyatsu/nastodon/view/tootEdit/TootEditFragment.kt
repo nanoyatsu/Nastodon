@@ -65,7 +65,7 @@ class TootEditFragment : Fragment() {
     private fun receiveMedia(intent: Intent) {
         Log.d("test", "msg")
         val uri = intent.data ?: return
-        vm.addAttachment(uri)
+        vm.uploadAttachment(uri)
     }
 
     companion object {
