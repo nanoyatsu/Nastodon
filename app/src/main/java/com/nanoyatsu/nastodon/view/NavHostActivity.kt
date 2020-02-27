@@ -1,9 +1,13 @@
 package com.nanoyatsu.nastodon.view
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
@@ -21,6 +25,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import retrofit2.HttpException
 import javax.inject.Inject
+
 
 class NavHostActivity : AppCompatActivity() {
     lateinit var binding: ActivityNavHostBinding
@@ -55,6 +60,8 @@ class NavHostActivity : AppCompatActivity() {
 
         // 下部ナビゲーションメニューのIDとナビゲーショングラフのIDの紐付け
         NavigationUI.setupWithNavController(binding.bottomNavView, navController)
+
+        requestPermissions()
     }
 
     private fun setBottomNavVisibility(_1: NavController, dest: NavDestination, _2: Bundle?) {
@@ -69,6 +76,7 @@ class NavHostActivity : AppCompatActivity() {
         return NavigationUI.navigateUp(navController, binding.drawerLayout)
     }
 
+    // todo リポジトリに分離
     private fun checkAuth() {
         val auth = runBlocking(Dispatchers.IO) { db.authInfoDao().getAll().firstOrNull() }
 
@@ -100,6 +108,30 @@ class NavHostActivity : AppCompatActivity() {
                 return@runBlocking false
             }
             // todo IOExceptionも受ける
+        }
+    }
+
+    private fun requestPermissions() {
+        PermissionRequest.values().map { request ->
+            val check = request.permissions.map { ContextCompat.checkSelfPermission(this, it) }
+            if (check.contains(PackageManager.PERMISSION_DENIED))
+                ActivityCompat.requestPermissions(this, request.permissions, request.code.ordinal)
+        }
+    }
+
+    companion object {
+        // ordinalをonActivityResult系のRequestCodeに使うEnum
+        enum class Request { PERMISSION_EXTERNAL_STORAGE }
+
+        // Permission系のリクエストをまとめたEnum
+        enum class PermissionRequest(val code: Request, val permissions: Array<String>) {
+            EXTERNAL_STORAGE(
+                Request.PERMISSION_EXTERNAL_STORAGE,
+                arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+            )
         }
     }
 }
