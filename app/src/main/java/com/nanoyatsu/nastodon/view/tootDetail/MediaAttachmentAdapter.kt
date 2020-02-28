@@ -41,7 +41,7 @@ class MediaAttachmentAdapter(private val attachments: Array<Attachment>) :
             // まず画像だけ対応
             if (attachment.type == MediaType.IMAGE.toLower()) {
                 Glide.with(binding.image)
-                    .load(attachment.preview_url)
+                    .load(attachment.previewUrl)
                     .apply {
                         RequestOptions()
                             .placeholder(R.drawable.loading_animation)

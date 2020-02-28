@@ -26,6 +26,29 @@
       android:layout_margin="8dp"
       android:checked="@={vm.isContentWarning}"
       android:text="CW "
+      app:layout_constraintBottom_toBottomOf="@id/buttonSend"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="@id/buttonSend" />
+
+    <Spinner
+      android:id="@+id/visibilitySpinner"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_margin="8dp"
+      android:entries="@{vm.visibilitySpinnerEntries}"
+      android:selectedItemPosition="@={vm.visibilityIdx}"
+      app:layout_constraintBottom_toBottomOf="@id/buttonSend"
+      app:layout_constraintEnd_toStartOf="@id/buttonSend"
+      app:layout_constraintTop_toTopOf="@id/buttonSend" />
+
+    <Button
+      android:id="@+id/buttonSend"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="8dp"
+      android:layout_marginBottom="8dp"
+      android:onClick="@{() -> vm.onTootSendClicked()}"
+      android:text="send"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
@@ -42,7 +65,7 @@
       android:visibility="@{safeUnbox(vm.contentWarning) ? View.VISIBLE : View.GONE}"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/switch_cw"
+      app:layout_constraintTop_toBottomOf="@id/buttonSend"
       tool:text="警告文"
       tool:visibility="visible" />
 
@@ -116,27 +139,12 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/content" />
 
-    <Spinner
-      android:id="@+id/visibilitySpinner"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_margin="8dp"
-      android:entries="@{vm.visibilitySpinnerEntries}"
-      android:selectedItemPosition="@={vm.visibilityIdx}"
-      app:layout_constraintBottom_toBottomOf="@id/buttonSend"
-      app:layout_constraintEnd_toStartOf="@id/buttonSend"
-      app:layout_constraintTop_toTopOf="@id/buttonSend" />
-
-    <Button
-      android:id="@+id/buttonSend"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginStart="8dp"
-      android:layout_marginTop="8dp"
-      android:layout_marginBottom="8dp"
-      android:onClick="@{() -> vm.onTootSendClicked()}"
-      android:text="Button"
-      app:layout_constraintEnd_toEndOf="parent"
+    <!--  todo ローカルファイルから表示  -->
+    <androidx.appcompat.widget.AppCompatImageView
+      android:layout_width="@dimen/mini_thumbnail"
+      android:layout_height="@dimen/mini_thumbnail"
+      app:imageUrl="@{vm.attachment.previewUrl}"
+      app:layout_constraintStart_toEndOf="@id/button_media"
       app:layout_constraintTop_toBottomOf="@id/content" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>

@@ -38,6 +38,7 @@ class TootEditViewModel @Inject constructor(
     val liveReplyTo: LiveData<Status?> get() = _liveReplyTo
     // とりあえず１つ対応（ todo 最大４）
     private val _attachment = MutableLiveData<Attachment?>().apply { value = null }
+    val attachment: LiveData<Attachment?> get() = _attachment
 
     // 双方向binding対象
     val isContentWarning =
