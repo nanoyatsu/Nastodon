@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.nanoyatsu.nastodon.NastodonApplication
 import com.nanoyatsu.nastodon.databinding.FragmentTootEditBinding
 
@@ -31,14 +33,26 @@ class TootEditFragment : Fragment() {
     }
 
     private fun initBinding(binding: FragmentTootEditBinding) {
+        // 描画設定
+        binding.attachments.layoutManager =
+            LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        binding.attachments.adapter = AddAttachmentAdapter()
+
         // ViewModel設定
-        // 画像追加
-        vm.mediaAddEvent.observe(viewLifecycleOwner, Observer { if (it) addMedia(vm) })
-        // トゥート送信イベント
-        vm.tootSendEvent.observe(viewLifecycleOwner, Observer { if (it) sendToot(vm) })
+        vm.init(binding)
 
         binding.vm = vm
         binding.lifecycleOwner = viewLifecycleOwner
+    }
+
+    private fun TootEditViewModel.init(binding: FragmentTootEditBinding) {
+        // 画像追加
+        mediaAddEvent.observe(viewLifecycleOwner, Observer { if (it) addMedia(this) })
+        // アップロード画像一覧RecyclerView
+        val adapter = binding.attachments.adapter as AddAttachmentAdapter
+        vm.attachments.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
+        // トゥート送信イベント
+        tootSendEvent.observe(viewLifecycleOwner, Observer { if (it) sendToot(this) })
     }
 
     private fun addMedia(vm: TootEditViewModel) {

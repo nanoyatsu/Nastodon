@@ -8,6 +8,7 @@ import com.nanoyatsu.nastodon.data.domain.Attachment
 class AddAttachmentAdapter :
     ListAdapter<Attachment, AddAttachmentItemViewHolder>(DiffCallback()) {
 
+    // fixme 4つ(LIMIT_SIZE)目の追加で落ちる
     override fun getItemCount(): Int =
         super.getItemCount() + if (super.getItemCount() < LIMIT_SIZE) 1 else 0
 
@@ -15,7 +16,7 @@ class AddAttachmentAdapter :
         AddAttachmentItemViewHolder.from(parent)
 
     override fun onBindViewHolder(holder: AddAttachmentItemViewHolder, position: Int) {
-        if (super.getItemCount() >= LIMIT_SIZE || position >= super.getItemCount())
+        if (super.getItemCount() == LIMIT_SIZE || position < itemCount - 1)
             holder.bind(getItem(position))
     }
 

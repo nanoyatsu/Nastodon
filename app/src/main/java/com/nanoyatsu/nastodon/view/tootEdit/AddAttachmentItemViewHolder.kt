@@ -10,17 +10,15 @@ class AddAttachmentItemViewHolder(val binding: ItemAttachmentAdderBinding) :
     RecyclerView.ViewHolder(binding.root) {
     companion object {
         fun from(parent: ViewGroup): AddAttachmentItemViewHolder {
-            val binding =
-                ItemAttachmentAdderBinding.inflate(
-                    LayoutInflater.from(parent.context),
-                    parent,
-                    false
-                )
-            return AddAttachmentItemViewHolder(
-                binding
-            )
+            val binding = ItemAttachmentAdderBinding
+                .inflate(LayoutInflater.from(parent.context), parent, false)
+            return AddAttachmentItemViewHolder(binding)
         }
     }
 
-    fun bind(attachment: Attachment) {}
+    fun bind(attachment: Attachment) {
+        binding.attachment = attachment
+
+        binding.executePendingBindings()
+    }
 }

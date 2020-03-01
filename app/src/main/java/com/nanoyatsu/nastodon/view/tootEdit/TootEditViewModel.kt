@@ -37,8 +37,8 @@ class TootEditViewModel @Inject constructor(
     private val _liveReplyTo = MutableLiveData<Status?>().apply { value = replyTo }
     val liveReplyTo: LiveData<Status?> get() = _liveReplyTo
     // とりあえず１つ対応（ todo 最大４）
-    private val _attachment = MutableLiveData<Attachment?>().apply { value = null }
-    val attachment: LiveData<Attachment?> get() = _attachment
+    private val _attachments = MutableLiveData<List<Attachment>>().apply { value = listOf() }
+    val attachments: LiveData<List<Attachment>> get() = _attachments
 
     // 双方向binding対象
     val isContentWarning =
@@ -88,7 +88,7 @@ class TootEditViewModel @Inject constructor(
                 inReplyToId = liveReplyTo.value?.id,
                 spoilerText = if (cwContent.value == "") null else cwContent.value,
                 visibility = Visibility.values()[this.visibilityIdx.value!!].name.toLowerCase(Locale.ROOT),
-                mediaIds = *arrayOf(_attachment.value?.id)
+                mediaIds = *(_attachments.value!!.map { it.id }.toTypedArray())
             )
         }
     }
@@ -102,7 +102,14 @@ class TootEditViewModel @Inject constructor(
             try {
                 val apiDir = apiManager.media
                 val res = apiDir.media(auth.accessToken, part)
-                _attachment.postValue(res.body()?.asDomainModel())
+                val addedElement = res.body()?.asDomainModel()
+                if (addedElement != null) {
+                    val newList =
+                        listOf<Attachment>(*attachments.value!!.toTypedArray(), addedElement)
+                    _attachments.postValue(newList)
+                } else {
+                    TODO("todo : mediaからerrorが返った")
+                }
                 Log.d("tuusin", "sita")
             } catch (e: Exception) {
                 e.printStackTrace()

@@ -139,13 +139,16 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toBottomOf="@id/content" />
 
-    <!--  todo ローカルファイルから表示  -->
-    <androidx.appcompat.widget.AppCompatImageView
-      android:layout_width="@dimen/mini_thumbnail"
-      android:layout_height="@dimen/mini_thumbnail"
-      app:imageUrl="@{vm.attachment.previewUrl}"
+    <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/attachments"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
       app:layout_constraintStart_toEndOf="@id/button_media"
-      app:layout_constraintTop_toBottomOf="@id/content" />
+      app:layout_constraintTop_toBottomOf="@id/content"
+      tool:itemCount="4"
+      tool:listitem="@layout/item_attachment_adder" />
+<!--    android:orientation="horizontal"-->
+    <!--    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

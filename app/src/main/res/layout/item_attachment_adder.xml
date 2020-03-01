@@ -1,16 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <data>
+
+    <import type="android.view.View" />
 
     <variable
       name="attachment"
       type="com.nanoyatsu.nastodon.data.domain.Attachment" />
   </data>
 
-  <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+  <!--  todo ローカルファイルから表示  -->
+  <FrameLayout
+    android:layout_width="@dimen/mini_thumbnail"
+    android:layout_height="@dimen/mini_thumbnail">
 
-  </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.appcompat.widget.AppCompatImageView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:visibility="@{(attachment == null) ? View.GONE : View.VISIBLE}"
+      app:imageUrl="@{attachment.previewUrl}"
+      app:layout_constraintStart_toEndOf="@id/button_media"
+      app:layout_constraintTop_toBottomOf="@id/content" />
+
+    <!--  fixme アイコン仮  -->
+    <androidx.appcompat.widget.AppCompatImageView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:src="@drawable/ic_edit"
+      android:tint="@android:color/darker_gray"
+      android:visibility="@{(attachment == null) ? View.VISIBLE : View.GONE}"
+      app:layout_constraintStart_toEndOf="@id/button_media"
+      app:layout_constraintTop_toBottomOf="@id/content" />
+  </FrameLayout>
 </layout>
